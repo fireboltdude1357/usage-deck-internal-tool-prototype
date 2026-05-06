@@ -34,10 +34,6 @@
   {:else if !data.snapshot}
     <div class="text-sm text-slate-500 italic">Loading…</div>
   {:else}
-    <div class="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
-      Time-range filter is not applied — market metrics are aggregated across the snapshot window.
-    </div>
-
     <section class="grid grid-cols-1 gap-4 lg:grid-cols-2">
       <CategoryBars bars={providerBars} title="Provider views by market" />
       <CategoryBars bars={unitBars} title="Unit views by market" />

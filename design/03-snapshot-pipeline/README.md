@@ -4,9 +4,9 @@
 between the plan and the executed work.
 
 Codifies the canonical Athena and RDS queries and the manual monthly export to
-S3. Bucket creation and the Schema-validating uploader live here. The next
-phase wires Vercel to read this bucket; until then the dashboard stays on
-fixtures for Athena/RDS-sourced metrics and on live PostHog (phase 02) for
+S3. Bucket creation and the Schema-validating uploader live here. Phase 04
+(shipped 2026-05-06) wired Vercel to read this bucket; the dashboard now
+serves Athena/RDS-sourced metrics from S3 and live PostHog (phase 02) for
 everything else.
 
 This phase combines the original phase 03 (Athena → S3) and phase 04 (RDS → S3) —

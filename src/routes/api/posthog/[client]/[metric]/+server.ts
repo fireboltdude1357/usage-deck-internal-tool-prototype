@@ -1,14 +1,38 @@
 import { json, error } from "@sveltejs/kit"
 import { Effect, Either, Schema } from "effect"
+import type { Client as ClientT } from "$lib/schema/snapshot"
 import { Client, Month } from "$lib/schema/snapshot"
-import { runPlatformPipeline } from "$lib/server/posthog/pipeline"
+import { PostHogError } from "$lib/server/posthog/client"
+import {
+  runMarketPipeline,
+  runPlatformPipeline,
+  runProvisionedPipeline,
+} from "$lib/server/posthog/pipeline"
 import type { RequestHandler } from "./$types"
 
-const Metric = Schema.Literal("metrics")
+const Metric = Schema.Literal("metrics", "market", "provisioned")
+type Metric = Schema.Schema.Type<typeof Metric>
 
 const decode = <A, I>(schema: Schema.Schema<A, I>, value: unknown): A | null => {
   const r = Schema.decodeUnknownEither(schema)(value)
   return Either.isRight(r) ? r.right : null
+}
+
+const dispatch = (
+  metric: Metric,
+  client: ClientT,
+  start: string,
+  end: string,
+  opts: { refresh: boolean },
+): Effect.Effect<unknown, PostHogError> => {
+  switch (metric) {
+    case "metrics":
+      return runPlatformPipeline(client, start, end, opts)
+    case "market":
+      return runMarketPipeline(client, start, end, opts)
+    case "provisioned":
+      return runProvisionedPipeline(client, start, end, opts)
+  }
 }
 
 export const GET: RequestHandler = async ({ params, url }) => {
@@ -30,7 +54,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
   )
 
   const result = await Effect.runPromise(
-    Effect.either(runPlatformPipeline(client, start, end, { refresh })),
+    Effect.either(dispatch(metric, client, start, end, { refresh })),
   )
   const ms = Date.now() - started
 

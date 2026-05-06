@@ -1,5 +1,8 @@
 # 04 — Plan
 
+**Status: shipped 2026-05-06.** See § "What shipped" at the bottom for deltas
+between this plan and the executed work.
+
 Implementation plan for wiring Vercel's `/api/snapshot/[client]/[month]/[file]`
 to read directly from the S3 bucket created in phase 03. The README states
 scope; this doc names the load-bearing decisions, picks defaults where the
@@ -180,4 +183,36 @@ No new files outside `src/lib/server/`. No package.json changes — `@aws-sdk/cl
 
 ## What shipped
 
-Recorded after the build so future phases can see deltas between plan and reality. (To be filled in once phase 04 lands.)
+Recorded after the build so future phases can see deltas between plan and reality.
+
+### Built per plan
+
+- `SnapshotSourceS3` Layer in `src/lib/server/snapshot-source.ts` replaced with a real `@aws-sdk/client-s3` `GetObjectCommand` implementation. Body decoding via `Body.transformToString()` → `JSON.parse`. Module-scope cached `S3Client` so the connection pool survives across requests.
+- Error mapping per plan: `NoSuchKey` (or `$metadata.httpStatusCode === 404`) → `NotFound` (404), `JSON.parse` failure → `Decode` (500), any other AWS SDK error → `Upstream` (502). Includes the full `s3://bucket/key: <reason>` in the error message so log triage doesn't require correlating route + AWS error.
+- `Layer.effect` startup-time check on `SNAPSHOT_BUCKET` — if the var is unset, every request fails fast with `{kind: "Upstream", message: "SNAPSHOT_BUCKET not configured"}` instead of a silent fallback.
+- `// TODO(phase-05): swap SNAPSHOT_AWS_* to dedicated read-only IAM principal scoped to internal-tool-snapshots/* before WorkOS launch.` marker next to the env read; matches the existing marker in `scripts/snapshot/upload.ts:45`.
+- `makeS3SnapshotSource(client, bucket)` factory exported separately so unit tests can drive error mapping with a mock `S3Client` — no live AWS in CI.
+- New `src/lib/server/snapshot-source.test.ts` — 6 tests covering: success, `NoSuchKey`→`NotFound`, 404 `$metadata`→`NotFound`, `AccessDenied`→`Upstream`, malformed JSON→`Decode`, key-shape verification.
+- All five `SNAPSHOT_*` Production env vars set on Vercel; Preview/Development scope unchanged. `AUTH_BYPASS=1` set temporarily on Production for end-to-end smoke, then removed.
+- `.env.example` updated to document that `SNAPSHOT_AWS_*` now feeds two consumers (write-side `upload.ts`, read-side `snapshot-source.ts`).
+
+### Diverged from plan
+
+- **Vercel project re-pointing.** PLAN.md assumed a working Vercel deploy. In practice, the original Vercel project was wired to `github.com/fireboltdude1357/usage-deck-internal-tool-prototype`, which still held the abandoned `internal-tool-try-1/` SAM-design codebase (`adapter-static`, package name `internal-tool-frontend@0.0.0`). The first phase-04 deploy attempt failed at the build step (`Error: No Output Directory named "public" found` — `adapter-static` writes to `build/`, Vercel expected `public/`). Resolution: Tanner pushed the new `internal-tool/` codebase to that same GitHub repo, replacing the try-1 contents on `main`. The Vercel project picked up the new build correctly on the next push. **Carry-forward**: the GitHub repo URL is now load-bearing for Vercel; phase 05 should not assume a fresh-repo migration.
+- **Local-smoke approach.** PLAN.md anticipated a standalone `tsx scripts/smoke-snapshot-s3.ts` that imported the Layer directly. Discarded — `$env/dynamic/private` is a SvelteKit virtual that can't resolve outside `vite dev`. Instead we ran `npm run dev` with `SNAPSHOT_SOURCE=s3` and `curl`-tested all four route combinations (3 success keys + 1 `2099-01` `NotFound`) plus two `Decode` paths (broken JSON + valid-JSON-wrong-shape, both via throwaway S3 keys, cleaned up after). Same coverage; cleaner mechanics.
+
+### Verified vs. live data (production)
+
+- `/api/snapshot/bsmh/2026-04/metrics.json` → 200, `Clinicians monitored: 2180` KPI present.
+- `/api/snapshot/bsmh/2026-04/market_metrics.json` → 200, six per-market bars match phase 03 ship report (Youngstown 344, Toledo 272, Lima 191, Hampton Roads 117, Lorain 92, Kentucky 85).
+- `/api/snapshot/bsmh/2026-04/provisioned_users.json` → 200, total 2180 / Lima 191.
+- `/api/snapshot/bsmh/2099-01/metrics.json` → 404 with `{kind: "NotFound"}`.
+- Direct browser fetch of the S3 object URL → 403 (bucket is private).
+- Dashboard: `/market-engagement` and `/provisioned-users` render the snapshot data with no fixture fallback. `/platform-engagement` falls back to the snapshot's RDS-only KPI when `POSTHOG_API_KEY` is unset on Vercel; flips to the full live PostHog rendering once the key is set + redeployed.
+
+### Carried forward
+
+- **Phase 05 IAM swap.** `// TODO(phase-05)` markers in both `src/lib/server/snapshot-source.ts` and `scripts/snapshot/upload.ts`. The phase 03 deferral (writer) and phase 04 deferral (reader) collapse into a single env-value swap (and TODO removal) once a dedicated read-only IAM principal is in place.
+- **Production AUTH_BYPASS hygiene.** Phase 04 set `AUTH_BYPASS=1` on Production for the smoke and then removed it. Phase 05 should explicitly confirm the var is absent from Production env before WorkOS launch (a stale `AUTH_BYPASS=1` would silently bypass the new SSO gate).
+- **CloudFront / signed cookies.** Still v2/v3 deferrals per `../DESIGN.md` § 2. Direct S3 reads at the current scale are well within the cost envelope.
+- **SSM/Duke/UCSF clients.** Read path is client-parameterized; the only blocker for non-BSMH clients is phase 03's BU mapping table (currently BSMH-only). Once that's filled in, the read path needs no changes.

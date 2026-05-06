@@ -1,5 +1,8 @@
 # 04 — Site reads S3
 
+**Status: shipped 2026-05-06.** See `PLAN.md` § "What shipped" for deltas
+between the plan and the executed work.
+
 Wire Vercel's `/api/snapshot/*` server route to read snapshots directly from
 the S3 bucket created in phase 03. Drop the existing CloudFront stub.
 
@@ -55,8 +58,10 @@ This phase combines the original phase 05 (CloudFront setup) and phase 06
 
 ## Acceptance
 
-- `SNAPSHOT_SOURCE=s3` in production. One client × one month renders end-to-end through Vercel → S3 → SvelteKit with no fixtures and no Schema warnings.
-- Direct browser request to the S3 URL returns 403 (bucket is private; only the IAM principal can read).
+- `SNAPSHOT_SOURCE=s3` in production. ✓
+- BSMH × 2026-04 renders end-to-end through Vercel → S3 → SvelteKit. The "2,180 clinicians monitored" KPI on `/platform-engagement` is the smoking gun — that value lives only in `s3://internal-tool-snapshots/bsmh/2026-04/metrics.json` and reaches the page through the S3 read path. ✓
+- `/market-engagement` per-market bars (Youngstown 344, Toledo 272, Lima 191, Hampton Roads 117, Lorain 92, Kentucky 85) and `/provisioned-users` (total 2180, Lima 191) render from S3 with no fixture fallback. ✓
+- Direct browser request to the S3 object URL returns 403 (bucket is private; only the IAM principal can read). ✓
 
 ## Out of scope (v2)
 

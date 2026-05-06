@@ -1,19 +1,35 @@
 import { Effect, Schema } from "effect"
-import type { Client, PlatformSnapshot } from "$lib/schema/snapshot"
-import { PlatformSnapshot as PlatformSnapshotSchema } from "$lib/schema/snapshot"
+import type {
+  Client,
+  MarketSnapshot,
+  PlatformSnapshot,
+  ProvisionedUsersSnapshot,
+} from "$lib/schema/snapshot"
+import {
+  MarketSnapshot as MarketSnapshotSchema,
+  PlatformSnapshot as PlatformSnapshotSchema,
+  ProvisionedUsersSnapshot as ProvisionedUsersSnapshotSchema,
+} from "$lib/schema/snapshot"
 import { fetchByMonth, rowsToObjects } from "./pagination"
 import {
   providerViewEventsQuery,
   unitViewEventsQuery,
   monthlyUserActivityQuery,
+  userActivityByMonthQuery,
 } from "./queries"
-import { buildPlatformSnapshot } from "./aggregator"
+import {
+  buildMarketSnapshot,
+  buildPlatformSnapshot,
+  buildProvisionedSnapshot,
+} from "./aggregator"
 import type {
   ProviderEvent,
   UnitEvent,
   MonthlyActivity,
+  UserActivityMonth,
 } from "./aggregator"
 import { cached } from "./cache"
+import { CLIENTS } from "./config"
 import { PostHogError } from "./client"
 
 const asString = (v: unknown): string => (typeof v === "string" ? v : String(v ?? ""))
@@ -22,86 +38,160 @@ const asNumber = (v: unknown): number => {
   return Number.isFinite(n) ? n : 0
 }
 
-const fetchPlatform = (
+// Cached fetchers — one cache key per (event-shape, client, range). The same
+// cached events feed both runPlatformPipeline and runMarketPipeline, so a hit
+// on one warms the other.
+const fetchProviderEvents = (
   client: Client,
   startMonth: string,
   endMonth: string,
-): Effect.Effect<PlatformSnapshot, PostHogError> =>
-  Effect.all(
-    {
-      providers: fetchByMonth(
-        startMonth,
-        endMonth,
-        (from, to) => providerViewEventsQuery(client, from, to),
-        `provider-events ${client}`,
-      ),
-      units: fetchByMonth(
-        startMonth,
-        endMonth,
-        (from, to) => unitViewEventsQuery(client, from, to),
-        `unit-events ${client}`,
-      ),
-      activity: fetchByMonth(
-        startMonth,
-        endMonth,
-        (from, to) => monthlyUserActivityQuery(client, from, to),
-        `monthly-activity ${client}`,
-      ),
-    },
-    { concurrency: 3 },
-  ).pipe(
-    Effect.flatMap(({ providers, units, activity }) => {
-      const providerEvents = rowsToObjects<ProviderEvent>(
-        providers.rows,
-        providers.columns,
-        (r) => ({
+): Effect.Effect<readonly ProviderEvent[], PostHogError> =>
+  cached(
+    `provider-events:${client}:${startMonth}:${endMonth}`,
+    fetchByMonth(
+      startMonth,
+      endMonth,
+      (from, to) => providerViewEventsQuery(client, from, to),
+      `provider-events ${client}`,
+    ).pipe(
+      Effect.map(({ rows, columns }) =>
+        rowsToObjects<ProviderEvent>(rows, columns, (r) => ({
           month: asString(r.month),
           user_email: asString(r.user_email),
+          bu_uuid: asString(r.bu_uuid),
           provider_legacy_id: asString(r.provider_legacy_id),
-        }),
-      )
-      const unitEvents = rowsToObjects<UnitEvent>(
-        units.rows,
-        units.columns,
-        (r) => ({
+        })),
+      ),
+    ),
+  )
+
+const fetchUnitEvents = (
+  client: Client,
+  startMonth: string,
+  endMonth: string,
+): Effect.Effect<readonly UnitEvent[], PostHogError> =>
+  cached(
+    `unit-events:${client}:${startMonth}:${endMonth}`,
+    fetchByMonth(
+      startMonth,
+      endMonth,
+      (from, to) => unitViewEventsQuery(client, from, to),
+      `unit-events ${client}`,
+    ).pipe(
+      Effect.map(({ rows, columns }) =>
+        rowsToObjects<UnitEvent>(rows, columns, (r) => ({
           month: asString(r.month),
           user_email: asString(r.user_email),
+          bu_uuid: asString(r.bu_uuid),
           group_uuid: asString(r.group_uuid),
-        }),
-      )
-      const monthlyActivity = rowsToObjects<MonthlyActivity>(
-        activity.rows,
-        activity.columns,
-        (r) => ({
+        })),
+      ),
+    ),
+  )
+
+const fetchMonthlyActivity = (
+  client: Client,
+  startMonth: string,
+  endMonth: string,
+): Effect.Effect<readonly MonthlyActivity[], PostHogError> =>
+  cached(
+    `monthly-activity:${client}:${startMonth}:${endMonth}`,
+    fetchByMonth(
+      startMonth,
+      endMonth,
+      (from, to) => monthlyUserActivityQuery(client, from, to),
+      `monthly-activity ${client}`,
+    ).pipe(
+      Effect.map(({ rows, columns }) =>
+        rowsToObjects<MonthlyActivity>(rows, columns, (r) => ({
           month: asString(r.month),
           user_email: asString(r.user_email),
           event_count: asNumber(r.event_count),
-        }),
-      )
-      const snapshot = buildPlatformSnapshot({
-        client,
-        startMonth,
-        endMonth,
-        providerEvents,
-        unitEvents,
-        monthlyActivity,
-      })
-      return Effect.try({
-        try: () => Schema.decodeUnknownSync(PlatformSnapshotSchema)(snapshot),
-        catch: (e) =>
-          new PostHogError({
-            kind: "Decode",
-            message: `aggregator output failed schema validation: ${
-              e instanceof Error ? e.message : String(e)
-            }`,
-          }),
-      })
-    }),
+        })),
+      ),
+    ),
   )
+
+const fetchUserActivityByMonth = (
+  client: Client,
+  startMonth: string,
+  endMonth: string,
+): Effect.Effect<readonly UserActivityMonth[], PostHogError> =>
+  cached(
+    `user-activity:${client}:${startMonth}:${endMonth}`,
+    fetchByMonth(
+      startMonth,
+      endMonth,
+      (from, to) => userActivityByMonthQuery(client, from, to),
+      `user-activity ${client}`,
+    ).pipe(
+      Effect.map(({ rows, columns }) =>
+        rowsToObjects<UserActivityMonth>(rows, columns, (r) => ({
+          month: asString(r.month),
+          user_email: asString(r.user_email),
+          page_loads: asNumber(r.page_loads),
+          active_days: asNumber(r.active_days),
+          first_seen: asString(r.first_seen),
+          last_seen: asString(r.last_seen),
+        })),
+      ),
+    ),
+  )
+
+// Schema-validate the aggregator output. Treat shape mismatches as Decode
+// errors so the route handler maps them to a 502 with a useful message.
+const decodeOrFail = <A>(
+  schema: Schema.Schema<A, unknown>,
+  value: unknown,
+  what: string,
+): Effect.Effect<A, PostHogError> =>
+  Effect.try({
+    try: () => Schema.decodeUnknownSync(schema)(value),
+    catch: (e) =>
+      new PostHogError({
+        kind: "Decode",
+        message: `${what} failed schema validation: ${
+          e instanceof Error ? e.message : String(e)
+        }`,
+      }),
+  })
 
 export interface PipelineOptions {
   readonly refresh?: boolean
 }
+
+const platformImpl = (
+  client: Client,
+  startMonth: string,
+  endMonth: string,
+  opts: PipelineOptions,
+): Effect.Effect<PlatformSnapshot, PostHogError> =>
+  Effect.all(
+    {
+      providerEvents: fetchProviderEvents(client, startMonth, endMonth),
+      unitEvents: fetchUnitEvents(client, startMonth, endMonth),
+      monthlyActivity: fetchMonthlyActivity(client, startMonth, endMonth),
+    },
+    { concurrency: 3 },
+  ).pipe(
+    Effect.flatMap(({ providerEvents, unitEvents, monthlyActivity }) =>
+      decodeOrFail(
+        PlatformSnapshotSchema as unknown as Schema.Schema<PlatformSnapshot, unknown>,
+        buildPlatformSnapshot({
+          client,
+          startMonth,
+          endMonth,
+          providerEvents,
+          unitEvents,
+          monthlyActivity,
+        }),
+        "platform aggregator output",
+      ),
+    ),
+    // Honor the refresh flag at the pipeline level too — the per-fetch caches
+    // are keyed independently, so this is a no-op for the outer runner.
+    Effect.tap(() => Effect.sync(() => void opts)),
+  )
 
 export const runPlatformPipeline = (
   client: Client,
@@ -111,6 +201,93 @@ export const runPlatformPipeline = (
 ): Effect.Effect<PlatformSnapshot, PostHogError> =>
   cached(
     `platform:${client}:${startMonth}:${endMonth}`,
-    fetchPlatform(client, startMonth, endMonth),
+    platformImpl(client, startMonth, endMonth, opts),
+    { bypass: opts.refresh },
+  )
+
+const marketImpl = (
+  client: Client,
+  startMonth: string,
+  endMonth: string,
+): Effect.Effect<MarketSnapshot, PostHogError> =>
+  Effect.all(
+    {
+      providerEvents: fetchProviderEvents(client, startMonth, endMonth),
+      unitEvents: fetchUnitEvents(client, startMonth, endMonth),
+    },
+    { concurrency: 2 },
+  ).pipe(
+    Effect.flatMap(({ providerEvents, unitEvents }) =>
+      decodeOrFail(
+        MarketSnapshotSchema as unknown as Schema.Schema<MarketSnapshot, unknown>,
+        buildMarketSnapshot({
+          client,
+          startMonth,
+          endMonth,
+          providerEvents,
+          unitEvents,
+        }),
+        "market aggregator output",
+      ),
+    ),
+  )
+
+export const runMarketPipeline = (
+  client: Client,
+  startMonth: string,
+  endMonth: string,
+  opts: PipelineOptions = {},
+): Effect.Effect<MarketSnapshot, PostHogError> =>
+  cached(
+    `market:${client}:${startMonth}:${endMonth}`,
+    marketImpl(client, startMonth, endMonth),
+    { bypass: opts.refresh },
+  )
+
+const provisionedImpl = (
+  client: Client,
+  startMonth: string,
+  endMonth: string,
+): Effect.Effect<ProvisionedUsersSnapshot, PostHogError> => {
+  const cfg = CLIENTS[client]
+  return Effect.all(
+    {
+      providerEvents: fetchProviderEvents(client, startMonth, endMonth),
+      unitEvents: fetchUnitEvents(client, startMonth, endMonth),
+      userActivity: fetchUserActivityByMonth(client, startMonth, endMonth),
+    },
+    { concurrency: 3 },
+  ).pipe(
+    Effect.flatMap(({ providerEvents, unitEvents, userActivity }) =>
+      decodeOrFail(
+        ProvisionedUsersSnapshotSchema as unknown as Schema.Schema<
+          ProvisionedUsersSnapshot,
+          unknown
+        >,
+        buildProvisionedSnapshot({
+          client,
+          startMonth,
+          endMonth,
+          providerEvents,
+          unitEvents,
+          userActivity,
+          provisionedTotal: cfg.provisionedTotal,
+          provisionedLima: cfg.provisionedLima,
+        }),
+        "provisioned aggregator output",
+      ),
+    ),
+  )
+}
+
+export const runProvisionedPipeline = (
+  client: Client,
+  startMonth: string,
+  endMonth: string,
+  opts: PipelineOptions = {},
+): Effect.Effect<ProvisionedUsersSnapshot, PostHogError> =>
+  cached(
+    `provisioned:${client}:${startMonth}:${endMonth}`,
+    provisionedImpl(client, startMonth, endMonth),
     { bypass: opts.refresh },
   )

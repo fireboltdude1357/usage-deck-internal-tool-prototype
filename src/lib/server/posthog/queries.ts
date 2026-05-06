@@ -9,6 +9,12 @@ const PROVIDER_URL_REGEX =
 const UNIT_URL_REGEX =
   "^/(regions|units|physicians/units|nurses/units)/[a-f0-9-]{36}/[a-f0-9-]{36}$"
 
+// Extracts the first UUID after the URL prefix (the bu_uuid / region UUID).
+// Used by both provider and unit queries — the first UUID segment is the same
+// in both URL shapes.
+const BU_UUID_EXTRACT =
+  "^/(?:regions|units|physicians/units|nurses/units)/([a-f0-9-]{36})/.*$"
+
 const emailFilter = (domains: readonly string[]): string =>
   domains.map((d) => `distinct_id LIKE '%${d}'`).join(" OR ")
 
@@ -31,6 +37,7 @@ export const providerViewEventsQuery = (
 ): string => `SELECT
   formatDateTime(timestamp, '%Y-%m') AS month,
   distinct_id AS user_email,
+  replaceRegexpOne(properties.url, '${BU_UUID_EXTRACT}', '\\\\1') AS bu_uuid,
   extract(properties.url, '([a-f0-9-]{36})$') AS provider_legacy_id
 FROM events
 WHERE ${baseFilter(client, from, to)}
@@ -46,6 +53,7 @@ export const unitViewEventsQuery = (
 ): string => `SELECT
   formatDateTime(timestamp, '%Y-%m') AS month,
   distinct_id AS user_email,
+  replaceRegexpOne(properties.url, '${BU_UUID_EXTRACT}', '\\\\1') AS bu_uuid,
   replaceRegexpOne(properties.url, '^.*/([a-f0-9-]{36})$', '\\\\1') AS group_uuid
 FROM events
 WHERE ${baseFilter(client, from, to)}
@@ -66,6 +74,32 @@ export const monthlyUserActivityQuery = (
   formatDateTime(timestamp, '%Y-%m') AS month,
   distinct_id AS user_email,
   count() AS event_count
+FROM events
+WHERE ${baseFilter(client, from, to)}
+  AND NOT match(properties.url, '^/(ingest|_admin)')
+GROUP BY month, user_email
+ORDER BY month, user_email`
+
+// Per-(month, user) day-level activity summary used to populate the user-detail
+// table on /provisioned-users. Returns one row per (month, user) with that
+// month's page-load count, distinct active days, first/last seen dates. The
+// loader merges across months in TS: page_loads sum, active_days sum (distinct
+// days never overlap across months), min(first_seen), max(last_seen).
+//
+// ALLOWED P4 exception, same reasoning as monthlyUserActivityQuery: raw events
+// would be thousands of rows/month/user; this aggregate is what downstream
+// needs and stays under the page limit at realistic user counts.
+export const userActivityByMonthQuery = (
+  client: Client,
+  from: string,
+  to: string,
+): string => `SELECT
+  formatDateTime(timestamp, '%Y-%m') AS month,
+  distinct_id AS user_email,
+  count() AS page_loads,
+  count(DISTINCT toDate(timestamp)) AS active_days,
+  formatDateTime(min(timestamp), '%Y-%m-%d') AS first_seen,
+  formatDateTime(max(timestamp), '%Y-%m-%d') AS last_seen
 FROM events
 WHERE ${baseFilter(client, from, to)}
   AND NOT match(properties.url, '^/(ingest|_admin)')
