@@ -34,6 +34,7 @@ const makeEvent = (opts: {
         name === "wos-session" ? opts.cookie : undefined,
       delete: () => undefined,
     },
+    request: { headers: { get: () => "" } },
   }) as unknown as RequestEvent
 
 describe("requireSession", () => {

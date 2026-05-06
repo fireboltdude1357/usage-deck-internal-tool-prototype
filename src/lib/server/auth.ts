@@ -29,6 +29,15 @@ export async function requireSession(event: RequestEvent): Promise<Session> {
 
   const sessionData = event.cookies.get(SESSION_COOKIE_NAME)
   if (!sessionData) {
+    const cookieHeader = event.request.headers.get("cookie") ?? ""
+    console.error("[requireSession] no wos-session cookie", {
+      pathname: event.url.pathname,
+      cookieHeaderBytes: cookieHeader.length,
+      cookieNamesPresent: cookieHeader
+        .split(";")
+        .map((c) => c.split("=")[0]?.trim())
+        .filter(Boolean),
+    })
     if (isPageRequest(event)) bounceToLogin(event)
     error(401, "Not signed in")
   }

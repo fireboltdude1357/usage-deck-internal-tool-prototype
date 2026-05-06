@@ -63,6 +63,12 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
   }
 
   const secure = url.protocol === "https:"
+  console.log("[/api/auth/callback] setting wos-session cookie", {
+    sealedSessionBytes: sealedSession.length,
+    secure,
+    returnTo,
+    email: user.email,
+  })
   cookies.set(SESSION_COOKIE_NAME, sealedSession, sessionCookieOptions(secure))
 
   redirect(302, returnTo)
