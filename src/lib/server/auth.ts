@@ -33,12 +33,31 @@ export async function requireSession(event: RequestEvent): Promise<Session> {
     error(401, "Not signed in")
   }
 
-  const result = await workos().userManagement.authenticateWithSessionCookie({
-    sessionData,
-    cookiePassword: workosCookiePassword(),
-  })
+  let result: Awaited<
+    ReturnType<
+      ReturnType<typeof workos>["userManagement"]["authenticateWithSessionCookie"]
+    >
+  >
+  try {
+    result = await workos().userManagement.authenticateWithSessionCookie({
+      sessionData,
+      cookiePassword: workosCookiePassword(),
+    })
+  } catch (e) {
+    console.error("[requireSession] authenticateWithSessionCookie threw", e)
+    // Clear the bad cookie so the user isn't stuck in a re-auth loop where
+    // every unseal fails. Next request has no cookie → bounces to login →
+    // AuthKit re-issues a fresh sealed session.
+    event.cookies.delete(SESSION_COOKIE_NAME, { path: "/" })
+    if (isPageRequest(event)) bounceToLogin(event)
+    error(401, "Not signed in")
+  }
 
   if (!result.authenticated) {
+    console.error("[requireSession] cookie unseal returned not-authenticated", {
+      reason: result.reason,
+    })
+    event.cookies.delete(SESSION_COOKIE_NAME, { path: "/" })
     if (isPageRequest(event)) bounceToLogin(event)
     error(401, "Not signed in")
   }

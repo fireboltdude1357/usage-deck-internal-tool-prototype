@@ -32,6 +32,7 @@ const makeEvent = (opts: {
     cookies: {
       get: (name: string) =>
         name === "wos-session" ? opts.cookie : undefined,
+      delete: () => undefined,
     },
   }) as unknown as RequestEvent
 

@@ -1,4 +1,4 @@
-import { redirect } from "@sveltejs/kit"
+import { error, redirect } from "@sveltejs/kit"
 import {
   workos,
   workosClientId,
@@ -27,11 +27,15 @@ function decodeState(raw: string | null): { returnTo: string } {
 
 export const GET: RequestHandler = async ({ url, cookies }) => {
   const code = url.searchParams.get("code")
-  if (!code) redirect(302, "/api/auth/login?error=missing_code")
+  if (!code) error(400, "callback: missing code")
 
   const { returnTo } = decodeState(url.searchParams.get("state"))
 
-  let user: { email: string } | undefined
+  // Auth failures here MUST NOT redirect back to /api/auth/login. AuthKit
+  // would silently re-authenticate via its own session, hit this callback
+  // again, fail again — ERR_TOO_MANY_REDIRECTS. Surface the error so it's
+  // diagnosable in Vercel function logs.
+  let user: { email: string }
   let sealedSession: string | undefined
   try {
     const result = await workos().userManagement.authenticateWithCode({
@@ -44,19 +48,18 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
     })
     user = result.user
     sealedSession = result.sealedSession
-  } catch {
-    // network/auth failure from WorkOS — bounce back to login. (We don't
-    // catch SvelteKit's `redirect` here because no `redirect()` runs inside
-    // this try block.)
-    redirect(302, "/api/auth/login?error=auth")
+  } catch (e) {
+    console.error("[/api/auth/callback] authenticateWithCode failed", e)
+    error(500, `auth callback: ${e instanceof Error ? e.message : String(e)}`)
   }
 
-  if (!user || !sealedSession) {
-    redirect(302, "/api/auth/login?error=no_sealed_session")
+  if (!sealedSession) {
+    console.error("[/api/auth/callback] no sealedSession on response", { user })
+    error(500, "auth callback: WorkOS returned no sealed session")
   }
 
   if (!isEmailAllowed(user.email)) {
-    redirect(302, "/api/auth/login?error=domain")
+    redirect(302, `/?error=domain&email=${encodeURIComponent(user.email)}`)
   }
 
   const secure = url.protocol === "https:"
