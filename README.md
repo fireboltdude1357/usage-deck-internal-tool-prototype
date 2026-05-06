@@ -32,8 +32,9 @@ npm run dev                # http://localhost:5173
 
 `.env.example` documents every variable. The two that matter in phase 01:
 
-- `AUTH_BYPASS=1` — required to render any page locally. Production deploys
-  leave this unset, so every route returns 401 until phase 05 wires WorkOS.
+- `AUTH_BYPASS=1` — required to render any page locally without setting up
+  WorkOS env vars. Production deploys leave this unset; routes then require
+  a WorkOS-issued sealed cookie issued by `/api/auth/callback`.
 - `SNAPSHOT_SOURCE=fixtures` (default for local dev) | `s3` (Vercel
   Production). When `s3`, `/api/snapshot/*` reads from
   `s3://internal-tool-snapshots/...` via the AWS SDK; when `fixtures`, it
@@ -43,7 +44,9 @@ npm run dev                # http://localhost:5173
 feed both the writer (`scripts/snapshot/upload.ts`, phase 03) and the reader
 (`src/lib/server/snapshot-source.ts`, phase 04). `RDS_STAGING_*` is the local
 snapshot pipeline only (phase 03 — see `design/03-snapshot-pipeline/README.md`
-§ "Monthly run"). `WORKOS_*` waits for phase 05.
+§ "Monthly run"). `WORKOS_*` + `ALLOWED_EMAIL_DOMAINS` are wired (phase 05):
+AuthKit hosted login with Google OAuth, domain allowlist enforced in
+`/api/auth/callback`. Local dev keeps `AUTH_BYPASS=1` to skip the round-trip.
 
 ## Mock data
 
@@ -79,6 +82,9 @@ the build before reaching the dashboard.
 | `/provisioned-users` | Total + Lima KPI tiles, sortable user roster. |
 | `/api/snapshot/[client]/[month]/[file]` | Auth-gated snapshot read (fixtures or S3). |
 | `/api/posthog/[client]/[metric]?start=YYYY-MM&end=YYYY-MM[&refresh=1]` | Live PostHog metrics. Returns the same `PlatformSnapshot` shape as `/api/snapshot`. 503 when `POSTHOG_API_KEY` is unset; the frontend falls back to the fixture path. |
+| `/api/auth/login?return_to=<path>` | Redirects to AuthKit hosted login. |
+| `/api/auth/callback?code=…&state=…` | WorkOS callback — exchanges the code, enforces `ALLOWED_EMAIL_DOMAINS`, sets the `wos-session` cookie, redirects to `return_to`. |
+| `/api/auth/logout` | Clears the session cookie and redirects to `/`. |
 
 Selectors (system / market / time range) live in `localStorage` under `internal-tool:selection`; the URL is just the route. The top bar's **Refresh** button bumps a nonce and bypasses the server cache so the next fetch goes back to PostHog.
 
@@ -88,7 +94,10 @@ Selectors (system / market / time range) live in `localStorage` under `internal-
   produce JSON against. Don't change a snapshot file shape without updating
   this file first.
 - **Auth seam** (`src/lib/server/auth.ts`) — `requireSession()` returns a
-  stub user when `AUTH_BYPASS=1`, else 401. Phase 05 replaces only the body.
+  stub user when `AUTH_BYPASS=1`; otherwise unseals the `wos-session` cookie
+  via `@workos-inc/node`. Page requests get redirected to `/api/auth/login`
+  on miss; API requests get 401. The login flow itself (`/api/auth/*`) is
+  excluded from the gate in `hooks.server.ts`.
 - **Snapshot source** (`src/lib/server/snapshot-source.ts`) — both Layers
   ship: fixtures (default) and S3 (`SNAPSHOT_SOURCE=s3`). The S3 Layer uses
   `@aws-sdk/client-s3` `GetObjectCommand`; error mapping is `NoSuchKey` →
@@ -106,6 +115,6 @@ Selectors (system / market / time range) live in `localStorage` under `internal-
 | 02 — PostHog linking | shipped 2026-05-06 | Live BSMH platform-engagement; cache + refresh + logging. See `design/02-posthog-linking/PLAN.md` § "What shipped". |
 | 03 — Snapshot pipeline | shipped 2026-05-06 | Manual-local RDS export to S3 (Athena query set is empty in v1). Combines the original 03 + 04. See `design/03-snapshot-pipeline/PLAN.md` § "What shipped". |
 | 04 — Site reads S3 | shipped 2026-05-06 | `SnapshotSourceS3` Layer wired to `@aws-sdk/client-s3`; production reads `s3://internal-tool-snapshots/...` via Tanner's IAM (phase-05 swap pending). See `design/04-site-reads-s3/PLAN.md` § "What shipped". |
-| 05 — WorkOS setup | not started | Conversation with corporate SSO admin is the longest pole; schedule early. Also: swap `SNAPSHOT_AWS_*` to a dedicated read-only IAM principal before non-Atalan users hit the deployed app. |
+| 05 — WorkOS setup | code complete; awaiting WorkOS dashboard config + prod deploy | AuthKit + Google social provider + `@atalantech.com` allowlist enforced in `/api/auth/callback`. Real Google Workspace SSO connection deferred (still needs the corporate SSO admin call). `SNAPSHOT_AWS_*` reader IAM split also deferred until end-to-end auth is verified. See `design/05-workos-setup/PLAN.md`. |
 
 See each `design/0N-…/PLAN.md` (or `README.md` where no PLAN exists yet) for the full plan and post-build "What shipped" notes.
