@@ -1,0 +1,195 @@
+{
+  "client": "bsmh",
+  "month": "2026-04",
+  "generated_at": "2026-05-01T17:30:00Z",
+  "source": "posthog",
+  "metrics": {
+    "total": {
+      "label": "Logged in",
+      "value": 22,
+      "denominator": 37,
+      "unit": "count"
+    },
+    "lima": {
+      "label": "Lima logged in",
+      "value": 7,
+      "denominator": 7,
+      "unit": "count"
+    },
+    "user_detail": [
+      {
+        "email": "user01@mercy.com",
+        "market": "Lima",
+        "page_loads": 1975,
+        "active_days": 25,
+        "first_seen": "2025-08-12",
+        "last_seen": "2026-02-18"
+      },
+      {
+        "email": "user02@bshsi.org",
+        "market": "Lima",
+        "page_loads": 853,
+        "active_days": 30,
+        "first_seen": "2025-08-19",
+        "last_seen": "2026-02-25"
+      },
+      {
+        "email": "user03@mercy.com",
+        "market": "Hampton Roads",
+        "page_loads": 662,
+        "active_days": 22,
+        "first_seen": "2025-08-13",
+        "last_seen": "2026-02-20"
+      },
+      {
+        "email": "user04@bshsi.org",
+        "market": "Kentucky",
+        "page_loads": 452,
+        "active_days": 18,
+        "first_seen": "2025-09-15",
+        "last_seen": "2025-12-19"
+      },
+      {
+        "email": "user05@mercy.com",
+        "market": "Lorain",
+        "page_loads": 384,
+        "active_days": 14,
+        "first_seen": "2025-08-13",
+        "last_seen": "2025-12-08"
+      },
+      {
+        "email": "user06@bshsi.org",
+        "market": "Hampton Roads",
+        "page_loads": 377,
+        "active_days": 8,
+        "first_seen": "2025-09-16",
+        "last_seen": "2025-10-21"
+      },
+      {
+        "email": "user07@mercy.com",
+        "market": "Lima",
+        "page_loads": 184,
+        "active_days": 9,
+        "first_seen": "2025-08-19",
+        "last_seen": "2025-10-22"
+      },
+      {
+        "email": "user08@mercy.com",
+        "market": "Youngstown",
+        "page_loads": 180,
+        "active_days": 11,
+        "first_seen": "2025-08-19",
+        "last_seen": "2026-02-12"
+      },
+      {
+        "email": "user09@mercy.com",
+        "market": "Lima",
+        "page_loads": 151,
+        "active_days": 7,
+        "first_seen": "2025-08-19",
+        "last_seen": "2025-09-30"
+      },
+      {
+        "email": "user10@mercy.com",
+        "market": "Kentucky",
+        "page_loads": 143,
+        "active_days": 5,
+        "first_seen": "2025-11-04",
+        "last_seen": "2025-11-26"
+      },
+      {
+        "email": "user11@mercy.com",
+        "market": "Lorain",
+        "page_loads": 121,
+        "active_days": 5,
+        "first_seen": "2025-10-08",
+        "last_seen": "2025-10-30"
+      },
+      {
+        "email": "user12@bshsi.org",
+        "market": "Lima",
+        "page_loads": 91,
+        "active_days": 6,
+        "first_seen": "2025-09-22",
+        "last_seen": "2025-10-28"
+      },
+      {
+        "email": "user13@mercy.com",
+        "page_loads": 74,
+        "active_days": 4,
+        "first_seen": "2025-09-09",
+        "last_seen": "2025-09-25"
+      },
+      {
+        "email": "user14@mercy.com",
+        "market": "Youngstown",
+        "page_loads": 72,
+        "active_days": 4,
+        "first_seen": "2026-02-03",
+        "last_seen": "2026-02-26"
+      },
+      {
+        "email": "user15@mercy.com",
+        "market": "Lima",
+        "page_loads": 67,
+        "active_days": 4,
+        "first_seen": "2025-11-05",
+        "last_seen": "2025-11-30"
+      },
+      {
+        "email": "user16@mercy.com",
+        "market": "Kentucky",
+        "page_loads": 65,
+        "active_days": 4,
+        "first_seen": "2025-12-02",
+        "last_seen": "2025-12-22"
+      },
+      {
+        "email": "user17@mercy.com",
+        "market": "Lorain",
+        "page_loads": 61,
+        "active_days": 7,
+        "first_seen": "2025-11-12",
+        "last_seen": "2026-02-08"
+      },
+      {
+        "email": "user18@mercy.com",
+        "market": "Lima",
+        "page_loads": 41,
+        "active_days": 6,
+        "first_seen": "2025-08-15",
+        "last_seen": "2025-09-20"
+      },
+      {
+        "email": "user19@mercy.com",
+        "page_loads": 37,
+        "active_days": 3,
+        "first_seen": "2025-11-08",
+        "last_seen": "2025-11-25"
+      },
+      {
+        "email": "user20@bshsi.org",
+        "page_loads": 18,
+        "active_days": 2,
+        "first_seen": "2025-09-08",
+        "last_seen": "2025-09-22"
+      },
+      {
+        "email": "user21@mercy.com",
+        "market": "Hampton Roads",
+        "page_loads": 11,
+        "active_days": 4,
+        "first_seen": "2025-08-22",
+        "last_seen": "2025-09-18"
+      },
+      {
+        "email": "user22@bshsi.org",
+        "market": "Youngstown",
+        "page_loads": 6,
+        "active_days": 2,
+        "first_seen": "2025-09-12",
+        "last_seen": "2025-10-04"
+      }
+    ]
+  }
+}

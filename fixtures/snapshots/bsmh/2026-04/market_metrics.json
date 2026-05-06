@@ -1,0 +1,112 @@
+{
+  "client": "bsmh",
+  "month": "2026-04",
+  "generated_at": "2026-05-01T17:30:00Z",
+  "source": "posthog",
+  "metrics": {
+    "provider_views_by_market": [
+      {
+        "market": "Hampton Roads",
+        "value": 61
+      },
+      {
+        "market": "Kentucky",
+        "value": 59
+      },
+      {
+        "market": "Youngstown",
+        "value": 21
+      },
+      {
+        "market": "Lima",
+        "value": 19
+      },
+      {
+        "market": "Lorain",
+        "value": 16
+      },
+      {
+        "market": "Toledo",
+        "value": 0
+      }
+    ],
+    "unit_views_by_market": [
+      {
+        "market": "Hampton Roads",
+        "value": 139
+      },
+      {
+        "market": "Youngstown",
+        "value": 62
+      },
+      {
+        "market": "Lorain",
+        "value": 44
+      },
+      {
+        "market": "Kentucky",
+        "value": 31
+      },
+      {
+        "market": "Lima",
+        "value": 26
+      },
+      {
+        "market": "Toledo",
+        "value": 0
+      }
+    ],
+    "users_by_market": [
+      {
+        "market": "Lorain",
+        "value": 5
+      },
+      {
+        "market": "Kentucky",
+        "value": 5
+      },
+      {
+        "market": "Youngstown",
+        "value": 5
+      },
+      {
+        "market": "Hampton Roads",
+        "value": 4
+      },
+      {
+        "market": "Lima",
+        "value": 4
+      },
+      {
+        "market": "Toledo",
+        "value": 0
+      }
+    ],
+    "clinicians_by_market": [
+      {
+        "market": "Youngstown",
+        "value": 322
+      },
+      {
+        "market": "Toledo",
+        "value": 252
+      },
+      {
+        "market": "Lima",
+        "value": 163
+      },
+      {
+        "market": "Hampton Roads",
+        "value": 108
+      },
+      {
+        "market": "Lorain",
+        "value": 85
+      },
+      {
+        "market": "Kentucky",
+        "value": 75
+      }
+    ]
+  }
+}

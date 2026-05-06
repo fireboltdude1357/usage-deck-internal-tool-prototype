@@ -1,0 +1,44 @@
+{
+  "name": "internal-tool",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "gen:fixtures": "tsx src/lib/mock/build.ts",
+    "snapshot:query": "tsx scripts/snapshot/query.ts",
+    "snapshot:build": "tsx scripts/snapshot/build.ts",
+    "snapshot:upload": "tsx scripts/snapshot/upload.ts"
+  },
+  "devDependencies": {
+    "@aws-sdk/client-s3": "^3.1043.0",
+    "@sveltejs/adapter-vercel": "^5.10.3",
+    "@sveltejs/kit": "^2.59.0",
+    "@sveltejs/vite-plugin-svelte": "^6.2.4",
+    "@types/d3-scale": "^4.0.9",
+    "@types/d3-shape": "^3.1.8",
+    "@types/node": "^22.10.0",
+    "@types/pg": "^8.20.0",
+    "autoprefixer": "^10.4.20",
+    "csv-parse": "^6.2.1",
+    "pg": "^8.20.0",
+    "postcss": "^8.4.49",
+    "svelte": "^5.55.0",
+    "svelte-check": "^4.4.7",
+    "tailwindcss": "^3.4.19",
+    "tsx": "^4.21.0",
+    "typescript": "^5.7.2",
+    "vite": "^7.3.2",
+    "vitest": "^3.2.4"
+  },
+  "dependencies": {
+    "effect": "^3.21.2",
+    "layerchart": "^1.0.13"
+  }
+}

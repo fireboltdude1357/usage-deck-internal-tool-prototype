@@ -1,0 +1,3 @@
+# Empty in v1 — no Athena-sourced KPIs identified yet.
+# When one is added (per PLAN.md "What metrics ship in v1"), drop the
+# vendored SQL here with `{{client}}` / `{{month}}` placeholders.
