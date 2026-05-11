@@ -1,10 +1,18 @@
 # internal-tool
 
-SvelteKit dashboard for the Customer Success and Product teams. Frontend shell
-(phase 01), live PostHog (phase 02), monthly RDS/Athena snapshot pipeline to S3
-(phase 03), and Vercel server-side reads from that S3 bucket (phase 04) have
-all shipped. WorkOS SSO (phase 05) is the remaining gate before non-Atalan
-users can hit the deployed app. CloudFront is deferred to v2.
+SvelteKit dashboard for the Customer Success and Product teams. Auth-gated by
+WorkOS (AuthKit + Google social provider, `@atalantech.com` allowlist), live
+PostHog data on the engagement pages, monthly RDS-derived snapshots in S3 for
+everything that needs the warehouse.
+
+For the **how**, see `docs/`:
+
+- [`docs/architecture.md`](docs/architecture.md) — every server-side seam.
+- [`docs/data-flow.md`](docs/data-flow.md) — page loads + monthly snapshot pipeline.
+- [`docs/operations.md`](docs/operations.md) — env vars, scripts, deploy.
+
+The phase-by-phase design docs that drove the prototype build are frozen
+under [`archive/design/`](archive/design/). Read for history; don't edit.
 
 ## Dev workflow
 
@@ -15,106 +23,34 @@ npm run gen:fixtures       # encode mock data → fixtures/snapshots/bsmh/2026-0
 npm run dev                # http://localhost:5173
 ```
 
-## Scripts
+Full env-var reference and script table live in
+[`docs/operations.md`](docs/operations.md).
 
-| Command | What it does |
-|---|---|
-| `npm run dev` | Local dev server. |
-| `npm run build` | Production build. |
-| `npm run check` | `svelte-check` against `tsconfig.json`. |
-| `npm test` | Run Vitest unit tests. |
-| `npm run gen:fixtures` | Encode mock dataset into JSON fixtures, Schema-validating at write time. |
-| `npm run snapshot:query -- --client <c> --month <YYYY-MM>` | Run RDS queries via the SSH bastion; writes CSV to `tmp/snapshot/<c>/<m>/`. Phase 03. |
-| `npm run snapshot:build -- --client <c> --month <YYYY-MM>` | CSV → snapshot JSON in `tmp/`, Schema round-trip at write time. Phase 03. |
-| `npm run snapshot:upload -- --client <c> --month <YYYY-MM> [--dry-run]` | Re-validate the local JSON and `PutObject` to `s3://internal-tool-snapshots/<c>/<m>/`. Phase 03. |
-
-## Environment variables
-
-`.env.example` documents every variable. The two that matter in phase 01:
-
-- `AUTH_BYPASS=1` — required to render any page locally without setting up
-  WorkOS env vars. Production deploys leave this unset; routes then require
-  a WorkOS-issued sealed cookie issued by `/api/auth/callback`.
-- `SNAPSHOT_SOURCE=fixtures` (default for local dev) | `s3` (Vercel
-  Production). When `s3`, `/api/snapshot/*` reads from
-  `s3://internal-tool-snapshots/...` via the AWS SDK; when `fixtures`, it
-  reads from `fixtures/snapshots/...` on disk.
-
-`POSTHOG_API_KEY` is wired (phase 02). `SNAPSHOT_AWS_*` + `SNAPSHOT_BUCKET`
-feed both the writer (`scripts/snapshot/upload.ts`, phase 03) and the reader
-(`src/lib/server/snapshot-source.ts`, phase 04). `RDS_STAGING_*` is the local
-snapshot pipeline only (phase 03 — see `design/03-snapshot-pipeline/README.md`
-§ "Monthly run"). `WORKOS_*` + `ALLOWED_EMAIL_DOMAINS` are wired (phase 05):
-AuthKit hosted login with Google OAuth, domain allowlist enforced in
-`/api/auth/callback`. Local dev keeps `AUTH_BYPASS=1` to skip the round-trip.
-
-## Mock data
-
-`src/lib/mock/bsmh-2026-04.ts` is the single source of truth for fixture
-numbers. The values are aggregated by hand from real CSV outputs at:
+## Layout
 
 ```
-../parent-db-investigations/db-investigation/investigations/bsmh-usage-deck/engagement/
-  platform-engagement-metrics/12-retention-workflow-visuals/results/
-  market-engagement-metrics/10-retention-workflow-visuals/results/
-  bsmh-provisioned-users/03-total-and-lima/
+src/
+  hooks.server.ts         WorkOS gate (covers +server.ts too)
+  lib/
+    schema/snapshot.ts    Single source of truth for snapshot JSON shape
+    server/
+      auth.ts, workos.ts  requireSession + WorkOS client
+      snapshot-source.ts  Effect Layer: fixtures or S3
+      posthog/            HogQL client, pagination, queries, aggregator, pipeline, cache
+    selection.svelte.ts   localStorage-backed selection state
+    ui/                   Top bar, pickers, viz primitives (KpiTile, TimeSeries…)
+    mock/                 Fixture data + fixture builder
+  routes/
+    +layout.{server.ts,svelte}
+    +page.server.ts       307 → /platform-engagement
+    platform-engagement/, market-engagement/, provisioned-users/
+    api/
+      auth/{login,callback,logout}/+server.ts
+      posthog/[client]/[metric]/+server.ts
+      snapshot/[client]/[month]/[file]/+server.ts
+scripts/snapshot/         Monthly RDS → CSV → JSON → S3 pipeline
+fixtures/snapshots/       Disk-backed fallback when SNAPSHOT_SOURCE=fixtures
+docs/                     Living architecture docs
+archive/design/           Frozen phase-design docs (history)
+CLAUDE.md                 Per-area rules for keeping docs/ in sync with code
 ```
-
-User emails in the `user_detail` table are obfuscated (`user01..@mercy.com`,
-`user02..@bshsi.org`); page-load counts and timing distributions are real.
-
-To refresh fixtures after editing the mock module:
-
-```sh
-npm run gen:fixtures
-```
-
-The build step Schema-validates at write time, so a typo in the mock breaks
-the build before reaching the dashboard.
-
-## Routing
-
-| Path | Renders |
-|---|---|
-| `/` | 307 redirect to `/platform-engagement` with default selection. |
-| `/platform-engagement` | Headline KPIs, monthly time series, top units. |
-| `/market-engagement` | Per-market bar charts (highlights selected market). |
-| `/provisioned-users` | Total + Lima KPI tiles, sortable user roster. |
-| `/api/snapshot/[client]/[month]/[file]` | Auth-gated snapshot read (fixtures or S3). |
-| `/api/posthog/[client]/[metric]?start=YYYY-MM&end=YYYY-MM[&refresh=1]` | Live PostHog metrics. Returns the same `PlatformSnapshot` shape as `/api/snapshot`. 503 when `POSTHOG_API_KEY` is unset; the frontend falls back to the fixture path. |
-| `/api/auth/login?return_to=<path>` | Redirects to AuthKit hosted login. |
-| `/api/auth/callback?code=…&state=…` | WorkOS callback — exchanges the code, enforces `ALLOWED_EMAIL_DOMAINS`, sets the `wos-session` cookie, redirects to `return_to`. |
-| `/api/auth/logout` | Clears the session cookie and redirects to `/`. |
-
-Selectors (system / market / time range) live in `localStorage` under `internal-tool:selection`; the URL is just the route. The top bar's **Refresh** button bumps a nonce and bypasses the server cache so the next fetch goes back to PostHog.
-
-## Phase boundaries
-
-- **Schema** (`src/lib/schema/snapshot.ts`) — the contract phase 03 must
-  produce JSON against. Don't change a snapshot file shape without updating
-  this file first.
-- **Auth seam** (`src/lib/server/auth.ts`) — `requireSession()` returns a
-  stub user when `AUTH_BYPASS=1`; otherwise unseals the `wos-session` cookie
-  via `@workos-inc/node`. Page requests get redirected to `/api/auth/login`
-  on miss; API requests get 401. The login flow itself (`/api/auth/*`) is
-  excluded from the gate in `hooks.server.ts`.
-- **Snapshot source** (`src/lib/server/snapshot-source.ts`) — both Layers
-  ship: fixtures (default) and S3 (`SNAPSHOT_SOURCE=s3`). The S3 Layer uses
-  `@aws-sdk/client-s3` `GetObjectCommand`; error mapping is `NoSuchKey` →
-  `NotFound`, JSON parse failure → `Decode`, anything else → `Upstream`.
-- **PostHog seam** (`src/lib/server/posthog/`) — Effect-wrapped HogQL client +
-  canonical query builders + aggregator. Phase 02 wired this for `bsmh`
-  platform-engagement; later phases reuse it for additional metrics or
-  clients without changing the seam.
-
-## Phase status
-
-| Phase | Status | Notes |
-|---|---|---|
-| 01 — SvelteKit frontend | shipped | Dashboard shell, fixture-backed routes, selectors in `localStorage`. |
-| 02 — PostHog linking | shipped 2026-05-06 | Live BSMH platform-engagement; cache + refresh + logging. See `design/02-posthog-linking/PLAN.md` § "What shipped". |
-| 03 — Snapshot pipeline | shipped 2026-05-06 | Manual-local RDS export to S3 (Athena query set is empty in v1). Combines the original 03 + 04. See `design/03-snapshot-pipeline/PLAN.md` § "What shipped". |
-| 04 — Site reads S3 | shipped 2026-05-06 | `SnapshotSourceS3` Layer wired to `@aws-sdk/client-s3`; production reads `s3://internal-tool-snapshots/...` via Tanner's IAM (phase-05 swap pending). See `design/04-site-reads-s3/PLAN.md` § "What shipped". |
-| 05 — WorkOS setup | code complete; awaiting WorkOS dashboard config + prod deploy | AuthKit + Google social provider + `@atalantech.com` allowlist enforced in `/api/auth/callback`. Real Google Workspace SSO connection deferred (still needs the corporate SSO admin call). `SNAPSHOT_AWS_*` reader IAM split also deferred until end-to-end auth is verified. See `design/05-workos-setup/PLAN.md`. |
-
-See each `design/0N-…/PLAN.md` (or `README.md` where no PLAN exists yet) for the full plan and post-build "What shipped" notes.

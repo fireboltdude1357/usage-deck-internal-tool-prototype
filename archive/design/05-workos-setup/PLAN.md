@@ -1,6 +1,7 @@
 # 05 — Plan
 
-**Status: in progress.**
+**Status: shipped 2026-05-06.** See § "What shipped" at the bottom for deltas
+between this plan and the executed work.
 
 Implementation plan for replacing the `AUTH_BYPASS` placeholder gate with real
 WorkOS-managed sessions. The README states scope; this doc names the
@@ -249,4 +250,41 @@ src/lib/server/snapshot-source.ts # // TODO(phase-05) updated/cleared
 
 ## What shipped
 
-(To be filled in after execution, mirroring phases 03 / 04.)
+Recorded after the build so future phases can see deltas between plan and reality.
+
+### Built per plan
+
+- **`@workos-inc/node@^9.2.0`** added as a runtime dependency; not surfaced in the client bundle (verified via `grep -r "@workos-inc" .svelte-kit/output/client/`).
+- **`src/lib/server/workos.ts`** — module-scope WorkOS client (lazy, env-validated), cookie name + options, env readers (`workosClientId`, `workosCookiePassword`, `workosRedirectUri`, `allowedEmailDomains`), `isEmailAllowed`. The `secure` flag on the cookie is conditional on `url.protocol === "https:"` so localhost dev still works.
+- **`/api/auth/login/+server.ts`** — `provider: "authkit"` authorization URL with a base64url-encoded `state` carrying `return_to` round-tripped through WorkOS.
+- **`/api/auth/callback/+server.ts`** — exchanges code via `authenticateWithCode({ session: { sealSession: true, cookiePassword } })`, enforces `ALLOWED_EMAIL_DOMAINS` (default `@atalantech.com`), sets `wos-session` cookie, redirects to validated `return_to`.
+- **`/api/auth/logout/+server.ts`** — `loadSealedSession({...}).getLogoutUrl()` so AuthKit's own session is also destroyed; without that, AuthKit silently re-authenticates on the next `/api/auth/login` and the user appears never to log out.
+- **`src/hooks.server.ts`** — `/api/auth/*` skip-list at the top so the login/callback/logout routes can run without a session.
+- **`src/lib/server/auth.ts`** — `requireSession()` body swapped: `AUTH_BYPASS=1` short-circuit, then sealed-cookie unseal via `authenticateWithSessionCookie`. Page routes redirect to `/api/auth/login?return_to=...` on miss; API routes throw 401.
+- **`src/lib/ui/TopBar.svelte`** — added a "{email} • Sign out" cluster on the right side of the top bar, visible whenever `page.data.session.user.email` is present.
+- **Tests** — `src/lib/server/auth.test.ts` (6 tests covering bypass, missing/invalid cookie on page + API routes, valid cookie) and `src/lib/server/workos.test.ts` (4 tests covering domain allowlist defaults, case-insensitivity, comma-list parsing, look-alike rejection). Both colocated next to source per the repo's pattern. 64/64 tests pass.
+- **`README.md`** updated: routing table now lists `/api/auth/{login,callback,logout}`; environment-variable section reflects WorkOS-wired status; auth-seam phase boundary describes the new cookie + redirect behavior.
+
+### Diverged from plan
+
+- **AuthKit-with-Google-social, not Google Workspace SSO.** PLAN.md had two paths: AuthKit social (faster, no SSO admin call) vs. real Google Workspace SSO (proper, requires admin). Took the social-login path — the in-callback domain allowlist on `@atalantech.com` is sufficient for v1's risk bar. Real Google Workspace SSO is the deferred follow-up; switching to it later is a WorkOS dashboard change, not an app-code change.
+- **WorkOS staging vs. production environments.** PLAN.md treated WorkOS as a single project. In practice, WorkOS has fully separate Staging and Production environments; each has its own API keys, client IDs, redirect allowlists, and Google OAuth configuration. We had to redo the entire AuthKit setup (Google OAuth, redirect URIs, sign-out redirect, Google Cloud Console OAuth client) in the production environment. **Carry-forward**: any future WorkOS work needs to specify which environment it targets.
+- **Production needs bring-your-own Google OAuth credentials.** Staging in WorkOS lets you use shared dev credentials; Production requires you to register your own OAuth client in Google Cloud Console (Atalan workspace) and paste in Client ID + Client Secret. Captured in the README + `.env.example` for next time.
+- **`CLAUDE.md` risk-acceptance rewrite is moot.** No `CLAUDE.md` exists in this repo; the prior-design language doesn't appear anywhere here. The follow-up was folded into `README.md`'s environment-variables and auth-seam sections instead. The corresponding `DESIGN.md` open question was removed.
+- **Sign-out logout-URL gotcha.** PLAN.md had logout as one line. In practice we needed `loadSealedSession({...}).getLogoutUrl()` — without it, "Sign out" appeared to do nothing because AuthKit silently re-authenticated. The WorkOS dashboard also requires a "Sign-out redirect" / "App homepage URL" to be configured, otherwise the post-logout lands on a `*.authkit.app` confirmation page.
+- **Production redirect-loop debugging cycle.** PLAN.md acceptance criteria included a single end-to-end smoke. Reality: we hit a multi-hour debugging cycle on Vercel Production stemming from (a) initially not switching the WorkOS dashboard to its Production environment, (b) bring-your-own Google OAuth credentials being required there, (c) the original callback bouncing back to `/api/auth/login` on failure, which caused `ERR_TOO_MANY_REDIRECTS` instead of a useful error. Resolved by (i) doing the WorkOS production environment setup, (ii) patching the callback to throw a 500 with the actual WorkOS error message instead of redirecting on failure, (iii) `requireSession` clearing a known-bad cookie before bouncing so a stale unsealable cookie can't trigger an infinite loop. Both diagnostic logging and the loop-breaker are still in place — they're cheap and made the difference between "opaque redirect loop" and "exact error in Vercel logs."
+
+### Carried forward
+
+- **Dedicated read-only IAM principal** for the snapshot reader (`SNAPSHOT_AWS_*` swap). Phase 03 + 04 carried it forward as a `// TODO(phase-05)` in `scripts/snapshot/upload.ts:45` and `src/lib/server/snapshot-source.ts:83`. Both markers still in place; the swap is a 10-minute AWS IAM + Vercel env update separate from the auth flow itself, deferred so phase 05 could close on the auth deliverable. Treated as a security-hardening follow-up.
+- **Real Google Workspace SSO connection.** When Atalan IT decides to bind the dashboard to the Workspace org explicitly, swap the AuthKit social-login config for a Google Workspace OIDC connection in the WorkOS dashboard. The `/api/auth/callback` domain check can then be removed (or kept as belt-and-suspenders).
+- **Audit trail UI.** WorkOS captures the audit log on their side; we don't surface it in our dashboard. If/when we need it visible to the CS team, surface the WorkOS Events API.
+- **Per-user role/permission gating.** v1 treats all signed-in `@atalantech.com` users as full-access. Future tier scoping (CS vs. Product, read-only vs. admin) extends the `Session` type and adds gates per route. The signature of `requireSession()` is the seam.
+
+### Verified vs. live (production)
+
+- `https://usage-deck-internal-tool-prototype.vercel.app/platform-engagement` unauthenticated → 302 to `/api/auth/login` → 302 to AuthKit hosted login on `api.workos.com` → "Sign in with Google" → `@atalantech.com` Google account → 302 back to `/api/auth/callback?code=...` → 302 to original page → dashboard renders, top-bar shows the email + Sign out link.
+- Sign-out: top-bar Sign out link → `/api/auth/logout` → server unseals cookie + calls `getLogoutUrl()` → 302 to WorkOS logout endpoint → WorkOS destroys its session and 302s back to `/` → no cookie, requireSession bounces to login. Full SSO sign-out loop verified.
+- All five Vercel Production env vars set: `WORKOS_API_KEY`, `WORKOS_CLIENT_ID`, `WORKOS_COOKIE_PASSWORD`, `WORKOS_REDIRECT_URI`, `ALLOWED_EMAIL_DOMAINS`. `AUTH_BYPASS` confirmed absent.
+- WorkOS Production environment configured: AuthKit enabled, Google OAuth enabled with bring-your-own credentials from Google Cloud Console (Atalan project, Internal user-type OAuth consent screen), redirect URI `https://usage-deck-internal-tool-prototype.vercel.app/api/auth/callback` on the allowlist, sign-out redirect `https://usage-deck-internal-tool-prototype.vercel.app/`.
+- `npm test` 64/64 pass; `npm run check` clean; `npm run build` clean; `@workos-inc/node` not in client bundle.

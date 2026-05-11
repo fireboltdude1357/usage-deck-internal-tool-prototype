@@ -274,12 +274,18 @@ to anything the Vercel routes do:
   (smaller files, simpler frontend) vs. ship raw rows + aggregate
   client-side (larger files, arbitrary re-slicing). Default: aggregate at
   query time for v1.
-- **Which IdP does WorkOS connect to?** Need a 30-minute conversation with
-  whoever administers corporate SSO before WorkOS setup. Block on that.
-- **Risk-acceptance language in `CLAUDE.md` (carried over from the prior
-  design) needs a one-paragraph rewrite once WorkOS is wired** — replacing
-  "URL obscurity + bearer + throttle" with "WorkOS-gated + private S3 + edge
-  cache."
+
+### Resolved
+
+- ~~**Which IdP does WorkOS connect to?**~~ Resolved 2026-05-06: phase 05
+  shipped with AuthKit + Google as a *social* provider plus a domain
+  allowlist (`@atalantech.com`) enforced in `/api/auth/callback`. A real
+  Google Workspace SSO connection (which would have required the SSO admin
+  conversation) is deferred to a future hardening pass. See
+  `05-workos-setup/PLAN.md` § "What shipped".
+- ~~**Risk-acceptance language rewrite.**~~ Folded into `README.md`'s
+  auth-seam phase boundary and environment-variable sections; no
+  `CLAUDE.md` exists in this repo to update separately.
 
 ---
 

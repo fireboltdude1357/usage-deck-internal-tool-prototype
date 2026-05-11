@@ -1,7 +1,7 @@
 import type { Client, Market } from "$lib/schema/snapshot"
 
 // One PostHog project; clients are distinguished by `properties.\`client-username\`` and email
-// domains. See ../../../design/data-sources.md § PostHog and design/02-posthog-linking/PLAN.md.
+// domains. See archive/design/data-sources.md § PostHog.
 export const POSTHOG_PROJECT_ID = "71649"
 export const POSTHOG_ENDPOINT = `https://us.posthog.com/api/projects/${POSTHOG_PROJECT_ID}/query/`
 
@@ -55,7 +55,7 @@ export const RECURRING_WINDOW = ["2025-10", "2025-11", "2025-12", "2026-01", "20
 
 // BSMH BU UUID → Market. The first UUID segment of a `/regions|units/.../...` URL
 // is the bu_uuid; PostHog events carry these but no human label. Vendored verbatim
-// from design/market-engagement-metrics.md § "BU UUID to Market Mapping" (which
+// from archive/design/market-engagement-metrics.md § "BU UUID to Market Mapping" (which
 // is in turn from the parent investigation's scripts/generate-html.py).
 //
 // TODO: extend with non-BSMH client mappings when those clients launch. Today
