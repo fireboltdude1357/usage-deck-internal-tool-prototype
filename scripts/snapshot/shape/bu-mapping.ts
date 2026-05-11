@@ -29,3 +29,15 @@ export const BU_CODE_MARKET: Record<string, Market> = {
   "6734": "Toledo",
   "6735": "Toledo",
 }
+
+// Markets the BSMH dashboard renders. Mirrored from src/lib/server/posthog/
+// config.ts (ALL_MARKETS) so the snapshot pipeline can zero-fill cards for
+// markets with no PostHog activity in the window.
+export const ALL_BSMH_MARKETS: readonly Market[] = [
+  "Hampton Roads",
+  "Lorain",
+  "Lima",
+  "Youngstown",
+  "Kentucky",
+  "Toledo",
+]

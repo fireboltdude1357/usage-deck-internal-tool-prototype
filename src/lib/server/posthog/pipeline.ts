@@ -15,6 +15,7 @@ import {
   providerViewEventsQuery,
   unitViewEventsQuery,
   monthlyUserActivityQuery,
+  riskFactorViewEventsQuery,
   userActivityByMonthQuery,
 } from "./queries"
 import {
@@ -26,8 +27,11 @@ import type {
   ProviderEvent,
   UnitEvent,
   MonthlyActivity,
+  RiskFactorEvent,
   UserActivityMonth,
 } from "./aggregator"
+import type { Market } from "$lib/schema/snapshot"
+import { ALL_MARKETS } from "./config"
 import { cached } from "./cache"
 import { CLIENTS } from "./config"
 import { PostHogError } from "./client"
@@ -85,6 +89,35 @@ const fetchUnitEvents = (
           bu_uuid: asString(r.bu_uuid),
           group_uuid: asString(r.group_uuid),
         })),
+      ),
+    ),
+  )
+
+const fetchRiskFactorEvents = (
+  client: Client,
+  startMonth: string,
+  endMonth: string,
+): Effect.Effect<readonly RiskFactorEvent[], PostHogError> =>
+  cached(
+    `risk-factor-events:${client}:${startMonth}:${endMonth}`,
+    fetchByMonth(
+      startMonth,
+      endMonth,
+      (from, to) => riskFactorViewEventsQuery(client, from, to),
+      `risk-factor-events ${client}`,
+    ).pipe(
+      Effect.map(({ rows, columns }) =>
+        rowsToObjects<RiskFactorEvent>(rows, columns, (r) => {
+          const t = asString(r.view_type)
+          const view_type: RiskFactorEvent["view_type"] =
+            t === "overview" || t === "drilldown" ? t : "other"
+          return {
+            month: asString(r.month),
+            user_email: asString(r.user_email),
+            url: asString(r.url),
+            view_type,
+          }
+        }),
       ),
     ),
   )
@@ -171,10 +204,11 @@ const platformImpl = (
       providerEvents: fetchProviderEvents(client, startMonth, endMonth),
       unitEvents: fetchUnitEvents(client, startMonth, endMonth),
       monthlyActivity: fetchMonthlyActivity(client, startMonth, endMonth),
+      riskFactorEvents: fetchRiskFactorEvents(client, startMonth, endMonth),
     },
-    { concurrency: 3 },
+    { concurrency: 4 },
   ).pipe(
-    Effect.flatMap(({ providerEvents, unitEvents, monthlyActivity }) =>
+    Effect.flatMap(({ providerEvents, unitEvents, monthlyActivity, riskFactorEvents }) =>
       decodeOrFail(
         PlatformSnapshotSchema as unknown as Schema.Schema<PlatformSnapshot, unknown>,
         buildPlatformSnapshot({
@@ -184,12 +218,14 @@ const platformImpl = (
           providerEvents,
           unitEvents,
           monthlyActivity,
+          riskFactorEvents,
+          // Filled by the loader from the RDS-derived market snapshot (sum of
+          // clinicians_by_market). 0 here means "PostHog pipeline doesn't know."
+          cliniciansMonitored: 0,
         }),
         "platform aggregator output",
       ),
     ),
-    // Honor the refresh flag at the pipeline level too — the per-fetch caches
-    // are keyed independently, so this is a no-op for the outer runner.
     Effect.tap(() => Effect.sync(() => void opts)),
   )
 
@@ -204,6 +240,15 @@ export const runPlatformPipeline = (
     platformImpl(client, startMonth, endMonth, opts),
     { bypass: opts.refresh },
   )
+
+// Zero-filled clinician roster — PostHog doesn't know roster counts. The page
+// loader fills these from the sibling market_metrics.json snapshot, then
+// patches the resulting card values.
+const emptyCliniciansByMarket = (): Record<Market, number> => {
+  const out: Partial<Record<Market, number>> = {}
+  for (const m of ALL_MARKETS) out[m] = 0
+  return out as Record<Market, number>
+}
 
 const marketImpl = (
   client: Client,
@@ -226,6 +271,7 @@ const marketImpl = (
           endMonth,
           providerEvents,
           unitEvents,
+          cliniciansByMarket: emptyCliniciansByMarket(),
         }),
         "market aggregator output",
       ),

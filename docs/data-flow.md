@@ -25,11 +25,14 @@ monthly snapshot regeneration (offline producer).
    - Looks up `platform:bsmh:2025-08:2026-02` in the in-process cache. Hit
      (and not bypassed) → returns cached snapshot. Miss or bypass → runs
      `platformImpl`.
-   - `platformImpl` runs three concurrent `fetch*` helpers (provider events,
-     unit events, monthly activity), each independently cached. Each helper
-     calls `fetchByMonth` → `runHogQL` per month with bisection on page-limit hits.
+   - `platformImpl` runs four concurrent `fetch*` helpers (provider events,
+     unit events, monthly activity, risk-factor events), each independently
+     cached. Each helper calls `fetchByMonth` → `runHogQL` per month with
+     bisection on page-limit hits.
    - Aggregator (`buildPlatformSnapshot`) merges the typed event arrays
-     into a `PlatformSnapshot`.
+     into a `PlatformSnapshot`. `clinicians_monitored` is left at 0 here —
+     PostHog doesn't know the roster. The page loader patches it in
+     parallel from `market_metrics.json` (sum of `clinicians_by_market`).
    - Schema-decodes the aggregator output. Mismatch → `PostHogError` `Decode`.
    - Writes the result back to the pipeline cache and returns.
 7. **Back in the route handler**:

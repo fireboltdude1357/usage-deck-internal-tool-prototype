@@ -5,9 +5,11 @@ import type {
   Series,
   CategoryBar,
   Market,
+  MarketCard,
   MarketSnapshot,
   MarketBar,
   ProvisionedUsersSnapshot,
+  RiskFactorViews,
   UserRow,
 } from "$lib/schema/snapshot"
 import { ALL_MARKETS, BU_UUID_MARKET, RECURRING_WINDOW } from "./config"
@@ -30,6 +32,12 @@ export interface MonthlyActivity {
   readonly user_email: string
   readonly event_count: number
 }
+export interface RiskFactorEvent {
+  readonly month: string
+  readonly user_email: string
+  readonly url: string
+  readonly view_type: "overview" | "drilldown" | "other"
+}
 // Per-(month, user) row from userActivityByMonthQuery. Merged across months
 // in buildProvisionedSnapshot to produce one UserRow per email.
 export interface UserActivityMonth {
@@ -48,6 +56,11 @@ export interface AggregatorInput {
   readonly providerEvents: readonly ProviderEvent[]
   readonly unitEvents: readonly UnitEvent[]
   readonly monthlyActivity: readonly MonthlyActivity[]
+  readonly riskFactorEvents: readonly RiskFactorEvent[]
+  // Total clinicians on the roster. Sourced from the RDS-derived snapshot;
+  // when the platform pipeline runs without the snapshot available, 0 is
+  // passed and the page loader supplies the value out-of-band.
+  readonly cliniciansMonitored: number
 }
 
 export interface MarketAggregatorInput {
@@ -56,6 +69,9 @@ export interface MarketAggregatorInput {
   readonly endMonth: string
   readonly providerEvents: readonly ProviderEvent[]
   readonly unitEvents: readonly UnitEvent[]
+  // Per-market clinician roster counts. Sourced from the RDS-derived snapshot
+  // (clinicians_by_market). Drives the "pct_clinicians_viewed" card field.
+  readonly cliniciansByMarket: Readonly<Record<Market, number>>
 }
 
 export interface ProvisionedAggregatorInput {
@@ -94,6 +110,20 @@ const topUnits = (rows: readonly UnitEvent[], n: number): readonly CategoryBar[]
 // join can swap in human names without changing the schema.
 const uuidLabel = (uuid: string): string => `${uuid.slice(0, 8)}…`
 
+const riskFactorTallies = (
+  events: readonly RiskFactorEvent[],
+): RiskFactorViews => {
+  let overview = 0
+  let drilldown = 0
+  let other = 0
+  for (const r of events) {
+    if (r.view_type === "overview") overview++
+    else if (r.view_type === "drilldown") drilldown++
+    else other++
+  }
+  return { total: overview + drilldown + other, overview, drilldown, other }
+}
+
 const recurringStats = (
   monthly: readonly MonthlyActivity[],
 ): { recurring: number; totalInWindow: number } => {
@@ -112,6 +142,7 @@ const recurringStats = (
 
 export const buildPlatformSnapshot = (input: AggregatorInput): PlatformSnapshot => {
   const months = monthList(input.startMonth, input.endMonth)
+  const calendarMonths = months.length
 
   const uniqueProviders = new Set(
     input.providerEvents.map((e) => e.provider_legacy_id),
@@ -119,9 +150,14 @@ export const buildPlatformSnapshot = (input: AggregatorInput): PlatformSnapshot 
   const uniqueUnits = new Set(input.unitEvents.map((e) => e.group_uuid)).size
   const activeUsers = new Set(input.monthlyActivity.map((e) => e.user_email)).size
 
+  const totalProviderViews = input.providerEvents.length
+  const totalUnitViews = input.unitEvents.length
+
   const { recurring, totalInWindow } = recurringStats(input.monthlyActivity)
   const retentionPct =
     totalInWindow === 0 ? 0 : Math.round((recurring / totalInWindow) * 100)
+
+  const riskFactors = riskFactorTallies(input.riskFactorEvents)
 
   const kpis: readonly Kpi[] = [
     { label: "Unique providers viewed", value: uniqueProviders, unit: "count" },
@@ -134,6 +170,7 @@ export const buildPlatformSnapshot = (input: AggregatorInput): PlatformSnapshot 
       unit: "count",
     },
     { label: "Retention rate", value: retentionPct, unit: "percent" },
+    { label: "Risk factor views", value: riskFactors.total, unit: "count" },
   ]
 
   return {
@@ -146,6 +183,16 @@ export const buildPlatformSnapshot = (input: AggregatorInput): PlatformSnapshot 
       provider_views_by_month: countByMonth(input.providerEvents, months),
       unit_views_by_month: countByMonth(input.unitEvents, months),
       top_units_viewed: topUnits(input.unitEvents, 10),
+      risk_factor_views: riskFactors,
+      total_provider_views: totalProviderViews,
+      total_unit_views: totalUnitViews,
+      clinicians_monitored: input.cliniciansMonitored,
+      calendar_months: calendarMonths,
+      recurring_window_months: RECURRING_WINDOW.length,
+      unique_users: activeUsers,
+      recurring_leaders: recurring,
+      total_users_in_window: totalInWindow,
+      retention_rate: retentionPct,
     },
   }
 }
@@ -191,21 +238,128 @@ const usersByMarket = (
     .sort((a, b) => b.value - a.value)
 }
 
+// Per-market retention cards. Mirrors the iter-10 generate-html.py logic:
+// a user is "active in market M in month X" iff they viewed a unit OR provider
+// page in M's BUs during month X. Recurring leaders = ≥3 active months in the
+// 5-month recurring window. Averages divide by full calendar span, not active
+// months (project rule from iter-09 fix-monthly-averages).
+const buildMarketCards = (
+  providers: readonly ProviderEvent[],
+  units: readonly UnitEvent[],
+  cliniciansByMarket: Readonly<Record<Market, number>>,
+  calendarMonths: number,
+): readonly MarketCard[] => {
+  const winSet = new Set<string>(RECURRING_WINDOW)
+
+  type Bucket = {
+    providerEvents: number
+    unitEvents: number
+    uniqueProviders: Set<string>
+    uniqueUnits: Set<string>
+    users: Set<string>
+    userMonthsInWindow: Map<string, Set<string>>
+  }
+  const make = (): Bucket => ({
+    providerEvents: 0,
+    unitEvents: 0,
+    uniqueProviders: new Set(),
+    uniqueUnits: new Set(),
+    users: new Set(),
+    userMonthsInWindow: new Map(),
+  })
+  const buckets = new Map<Market, Bucket>()
+  for (const m of ALL_MARKETS) buckets.set(m, make())
+
+  const trackWindow = (b: Bucket, email: string, month: string) => {
+    if (!winSet.has(month)) return
+    const set = b.userMonthsInWindow.get(email) ?? new Set<string>()
+    set.add(month)
+    b.userMonthsInWindow.set(email, set)
+  }
+
+  for (const e of providers) {
+    const market = BU_UUID_MARKET[e.bu_uuid]
+    if (!market) continue
+    const b = buckets.get(market)!
+    b.providerEvents++
+    if (e.provider_legacy_id) b.uniqueProviders.add(e.provider_legacy_id)
+    b.users.add(e.user_email)
+    trackWindow(b, e.user_email, e.month)
+  }
+  for (const e of units) {
+    const market = BU_UUID_MARKET[e.bu_uuid]
+    if (!market) continue
+    const b = buckets.get(market)!
+    b.unitEvents++
+    if (e.group_uuid) b.uniqueUnits.add(e.group_uuid)
+    b.users.add(e.user_email)
+    trackWindow(b, e.user_email, e.month)
+  }
+
+  return ALL_MARKETS.map((market): MarketCard => {
+    const b = buckets.get(market)!
+    const clinicians = cliniciansByMarket[market] ?? 0
+    const totalUsersInWindow = b.userMonthsInWindow.size
+    let recurringLeaders = 0
+    for (const months of b.userMonthsInWindow.values()) {
+      if (months.size >= 3) recurringLeaders++
+    }
+    const div = (n: number, d: number) => (d === 0 ? 0 : Math.round(n / d))
+    const round1 = (n: number) => Math.round(n * 10) / 10
+    return {
+      market,
+      unique_providers: b.uniqueProviders.size,
+      total_provider_views: b.providerEvents,
+      avg_provider_views_per_month: div(b.providerEvents, calendarMonths),
+      unique_units: b.uniqueUnits.size,
+      total_unit_views: b.unitEvents,
+      avg_unit_views_per_month: div(b.unitEvents, calendarMonths),
+      clinicians,
+      pct_clinicians_viewed:
+        clinicians === 0 ? 0 : round1((b.uniqueProviders.size / clinicians) * 100),
+      unique_users: b.users.size,
+      recurring_leaders: recurringLeaders,
+      total_users_in_window: totalUsersInWindow,
+      retention_rate:
+        totalUsersInWindow === 0
+          ? 0
+          : Math.round((recurringLeaders / totalUsersInWindow) * 100),
+    }
+  })
+}
+
+const cliniciansByMarketArray = (
+  cliniciansByMarket: Readonly<Record<Market, number>>,
+): readonly MarketBar[] =>
+  ALL_MARKETS.map((market) => ({ market, value: cliniciansByMarket[market] ?? 0 })).sort(
+    (a, b) => b.value - a.value,
+  )
+
 export const buildMarketSnapshot = (
   input: MarketAggregatorInput,
-): MarketSnapshot => ({
-  client: input.client,
-  month: input.endMonth,
-  generated_at: new Date().toISOString(),
-  source: "posthog",
-  metrics: {
-    provider_views_by_market: bucketByMarket(input.providerEvents),
-    unit_views_by_market: bucketByMarket(input.unitEvents),
-    users_by_market: usersByMarket(input.providerEvents, input.unitEvents),
-    // Filled by the loader from the RDS-derived snapshot file as a sibling.
-    clinicians_by_market: [],
-  },
-})
+): MarketSnapshot => {
+  const calendarMonths = monthList(input.startMonth, input.endMonth).length
+  return {
+    client: input.client,
+    month: input.endMonth,
+    generated_at: new Date().toISOString(),
+    source: "posthog",
+    metrics: {
+      provider_views_by_market: bucketByMarket(input.providerEvents),
+      unit_views_by_market: bucketByMarket(input.unitEvents),
+      users_by_market: usersByMarket(input.providerEvents, input.unitEvents),
+      clinicians_by_market: cliniciansByMarketArray(input.cliniciansByMarket),
+      market_cards: buildMarketCards(
+        input.providerEvents,
+        input.unitEvents,
+        input.cliniciansByMarket,
+        calendarMonths,
+      ),
+      calendar_months: calendarMonths,
+      recurring_window_months: RECURRING_WINDOW.length,
+    },
+  }
+}
 
 // Most-frequent bu_uuid → market for a single user, given that user's region
 // touches across provider + unit events. Returns null if the user has no

@@ -96,13 +96,23 @@ the API route schema-validates on read.
 `Client` literal is `"bsmh" | "ssm" | "duke" | "ucsf"`. `Market` literal is
 the six BSMH markets. `Month` is a regex-validated `YYYY-MM` string.
 
+`PlatformMetrics` carries (in addition to `kpis` / `provider_views_by_month` /
+`unit_views_by_month` / `top_units_viewed`) the Leaders' Retention Workflow
+inputs: `risk_factor_views: {total, overview, drilldown, other}`,
+`total_provider_views`, `total_unit_views`, `clinicians_monitored`,
+`calendar_months`, `recurring_window_months`, `unique_users`,
+`recurring_leaders`, `total_users_in_window`, `retention_rate`.
+`MarketMetrics` carries the per-market `market_cards: Array<MarketCard>` with
+the same retention-workflow fields scoped to one market, plus the unchanged
+four `*_by_market` bar arrays for cross-market comparison.
+
 ### PostHog client — `src/lib/server/posthog/`
 
 | File | Role |
 |---|---|
 | `client.ts` | `runHogQL(query, opts)` — Effect-wrapped POST to `${POSTHOG_ENDPOINT}` with 30s timeout, exponential backoff (500ms / 1s / 2s, two retries) on `Network` / `Timeout` / `BadStatus ≥ 500`. Returns `{ results, columns }`. `PostHogError` kinds: `Configuration` (no API key) / `Network` / `Timeout` / `BadStatus` / `Decode`. |
 | `pagination.ts` | `fetchByMonth(start, end, buildQuery, label)` runs the same template once per calendar month with `concurrency: 4`. Each month that returns ≥ 100 rows (PostHog's default page limit) gets bisected up to depth 4 (~2-day chunks). Returns flattened rows + columns. |
-| `queries.ts` | The four canonical HogQL templates: `providerViewEventsQuery`, `unitViewEventsQuery`, `monthlyUserActivityQuery`, `userActivityByMonthQuery`. All filter on `event = 'Page Load'` + `properties.\`client-username\`` + email-domain prefix + `timestamp` window. URL-era regex matches `/regions|units|physicians/units|nurses/units` — leaving any era out silently drops pre-Oct 2025 data. |
+| `queries.ts` | The five canonical HogQL templates: `providerViewEventsQuery`, `unitViewEventsQuery`, `monthlyUserActivityQuery`, `userActivityByMonthQuery`, `riskFactorViewEventsQuery`. All filter on `event = 'Page Load'` + `properties.\`client-username\`` + email-domain prefix + `timestamp` window. URL-era regex matches `/regions|units|physicians/units|nurses/units` — leaving any era out silently drops pre-Oct 2025 data. The risk-factor query classifies each row as `overview` / `drilldown` / `other` via `multiIf` so the aggregator can tally without re-matching URLs. |
 | `aggregator.ts` | Pure functions: `buildPlatformSnapshot`, `buildMarketSnapshot`, `buildProvisionedSnapshot`. Take typed event arrays, return a snapshot object that validates against the matching schema. |
 | `pipeline.ts` | `runPlatformPipeline` / `runMarketPipeline` / `runProvisionedPipeline` — the public entry points. Each composes the right `fetch*` helpers, hands them to the aggregator, and decodes the result against the schema. |
 | `cache.ts` | 15-minute in-process `Map` cache. Per-warm-instance only (one map per Vercel function). `cached(key, effect, { bypass })` — `bypass: true` skips the read but still writes the fresh value back. |

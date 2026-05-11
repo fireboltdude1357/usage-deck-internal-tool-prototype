@@ -80,6 +80,30 @@ WHERE ${baseFilter(client, from, to)}
 GROUP BY month, user_email
 ORDER BY month, user_email`
 
+// Risk factor page loads. Returns one row per view classified by view_type:
+//   - "overview"  → /risk-factors landing page
+//   - "drilldown" → /risk-factors/{id}/(interventions|benchmarks)
+//   - "other"     → everything else under /risk-factors/{id}
+// Filtered to the same client + email-domain filter as the other queries.
+// Aggregation (totals per type) is done in TypeScript.
+export const riskFactorViewEventsQuery = (
+  client: Client,
+  from: string,
+  to: string,
+): string => `SELECT
+  formatDateTime(timestamp, '%Y-%m') AS month,
+  distinct_id AS user_email,
+  properties.url AS url,
+  multiIf(
+    properties.url = '/risk-factors', 'overview',
+    match(properties.url, '^/risk-factors/[0-9]+/(interventions|benchmarks)'), 'drilldown',
+    'other'
+  ) AS view_type
+FROM events
+WHERE ${baseFilter(client, from, to)}
+  AND (properties.url = '/risk-factors' OR match(properties.url, '^/risk-factors/[0-9]+'))
+ORDER BY timestamp`
+
 // Per-(month, user) day-level activity summary used to populate the user-detail
 // table on /provisioned-users. Returns one row per (month, user) with that
 // month's page-load count, distinct active days, first/last seen dates. The

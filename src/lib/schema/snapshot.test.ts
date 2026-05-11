@@ -18,6 +18,16 @@ const platformFixture = {
     provider_views_by_month: [{ month: "2025-08", value: 9 }],
     unit_views_by_month: [{ month: "2025-08", value: 91 }],
     top_units_viewed: [{ label: "ICU", value: 12 }],
+    risk_factor_views: { total: 0, overview: 0, drilldown: 0, other: 0 },
+    total_provider_views: 9,
+    total_unit_views: 91,
+    clinicians_monitored: 2038,
+    calendar_months: 7,
+    recurring_window_months: 5,
+    unique_users: 22,
+    recurring_leaders: 4,
+    total_users_in_window: 17,
+    retention_rate: 24,
   },
 }
 
@@ -31,6 +41,25 @@ const marketFixture = {
     unit_views_by_market: [{ market: "Lima", value: 14 }],
     users_by_market: [{ market: "Lima", value: 7 }],
     clinicians_by_market: [{ market: "Lima", value: 23 }],
+    market_cards: [
+      {
+        market: "Lima",
+        unique_providers: 12,
+        total_provider_views: 19,
+        avg_provider_views_per_month: 3,
+        unique_units: 9,
+        total_unit_views: 26,
+        avg_unit_views_per_month: 4,
+        clinicians: 163,
+        pct_clinicians_viewed: 7.4,
+        unique_users: 4,
+        recurring_leaders: 0,
+        total_users_in_window: 4,
+        retention_rate: 0,
+      },
+    ],
+    calendar_months: 7,
+    recurring_window_months: 5,
   },
 }
 

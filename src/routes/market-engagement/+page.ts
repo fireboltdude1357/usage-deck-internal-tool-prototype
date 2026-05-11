@@ -1,28 +1,52 @@
 import { browser } from "$app/environment"
 import { Schema } from "effect"
 import { MarketSnapshot } from "$lib/schema/snapshot"
-import type { MarketSnapshot as MarketSnapshotT } from "$lib/schema/snapshot"
+import type {
+  Market,
+  MarketCard,
+  MarketSnapshot as MarketSnapshotT,
+} from "$lib/schema/snapshot"
 import { selection } from "$lib/selection.svelte"
 import { refresh } from "$lib/refresh.svelte"
 import type { PageLoad } from "./$types"
 
 // Roster snapshot is per-calendar-month and only `2026-04` is uploaded today.
-// Live PostHog drives the three by-market arrays; the snapshot supplies just
-// `clinicians_by_market` (RDS-derived). Future: pick latest month from S3.
+// Live PostHog drives the three by-market arrays + market_cards; the snapshot
+// supplies the roster side (clinicians_by_market + each card's clinicians /
+// pct_clinicians_viewed). Future: pick latest month from S3.
 const ROSTER_MONTH = "2026-04"
 
+const round1 = (n: number) => Math.round(n * 10) / 10
+
+// Merge RDS-derived clinician counts into live PostHog cards. The pipeline
+// emits cards with clinicians: 0 / pct_clinicians_viewed: 0; here we patch
+// them with the roster snapshot. pct is recomputed (one decimal) so it stays
+// consistent with unique_providers.
 const mergeWithRoster = (
   live: MarketSnapshotT,
   snap: MarketSnapshotT,
-): MarketSnapshotT => ({
-  ...live,
-  metrics: {
-    provider_views_by_market: live.metrics.provider_views_by_market,
-    unit_views_by_market: live.metrics.unit_views_by_market,
-    users_by_market: live.metrics.users_by_market,
-    clinicians_by_market: snap.metrics.clinicians_by_market,
-  },
-})
+): MarketSnapshotT => {
+  const counts: Partial<Record<Market, number>> = {}
+  for (const c of snap.metrics.clinicians_by_market) counts[c.market] = c.value
+  const cards: MarketCard[] = live.metrics.market_cards.map((card) => {
+    const clinicians = counts[card.market] ?? 0
+    const pct =
+      clinicians === 0 ? 0 : round1((card.unique_providers / clinicians) * 100)
+    return { ...card, clinicians, pct_clinicians_viewed: pct }
+  })
+  return {
+    ...live,
+    metrics: {
+      provider_views_by_market: live.metrics.provider_views_by_market,
+      unit_views_by_market: live.metrics.unit_views_by_market,
+      users_by_market: live.metrics.users_by_market,
+      clinicians_by_market: snap.metrics.clinicians_by_market,
+      market_cards: cards,
+      calendar_months: live.metrics.calendar_months,
+      recurring_window_months: live.metrics.recurring_window_months,
+    },
+  }
+}
 
 export const load: PageLoad = async ({ fetch, depends }) => {
   depends("app:selection")

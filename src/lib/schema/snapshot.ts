@@ -66,18 +66,63 @@ export type UserRow = Schema.Schema.Type<typeof UserRow>
 
 // --- Inner shapes per snapshot file ---
 
+// Risk-factor view counts, classified by view_type. Sourced from PostHog
+// (riskFactorViewEventsQuery); not present in the RDS snapshot path.
+export const RiskFactorViews = Schema.Struct({
+  total: Schema.Number,
+  overview: Schema.Number,
+  drilldown: Schema.Number,
+  other: Schema.Number,
+})
+export type RiskFactorViews = Schema.Schema.Type<typeof RiskFactorViews>
+
 const PlatformMetrics = Schema.Struct({
   kpis: Schema.Array(Kpi),
   provider_views_by_month: Series,
   unit_views_by_month: Series,
   top_units_viewed: Schema.Array(CategoryBar),
+  // Iter-12 additions (Leaders' Retention Workflow card). Totals are produced
+  // by the aggregator; calendar-month count is supplied here so per-month
+  // averages can be derived consistently with the investigation script.
+  risk_factor_views: RiskFactorViews,
+  total_provider_views: Schema.Number,
+  total_unit_views: Schema.Number,
+  clinicians_monitored: Schema.Number,
+  calendar_months: Schema.Number,
+  recurring_window_months: Schema.Number,
+  unique_users: Schema.Number,
+  recurring_leaders: Schema.Number,
+  total_users_in_window: Schema.Number,
+  retention_rate: Schema.Number, // 0-100
 })
+
+// Per-market retention card data (iter-10 of market-engagement-metrics).
+// Mirrors the per-market dict the investigation's generate-html.py emits.
+export const MarketCard = Schema.Struct({
+  market: Market,
+  unique_providers: Schema.Number,
+  total_provider_views: Schema.Number,
+  avg_provider_views_per_month: Schema.Number,
+  unique_units: Schema.Number,
+  total_unit_views: Schema.Number,
+  avg_unit_views_per_month: Schema.Number,
+  clinicians: Schema.Number,
+  pct_clinicians_viewed: Schema.Number, // 0-100 (one decimal)
+  unique_users: Schema.Number,
+  recurring_leaders: Schema.Number,
+  total_users_in_window: Schema.Number,
+  retention_rate: Schema.Number, // 0-100
+})
+export type MarketCard = Schema.Schema.Type<typeof MarketCard>
 
 const MarketMetrics = Schema.Struct({
   provider_views_by_market: Schema.Array(MarketBar),
   unit_views_by_market: Schema.Array(MarketBar),
   users_by_market: Schema.Array(MarketBar),
   clinicians_by_market: Schema.Array(MarketBar),
+  market_cards: Schema.Array(MarketCard),
+  calendar_months: Schema.Number,
+  recurring_window_months: Schema.Number,
 })
 
 const ProvisionedUsers = Schema.Struct({

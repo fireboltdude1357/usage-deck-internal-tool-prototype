@@ -4,6 +4,7 @@ import {
   providerViewEventsQuery,
   unitViewEventsQuery,
   monthlyUserActivityQuery,
+  riskFactorViewEventsQuery,
   userActivityByMonthQuery,
 } from "./queries"
 import {
@@ -13,9 +14,14 @@ import {
   type ProviderEvent,
   type UnitEvent,
   type MonthlyActivity,
+  type RiskFactorEvent,
   type UserActivityMonth,
 } from "./aggregator"
-import { BU_UUID_MARKET } from "./config"
+import type { Market } from "$lib/schema/snapshot"
+import { ALL_MARKETS, BU_UUID_MARKET } from "./config"
+
+const zeroClinicians = (): Record<Market, number> =>
+  Object.fromEntries(ALL_MARKETS.map((m) => [m, 0])) as Record<Market, number>
 
 // Pick the first three known BU UUIDs from each market for fixture-friendly tests.
 const HAMPTON = "5504e035-7756-540b-93a7-9b0591b04a54"
@@ -107,6 +113,16 @@ describe("query builders", () => {
     expect(q).toContain("GROUP BY month, user_email")
   })
 
+  it("risk factor query classifies overview vs drilldown and filters /risk-factors", () => {
+    const q = riskFactorViewEventsQuery("bsmh", "2025-08-01", "2025-09-01")
+    expect(q).toContain("/risk-factors")
+    expect(q).toContain("AS view_type")
+    expect(q).toContain("'overview'")
+    expect(q).toContain("'drilldown'")
+    expect(q).toContain("client-username` = 'bsmh'")
+    expect(q).toContain("@mercy.com")
+  })
+
   it("client filter switches per client", () => {
     const ssm = providerViewEventsQuery("ssm", "2025-08-01", "2025-09-01")
     expect(ssm).toContain("client-username` = 'ssm'")
@@ -147,6 +163,17 @@ describe("buildPlatformSnapshot", () => {
     { month: "2025-08", user_email: "c@x", event_count: 2 },
   ]
 
+  const riskFactorEvents: RiskFactorEvent[] = [
+    { month: "2025-08", user_email: "a@x", url: "/risk-factors", view_type: "overview" },
+    { month: "2025-08", user_email: "a@x", url: "/risk-factors", view_type: "overview" },
+    {
+      month: "2025-09",
+      user_email: "b@x",
+      url: "/risk-factors/12/interventions",
+      view_type: "drilldown",
+    },
+  ]
+
   const snap = buildPlatformSnapshot({
     client: "bsmh",
     startMonth: "2025-08",
@@ -154,6 +181,8 @@ describe("buildPlatformSnapshot", () => {
     providerEvents,
     unitEvents,
     monthlyActivity,
+    riskFactorEvents,
+    cliniciansMonitored: 2038,
   })
 
   it("envelope is well-formed", () => {
@@ -204,8 +233,27 @@ describe("buildPlatformSnapshot", () => {
       providerEvents: [],
       unitEvents: [],
       monthlyActivity: [],
+      riskFactorEvents: [],
+      cliniciansMonitored: 0,
     })
     expect(kpi(empty, "Retention rate")?.value).toBe(0)
+  })
+
+  it("risk factor counts split overview/drilldown/other", () => {
+    expect(snap.metrics.risk_factor_views).toEqual({
+      total: 3,
+      overview: 2,
+      drilldown: 1,
+      other: 0,
+    })
+  })
+
+  it("exposes totals + roster size for the retention card", () => {
+    expect(snap.metrics.total_provider_views).toBe(3)
+    expect(snap.metrics.total_unit_views).toBe(3)
+    expect(snap.metrics.clinicians_monitored).toBe(2038)
+    expect(snap.metrics.calendar_months).toBe(2)
+    expect(snap.metrics.retention_rate).toBe(50)
   })
 })
 
@@ -227,6 +275,7 @@ describe("buildMarketSnapshot", () => {
     endMonth: "2025-08",
     providerEvents: providers,
     unitEvents: units,
+    cliniciansByMarket: zeroClinicians(),
   })
 
   it("envelope source is posthog", () => {
@@ -268,8 +317,35 @@ describe("buildMarketSnapshot", () => {
     expect(counts["Kentucky"]).toBe(1) // c@x
   })
 
-  it("clinicians_by_market is empty (filled by snapshot sibling)", () => {
-    expect(m.metrics.clinicians_by_market).toEqual([])
+  it("clinicians_by_market is zero-filled by ALL_MARKETS when no roster is provided", () => {
+    expect(m.metrics.clinicians_by_market.length).toBe(ALL_MARKETS.length)
+    for (const bar of m.metrics.clinicians_by_market) expect(bar.value).toBe(0)
+  })
+
+  it("market_cards covers all six markets with PostHog-derived uniques + retention", () => {
+    expect(m.metrics.market_cards.length).toBe(ALL_MARKETS.length)
+    const cards = Object.fromEntries(m.metrics.market_cards.map((c) => [c.market, c]))
+    expect(cards["Hampton Roads"].unique_providers).toBe(2)
+    expect(cards["Hampton Roads"].total_provider_views).toBe(2)
+    expect(cards["Lima"].unique_providers).toBe(1)
+    expect(cards["Toledo"].unique_providers).toBe(0)
+    // recurring window is Oct–Feb; Aug events don't count → 0 leaders / 0 users.
+    expect(cards["Hampton Roads"].recurring_leaders).toBe(0)
+    expect(cards["Hampton Roads"].retention_rate).toBe(0)
+  })
+
+  it("market cards honor the cliniciansByMarket input for pct_clinicians_viewed", () => {
+    const withRoster = buildMarketSnapshot({
+      client: "bsmh",
+      startMonth: "2025-08",
+      endMonth: "2025-08",
+      providerEvents: providers,
+      unitEvents: units,
+      cliniciansByMarket: { ...zeroClinicians(), "Hampton Roads": 100 },
+    })
+    const hr = withRoster.metrics.market_cards.find((c) => c.market === "Hampton Roads")!
+    expect(hr.clinicians).toBe(100)
+    expect(hr.pct_clinicians_viewed).toBe(2) // 2 unique / 100 = 2.0
   })
 })
 

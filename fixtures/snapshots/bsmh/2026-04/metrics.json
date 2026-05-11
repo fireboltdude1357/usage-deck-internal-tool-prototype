@@ -29,14 +29,19 @@
       },
       {
         "label": "Recurring leaders (3+ mo)",
-        "value": 6,
-        "denominator": 22,
+        "value": 4,
+        "denominator": 17,
         "unit": "count"
       },
       {
         "label": "Retention rate",
-        "value": 27,
+        "value": 24,
         "unit": "percent"
+      },
+      {
+        "label": "Risk factor views",
+        "value": 157,
+        "unit": "count"
       }
     ],
     "provider_views_by_month": [
@@ -140,6 +145,21 @@
         "label": "d06c66d9…",
         "value": 7
       }
-    ]
+    ],
+    "risk_factor_views": {
+      "total": 157,
+      "overview": 104,
+      "drilldown": 53,
+      "other": 0
+    },
+    "total_provider_views": 176,
+    "total_unit_views": 302,
+    "clinicians_monitored": 2038,
+    "calendar_months": 7,
+    "recurring_window_months": 5,
+    "unique_users": 22,
+    "recurring_leaders": 4,
+    "total_users_in_window": 17,
+    "retention_rate": 24
   }
 }
