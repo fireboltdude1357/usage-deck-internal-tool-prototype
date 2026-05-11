@@ -4,9 +4,11 @@
   import ErrorCard from "$lib/ui/ErrorCard.svelte"
   import type { MarketBar, MarketCard } from "$lib/schema/snapshot"
   import { selection } from "$lib/selection.svelte"
+  import { hasMarkets } from "$lib/markets"
   import type { PageProps } from "./$types"
 
   let { data }: PageProps = $props()
+  const noMarkets = $derived(!hasMarkets(selection.system))
 
   const toBars = (rows: readonly MarketBar[]) =>
     rows.map((r) => ({
@@ -84,7 +86,16 @@
 </script>
 
 <div class="space-y-8">
-  {#if data.loadError}
+  {#if noMarkets}
+    <div class="rounded border border-slate-200 bg-slate-50 p-6 text-sm text-slate-600">
+      <div class="font-medium text-slate-800">No market split for {selection.system.toUpperCase()}.</div>
+      <p class="mt-1">
+        Market-level retention is only available when the client has a regional
+        breakdown configured. See <code>MARKETS_BY_CLIENT</code> in
+        <code>src/lib/markets.ts</code>.
+      </p>
+    </div>
+  {:else if data.loadError}
     <ErrorCard message={data.loadError} />
   {:else if !data.snapshot}
     <div class="text-sm text-slate-500 italic">Loading…</div>

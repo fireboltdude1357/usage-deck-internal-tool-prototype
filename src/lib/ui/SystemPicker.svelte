@@ -3,18 +3,16 @@
   import type { Client } from "$lib/schema/snapshot"
   import { selection } from "$lib/selection.svelte"
 
-  // BSMH is the only system with v1 fixtures; the others are visible-but-disabled
-  // so the menu hints at what's coming next.
-  const SYSTEMS: { id: Client; label: string; available: boolean }[] = [
-    { id: "bsmh", label: "BSMH", available: true },
-    { id: "ssm", label: "SSM", available: false },
-    { id: "duke", label: "Duke", available: false },
-    { id: "ucsf", label: "UCSF", available: false },
+  const SYSTEMS: { id: Client; label: string }[] = [
+    { id: "bsmh", label: "BSMH" },
+    { id: "ssm", label: "SSM" },
+    { id: "duke", label: "Duke" },
+    { id: "ucsf", label: "UCSF" },
   ]
 
   const onChange = (e: Event): void => {
     const target = e.currentTarget as HTMLSelectElement
-    selection.set({ system: target.value as Client })
+    selection.setSystem(target.value as Client)
     invalidate("app:selection")
   }
 </script>
@@ -27,9 +25,7 @@
     onchange={onChange}
   >
     {#each SYSTEMS as sys (sys.id)}
-      <option value={sys.id} disabled={!sys.available}>
-        {sys.label}{sys.available ? "" : " (data not yet available)"}
-      </option>
+      <option value={sys.id}>{sys.label}</option>
     {/each}
   </select>
 </label>

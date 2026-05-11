@@ -1,25 +1,23 @@
 <script lang="ts">
+  import { invalidate } from "$app/navigation"
   import { selection } from "$lib/selection.svelte"
   import type { Month } from "$lib/schema/snapshot"
+  import { AVAILABLE_MONTHS } from "$lib/snapshot-months"
 
-  // Available months in the v1 BSMH fixture window. Phase 03+ widens this.
-  const MONTHS = [
-    "2025-08",
-    "2025-09",
-    "2025-10",
-    "2025-11",
-    "2025-12",
-    "2026-01",
-    "2026-02",
-  ] as const
+  // selection.setSystem() snaps start/end into AVAILABLE_MONTHS[system]
+  // whenever the client changes, so this $derived can repopulate without
+  // worrying about stale months in the bound <select> values.
+  const months = $derived(AVAILABLE_MONTHS[selection.system])
 
   const onStart = (e: Event): void => {
     const target = e.currentTarget as HTMLSelectElement
     selection.set({ start: target.value as Month })
+    invalidate("app:selection")
   }
   const onEnd = (e: Event): void => {
     const target = e.currentTarget as HTMLSelectElement
     selection.set({ end: target.value as Month })
+    invalidate("app:selection")
   }
 </script>
 
@@ -30,7 +28,7 @@
     value={selection.start}
     onchange={onStart}
   >
-    {#each MONTHS as m (m)}
+    {#each months as m (m)}
       <option value={m}>{m}</option>
     {/each}
   </select>
@@ -40,7 +38,7 @@
     value={selection.end}
     onchange={onEnd}
   >
-    {#each MONTHS as m (m)}
+    {#each months as m (m)}
       <option value={m}>{m}</option>
     {/each}
   </select>

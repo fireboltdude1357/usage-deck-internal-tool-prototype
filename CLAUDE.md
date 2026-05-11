@@ -20,7 +20,9 @@ the same change.** The diff is small per change; staleness compounds.
 | `src/lib/schema/snapshot.ts` | `docs/architecture.md` § Schema. If you add/rename a snapshot file, also update `docs/operations.md` § Routing. **Every producer must move with the schema** — see "Schema discipline" below. |
 | `src/lib/server/posthog/*` | `docs/architecture.md` § PostHog client (the per-file table) and the cache strategy paragraph. If you change the request/response shape for `/api/posthog/*`, also update `docs/data-flow.md` § Request path and § Refresh button. |
 | `scripts/snapshot/*` | `docs/architecture.md` § Snapshot pipeline, `docs/data-flow.md` § Monthly snapshot pipeline, `docs/operations.md` § Monthly snapshot run + Scripts table. |
-| `src/routes/+page.server.ts`, `src/routes/{platform,market,provisioned}-*/+page.ts`, `src/lib/selection.svelte.ts`, `src/lib/refresh.svelte.ts` | `docs/architecture.md` § Frontend, `docs/data-flow.md` § Request path. |
+| `scripts/snapshot/athena/*` | `docs/architecture.md` § Snapshot pipeline (athena/run-query.ts row + partition rule), `docs/operations.md` § Environment variables → Athena, § Known operational gotchas. New query files need a `-- @database:` header comment and a partition filter on `client` + `batch_ds`. |
+| `src/routes/+page.server.ts`, `src/routes/{platform,market,provisioned,success}-*/+page.ts`, `src/lib/selection.svelte.ts`, `src/lib/refresh.svelte.ts` | `docs/architecture.md` § Frontend, `docs/data-flow.md` § Request path. |
+| `scripts/snapshot/shape/success-stories.ts`, `src/lib/success-stories.ts`, or `src/routes/success-stories/*` | `docs/architecture.md` § Schema (SuccessStoriesMetrics) + § Success-stories analysis. RDS queries (`provider-metadata.sql`, `quit-prob-trajectories.sql`, `clinician-roster.sql`) and Athena queries (`claims-monthly.sql`, `encounters-monthly.sql`, `ehr-monthly.sql`) live in their respective `queries/` dirs. The snapshot is the raw per-provider per-month series; pre/post pairing + cohort intersection are derived live in `src/lib/success-stories.ts` (via the picker range) and the page loader (against `successStoriesCohortQuery` in `src/lib/server/posthog/queries.ts`). |
 | `package.json` scripts | `docs/operations.md` § Scripts and `README.md`. |
 | `.env.example` | `docs/operations.md` § Environment variables and `README.md`. |
 | `src/lib/ui/*` | UI primitives are not documented per-component; only update `docs/architecture.md` § Frontend if the *set* of primitives changes. |
@@ -31,15 +33,18 @@ next time.
 ## Schema discipline
 
 `src/lib/schema/snapshot.ts` is the contract between every producer
-(`scripts/snapshot/shape/roster.ts`, `src/lib/server/posthog/aggregator.ts`,
-`src/lib/mock/build.ts`) and every consumer (the three page loaders,
-`src/routes/api/snapshot/.../+server.ts`).
+(`scripts/snapshot/shape/roster.ts`, `scripts/snapshot/shape/success-stories.ts`,
+`src/lib/server/posthog/aggregator.ts`, `src/lib/mock/build.ts`) and every
+consumer (the four page loaders, `src/routes/api/snapshot/.../+server.ts`).
 
 Adding or changing a field requires updates in *all* of:
 
 - The schema definition itself.
-- `scripts/snapshot/shape/roster.ts` (RDS path).
-- `src/lib/server/posthog/aggregator.ts` (PostHog path).
+- `scripts/snapshot/shape/roster.ts` (RDS path) or
+  `scripts/snapshot/shape/success-stories.ts` (RDS + Athena path) — whichever
+  produces the snapshot file you touched.
+- `src/lib/server/posthog/aggregator.ts` (PostHog path; doesn't apply to
+  `success_stories.json` — that's snapshot-only).
 - `src/lib/mock/bsmh-2026-04.ts` + `src/lib/mock/build.ts` (fixture path).
 - The page component(s) that render the field.
 - `docs/architecture.md` § Schema.

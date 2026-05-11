@@ -7,6 +7,7 @@ import {
   PlatformSnapshot,
   ProvisionedUsersSnapshot,
   SnapshotFileSchema,
+  SuccessStoriesSnapshot,
   type SnapshotFile,
 } from "$lib/schema/snapshot"
 import {
@@ -25,7 +26,9 @@ const decodeForFile = (
       ? PlatformSnapshot
       : file === "market_metrics.json"
         ? MarketSnapshot
-        : ProvisionedUsersSnapshot
+        : file === "provisioned_users.json"
+          ? ProvisionedUsersSnapshot
+          : SuccessStoriesSnapshot
   return Schema.decodeUnknown(schema as Schema.Schema<unknown>)(raw).pipe(
     Effect.mapError(
       (e) => new SnapshotSourceError({ kind: "Decode", message: String(e) }),

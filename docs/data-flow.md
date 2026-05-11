@@ -89,24 +89,74 @@ npm run snapshot:upload -- --client bsmh --month 2026-04
 
 Step 1: `scripts/snapshot/query.ts` opens an SSH tunnel via `rds/bastion.ts`,
 substitutes `{{client}}` / `{{month}}` placeholders into each
-`rds/queries/*.sql`, writes CSVs to `tmp/snapshot/bsmh/2026-04/`. Currently
-that's `clinician-roster.csv`; add SQL files to extend.
+`rds/queries/*.sql` and `athena/queries/*.sql`, writes CSVs to
+`tmp/snapshot/bsmh/2026-04/`. The roster + metadata SQL files filter
+`run_date` to `({{month}} || '-01')::date`, so the chosen month must match
+an actual model run or the resulting CSV is empty. Scope to a subset with
+`--query <basename>` and/or `--source rds|athena|all`.
 
 Step 2: `scripts/snapshot/build.ts` reads `clinician-roster.csv`, runs the
 three `shape/roster.ts` aggregators, schema-validates each via `schema-roundtrip.ts`,
 writes `metrics.json` / `market_metrics.json` / `provisioned_users.json`
-alongside the CSV. A schema mismatch exits non-zero.
+alongside the CSV. If the five success-stories input CSVs (`provider-metadata`,
+`quit-prob-trajectories`, `claims-monthly`, `encounters-monthly`,
+`ehr-monthly`) are also present, `shape/success-stories.ts` runs and writes
+`success_stories.json` — the raw per-provider per-month series, with **no
+pre/post pairing or cohort filtering**. Pre/post pairing happens live in
+the page loader against the user-selected range; the cohort intersection
+happens live against `successStoriesCohortQuery`. A schema mismatch exits
+non-zero.
 
 Step 3: `scripts/snapshot/upload.ts` re-reads each JSON, decodes against the
 schema again (defense in depth — local edits are easy), and `PutObjectCommand`s
 to `s3://${SNAPSHOT_BUCKET}/bsmh/2026-04/{file}` with `Cache-Control: public,
-max-age=31536000, immutable`. `--dry-run` prints what it would do.
+max-age=31536000, immutable`. `--dry-run` prints what it would do; `--file`
+scopes the upload to a single JSON.
 
 Frequency: source data updates 1–2× per month; missing a Tuesday is fine.
 The `Cache-Control: immutable` header is safe because the month is in the
 URL — a re-upload would technically need a key bump if any consumer caches
 were involved, but at current scale only the Vercel function fetches, and it
 doesn't honor `immutable`.
+
+## Full backfill (one-shot)
+
+The orchestrators in `scripts/snapshot/backfill-all.sh` and
+`scripts/snapshot/backfill-success.sh` re-populate S3 across **every** client
+and run-date. Used on 2026-05-11 to wipe and re-upload all four clients from
+their earliest `provider_quit_risk_v2.run_date` through their latest.
+
+1. `backfill-all.sh` deletes `s3://${SNAPSHOT_BUCKET}/{bsmh,ssm,duke,ucsf}/`
+   (preserving `athena-results/`) and runs query/build/upload for the
+   hard-coded `(client, run_date)` list. Only `clinician-roster.sql` is
+   queried per month — the per-month roster drives `metrics.json`,
+   `market_metrics.json`, and `provisioned_users.json`.
+2. `backfill-success.sh` runs the six success-stories input queries
+   (three RDS + three Athena) once per client at the client's latest
+   run-date and uploads `success_stories.json` to that single
+   month-prefix only. The snapshot carries the full per-provider
+   per-month series — pre/post pairing is derived live in the page
+   loader from the picker range — so there's nothing to propagate
+   across months. Clients whose roster yields zero providers are
+   skipped.
+
+After the 2026-05-11 backfill:
+
+| Client | Months in S3 | success_stories providers |
+|---|---|---|
+| bsmh | 2025-08 → 2026-03 (8) | 2180 |
+| ssm | 2025-12 → 2026-03 (4) | 2557 |
+| duke | 2023-08 → 2025-12 (29) | (built at 2025-12) |
+| ucsf | 2023-07 → 2025-06 (24) | (built at 2025-06; depends on Athena coverage) |
+
+The page-rendered count for `/success-stories` is smaller because the
+loader (a) gates each provider on having both pre and post data in the
+selected range plus `pre_procedures ≥ 10`, and (b) intersects with the
+live PostHog "viewed-providers cohort" if PostHog is reachable.
+
+The (client, run_date) list lives in `backfill-all.sh` and is derived from
+`MIN/MAX(run_date) GROUP BY client_username` on `public.provider_quit_risk_v2`.
+Re-probe if the upstream model adds new clients or fills historical gaps.
 
 ## Why two paths?
 

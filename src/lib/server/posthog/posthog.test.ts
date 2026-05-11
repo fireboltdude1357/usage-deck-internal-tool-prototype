@@ -18,10 +18,13 @@ import {
   type UserActivityMonth,
 } from "./aggregator"
 import type { Market } from "$lib/schema/snapshot"
-import { ALL_MARKETS, BU_UUID_MARKET } from "./config"
+import { BU_UUID_MARKET } from "./config"
+import { MARKETS_BY_CLIENT } from "$lib/markets"
+
+const BSMH_MARKETS = MARKETS_BY_CLIENT.bsmh
 
 const zeroClinicians = (): Record<Market, number> =>
-  Object.fromEntries(ALL_MARKETS.map((m) => [m, 0])) as Record<Market, number>
+  Object.fromEntries(BSMH_MARKETS.map((m) => [m, 0])) as Record<Market, number>
 
 // Pick the first three known BU UUIDs from each market for fixture-friendly tests.
 const HAMPTON = "5504e035-7756-540b-93a7-9b0591b04a54"
@@ -136,11 +139,24 @@ describe("query builders", () => {
 })
 
 describe("BU_UUID_MARKET", () => {
-  it("covers all six BSMH markets", () => {
-    const markets = new Set(Object.values(BU_UUID_MARKET))
+  it("BSMH covers all six BSMH markets", () => {
+    const markets = new Set(Object.values(BU_UUID_MARKET.bsmh))
     expect(markets).toEqual(
       new Set(["Hampton Roads", "Lorain", "Lima", "Youngstown", "Kentucky", "Toledo"]),
     )
+  })
+
+  it("SSM maps all 7 SSM regions", () => {
+    const markets = new Set(Object.values(BU_UUID_MARKET.ssm))
+    expect(markets.size).toBe(7)
+    expect(markets).toEqual(new Set(MARKETS_BY_CLIENT.ssm))
+  })
+
+  it("Duke/UCSF have no market split", () => {
+    expect(Object.keys(BU_UUID_MARKET.duke)).toEqual([])
+    expect(Object.keys(BU_UUID_MARKET.ucsf)).toEqual([])
+    expect(MARKETS_BY_CLIENT.duke).toEqual([])
+    expect(MARKETS_BY_CLIENT.ucsf).toEqual([])
   })
 })
 
@@ -317,13 +333,13 @@ describe("buildMarketSnapshot", () => {
     expect(counts["Kentucky"]).toBe(1) // c@x
   })
 
-  it("clinicians_by_market is zero-filled by ALL_MARKETS when no roster is provided", () => {
-    expect(m.metrics.clinicians_by_market.length).toBe(ALL_MARKETS.length)
+  it("clinicians_by_market is zero-filled by BSMH_MARKETS when no roster is provided", () => {
+    expect(m.metrics.clinicians_by_market.length).toBe(BSMH_MARKETS.length)
     for (const bar of m.metrics.clinicians_by_market) expect(bar.value).toBe(0)
   })
 
   it("market_cards covers all six markets with PostHog-derived uniques + retention", () => {
-    expect(m.metrics.market_cards.length).toBe(ALL_MARKETS.length)
+    expect(m.metrics.market_cards.length).toBe(BSMH_MARKETS.length)
     const cards = Object.fromEntries(m.metrics.market_cards.map((c) => [c.market, c]))
     expect(cards["Hampton Roads"].unique_providers).toBe(2)
     expect(cards["Hampton Roads"].total_provider_views).toBe(2)

@@ -5,9 +5,15 @@ import {
   MarketSnapshot,
   PlatformSnapshot,
   ProvisionedUsersSnapshot,
+  SuccessStoriesSnapshot,
 } from "../schema/snapshot.js"
 import { roundtrip } from "../../../scripts/snapshot/schema-roundtrip.js"
-import { market, platform, provisionedUsers } from "./bsmh-2026-04.js"
+import {
+  market,
+  platform,
+  provisionedUsers,
+  successStories,
+} from "./bsmh-2026-04.js"
 
 const ROOT = path.resolve(import.meta.dirname, "..", "..", "..")
 const OUT_DIR = path.join(ROOT, "fixtures", "snapshots", "bsmh", "2026-04")
@@ -27,4 +33,5 @@ console.log(`Writing fixtures to ${path.relative(ROOT, OUT_DIR)}`)
 writeOne(PlatformSnapshot, "metrics.json", platform)
 writeOne(MarketSnapshot, "market_metrics.json", market)
 writeOne(ProvisionedUsersSnapshot, "provisioned_users.json", provisionedUsers)
+writeOne(SuccessStoriesSnapshot, "success_stories.json", successStories)
 console.log("Done.")

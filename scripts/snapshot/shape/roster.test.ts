@@ -31,7 +31,7 @@ const ENV = {
 }
 
 describe("rosterToMarketCounts", () => {
-  it("groups by businessunitname → market and sorts desc", () => {
+  it("BSMH groups by businessunitname → market and sorts desc", () => {
     const rows = [
       row({ businessunitname: "1412" }), // Hampton Roads
       row({ businessunitname: "1430" }), // Hampton Roads
@@ -40,16 +40,34 @@ describe("rosterToMarketCounts", () => {
       row({ businessunitname: "6077" }), // Lima
       row({ businessunitname: "6077" }), // Lima
     ]
-    expect(rosterToMarketCounts(rows)).toEqual([
+    expect(rosterToMarketCounts("bsmh", rows)).toEqual([
       { market: "Lima", value: 3 },
       { market: "Hampton Roads", value: 2 },
       { market: "Lorain", value: 1 },
     ])
   })
 
-  it("drops unmapped BU codes (non-BSMH inputs)", () => {
+  it("BSMH drops unmapped BU codes", () => {
     const rows = [row({ businessunitname: "9999" }), row({ businessunitname: "" })]
-    expect(rosterToMarketCounts(rows)).toEqual([])
+    expect(rosterToMarketCounts("bsmh", rows)).toEqual([])
+  })
+
+  it("SSM uses businessunit_name directly as the market label", () => {
+    const rows = [
+      row({ businessunitname: "SSM Health Wisconsin" }),
+      row({ businessunitname: "SSM Health Wisconsin" }),
+      row({ businessunitname: "SSM Health St. Louis" }),
+    ]
+    expect(rosterToMarketCounts("ssm", rows)).toEqual([
+      { market: "SSM Health Wisconsin", value: 2 },
+      { market: "SSM Health St. Louis", value: 1 },
+    ])
+  })
+
+  it("Duke/UCSF have no market mapping → []", () => {
+    const rows = [row({ businessunitname: "Pediatrics" })]
+    expect(rosterToMarketCounts("duke", rows)).toEqual([])
+    expect(rosterToMarketCounts("ucsf", rows)).toEqual([])
   })
 })
 

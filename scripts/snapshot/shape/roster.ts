@@ -8,7 +8,7 @@ import type {
   PlatformSnapshot,
   ProvisionedUsersSnapshot,
 } from "$lib/schema/snapshot"
-import { BU_CODE_MARKET, ALL_BSMH_MARKETS } from "./bu-mapping.js"
+import { BU_CODE_MARKET, MARKETS_BY_CLIENT } from "./bu-mapping.js"
 
 // Calendar span the v1 BSMH window covers (Aug 2025 – Feb 2026) — mirrored
 // from src/lib/server/posthog/config.ts. Used to size PostHog-derived fields
@@ -22,7 +22,7 @@ export type RosterRow = {
   provider_id: string
   quit_prob: string // numeric in DB, string from CSV — left as-is; not surfaced today
   run_date: string // ISO date
-  businessunitname: string // BSMH BU code (e.g., "1412") — see BU_CODE_MARKET
+  businessunitname: string // BU code/name — see BU_CODE_MARKET[client]
   department: string
   specialty: string
   provider_name: string
@@ -35,11 +35,15 @@ export type EnvelopeOpts = {
 }
 
 // Group by businessunitname → market, count rows. Unmapped BU codes are dropped
-// (non-BSMH clients produce []).
-export const rosterToMarketCounts = (rows: RosterRow[]): MarketBar[] => {
+// (clients without a mapping — Duke, UCSF — produce []).
+export const rosterToMarketCounts = (
+  client: Client,
+  rows: RosterRow[],
+): MarketBar[] => {
+  const map = BU_CODE_MARKET[client]
   const counts = new Map<string, number>()
   for (const row of rows) {
-    const market = BU_CODE_MARKET[row.businessunitname]
+    const market = map[row.businessunitname]
     if (!market) continue
     counts.set(market, (counts.get(market) ?? 0) + 1)
   }
@@ -48,19 +52,23 @@ export const rosterToMarketCounts = (rows: RosterRow[]): MarketBar[] => {
     .sort((a, b) => b.value - a.value)
 }
 
-const limaCount = (rows: RosterRow[]): number =>
+// "Lima" is a BSMH-only market; for other clients this is always 0.
+const limaCount = (client: Client, rows: RosterRow[]): number =>
   rows.reduce(
-    (n, r) => (BU_CODE_MARKET[r.businessunitname] === "Lima" ? n + 1 : n),
+    (n, r) => (BU_CODE_MARKET[client][r.businessunitname] === "Lima" ? n + 1 : n),
     0,
   )
 
 // Build empty market cards seeded with the RDS-derived clinician counts. The
 // PostHog-derived numerators (unique_providers, unit views, retention) stay at
 // zero — these snapshot files are the *roster* side of the merge, not engagement.
-const emptyMarketCards = (counts: readonly MarketBar[]): readonly MarketCard[] => {
+const emptyMarketCards = (
+  client: Client,
+  counts: readonly MarketBar[],
+): readonly MarketCard[] => {
   const by: Partial<Record<Market, number>> = {}
   for (const c of counts) by[c.market] = c.value
-  return ALL_BSMH_MARKETS.map((market): MarketCard => ({
+  return MARKETS_BY_CLIENT[client].map((market): MarketCard => ({
     market,
     unique_providers: 0,
     total_provider_views: 0,
@@ -81,7 +89,7 @@ export const buildMarketSnapshot = (
   rows: RosterRow[],
   opts: EnvelopeOpts,
 ): MarketSnapshot => {
-  const counts = rosterToMarketCounts(rows)
+  const counts = rosterToMarketCounts(opts.client, rows)
   return {
     client: opts.client,
     month: opts.month,
@@ -92,7 +100,7 @@ export const buildMarketSnapshot = (
       provider_views_by_market: [],
       unit_views_by_market: [],
       users_by_market: [],
-      market_cards: emptyMarketCards(counts),
+      market_cards: emptyMarketCards(opts.client, counts),
       calendar_months: CALENDAR_MONTHS,
       recurring_window_months: RECURRING_WINDOW_MONTHS,
     },
@@ -104,7 +112,7 @@ export const buildProvisionedSnapshot = (
   opts: EnvelopeOpts,
 ): ProvisionedUsersSnapshot => {
   const total = rows.length
-  const lima = limaCount(rows)
+  const lima = limaCount(opts.client, rows)
   return {
     client: opts.client,
     month: opts.month,

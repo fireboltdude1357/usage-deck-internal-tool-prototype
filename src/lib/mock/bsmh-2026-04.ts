@@ -17,6 +17,7 @@ import type {
   MarketSnapshot,
   PlatformSnapshot,
   ProvisionedUsersSnapshot,
+  SuccessStoriesSnapshot,
 } from "$lib/schema/snapshot"
 
 const generated_at = "2026-05-01T17:30:00Z"
@@ -267,6 +268,146 @@ export const provisionedUsers: ProvisionedUsersSnapshot = {
       { email: "user20@bshsi.org", page_loads: 18, active_days: 2, first_seen: "2025-09-08", last_seen: "2025-09-22" },
       { email: "user21@mercy.com", market: "Hampton Roads", page_loads: 11, active_days: 4, first_seen: "2025-08-22", last_seen: "2025-09-18" },
       { email: "user22@bshsi.org", market: "Youngstown", page_loads: 6, active_days: 2, first_seen: "2025-09-12", last_seen: "2025-10-04" },
+    ],
+  },
+}
+
+// Success-stories fixture. Eight synthetic providers across the 5/5, 4/5, and
+// 3/5 tiers, each with a 7-month series (Aug 2025 → Feb 2026) shaped so that
+// the live derivation in `src/lib/success-stories.ts` reproduces the iter-12
+// numbers when the picker is left at the default trailing-7-month window.
+//
+// The values are kept simple: pre/post constants per provider, repeated across
+// the pre half (first 3 months) and the post half (last 4 months). That way
+// the averages collapse to the same pre/post numbers the old pre-aggregated
+// fixture carried.
+
+const PRE = ["2025-08", "2025-09", "2025-10"] as const
+const POST = ["2025-11", "2025-12", "2026-01", "2026-02"] as const
+
+type MonthlyShape = {
+  procedures: number | null
+  work_rvu: number | null
+  encounters: number | null
+  enc_duration: number | null
+  doc_time: number | null
+  admin_time: number | null
+  quit_prob: number | null
+}
+
+const series = (
+  pre: MonthlyShape,
+  post: MonthlyShape,
+): SuccessStoriesSnapshot["metrics"]["providers"][number]["monthly"] => [
+  ...PRE.map((m) => ({ month: m, ...pre })),
+  ...POST.map((m) => ({ month: m, ...post })),
+]
+
+export const successStories: SuccessStoriesSnapshot = {
+  client: "bsmh",
+  month: "2026-04",
+  generated_at,
+  source: "athena",
+  metrics: {
+    min_pre_procedures: 10,
+    available_months: [...PRE, ...POST],
+    providers: [
+      {
+        provider_id: "00000000-0000-0000-0000-000000000001",
+        name: "Provider 01",
+        specialty: "Family Medicine",
+        category: "Physician",
+        department: "Bon Secours Family Medicine",
+        market: "Hampton Roads",
+        monthly: series(
+          { procedures: 142.5, work_rvu: 218.42, encounters: 350, enc_duration: 312, doc_time: 5102, admin_time: 412, quit_prob: 0.0421 },
+          { procedures: 168.7, work_rvu: 257.11, encounters: 380, enc_duration: 348, doc_time: 4233, admin_time: 339, quit_prob: 0.0118 },
+        ),
+      },
+      {
+        provider_id: "00000000-0000-0000-0000-000000000002",
+        name: "Provider 02",
+        specialty: "Cardiology",
+        category: "Physician",
+        department: "Mercy Heart & Vascular",
+        market: "Lorain",
+        monthly: series(
+          { procedures: 88.0, work_rvu: 312.5, encounters: 280, enc_duration: 401, doc_time: 6212, admin_time: 488, quit_prob: 0.0382 },
+          { procedures: 105.3, work_rvu: 354.0, encounters: 305, enc_duration: 430, doc_time: 5587, admin_time: 421, quit_prob: 0.0156 },
+        ),
+      },
+      {
+        provider_id: "00000000-0000-0000-0000-000000000003",
+        name: "Provider 03",
+        specialty: "Internal Medicine",
+        category: "Physician",
+        department: "Mercy Health - Lima",
+        market: "Lima",
+        monthly: series(
+          { procedures: 211.0, work_rvu: 178.20, encounters: 410, enc_duration: 285, doc_time: 4781, admin_time: 378, quit_prob: 0.0512 },
+          { procedures: 244.7, work_rvu: 198.45, encounters: 435, enc_duration: 278, doc_time: 4022, admin_time: 312, quit_prob: 0.0205 },
+        ),
+      },
+      {
+        provider_id: "00000000-0000-0000-0000-000000000004",
+        name: "Provider 04",
+        specialty: "Orthopedics",
+        category: "Physician",
+        department: "VA Ortho Spec - Harbourview",
+        market: "Hampton Roads",
+        monthly: series(
+          { procedures: 76.5, work_rvu: 425.10, encounters: 220, enc_duration: 332, doc_time: 3920, admin_time: 295, quit_prob: 0.0334 },
+          { procedures: 89.0, work_rvu: 478.22, encounters: 245, enc_duration: 358, doc_time: 4112, admin_time: 318, quit_prob: 0.0202 },
+        ),
+      },
+      {
+        provider_id: "00000000-0000-0000-0000-000000000005",
+        name: "Provider 05",
+        specialty: "Hospitalist",
+        category: "Physician",
+        department: "Mercy Hospitalist Group",
+        market: "Youngstown",
+        monthly: series(
+          { procedures: 165.0, work_rvu: 287.50, encounters: 380, enc_duration: 412, doc_time: 5340, admin_time: 412, quit_prob: 0.0612 },
+          { procedures: 158.3, work_rvu: 314.20, encounters: 375, enc_duration: 401, doc_time: 4855, admin_time: 388, quit_prob: 0.0431 },
+        ),
+      },
+      {
+        provider_id: "00000000-0000-0000-0000-000000000006",
+        name: "Provider 06",
+        specialty: "Behavioral Health",
+        category: "APRN",
+        department: "Mercy Behavioral Health",
+        market: "Kentucky",
+        monthly: series(
+          { procedures: 122.5, work_rvu: 102.40, encounters: 520, enc_duration: 540, doc_time: 4820, admin_time: 502, quit_prob: 0.0245 },
+          { procedures: 145.0, work_rvu: 98.20, encounters: 545, enc_duration: 612, doc_time: 4178, admin_time: 478, quit_prob: 0.0312 },
+        ),
+      },
+      {
+        provider_id: "00000000-0000-0000-0000-000000000007",
+        name: "Provider 07",
+        specialty: "OB/GYN",
+        category: "Physician",
+        department: "Mercy Women's Health",
+        market: "Hampton Roads",
+        monthly: series(
+          { procedures: 198.0, work_rvu: 412.20, encounters: 360, enc_duration: 268, doc_time: 5912, admin_time: 432, quit_prob: 0.0488 },
+          { procedures: 232.5, work_rvu: 461.15, encounters: 385, enc_duration: 252, doc_time: 6088, admin_time: 461, quit_prob: 0.0301 },
+        ),
+      },
+      {
+        provider_id: "00000000-0000-0000-0000-000000000008",
+        name: "Provider 08",
+        specialty: "Neurology",
+        category: "Physician",
+        department: "Mercy Neurology Associates",
+        market: "Lorain",
+        monthly: series(
+          { procedures: 64.0, work_rvu: 244.10, encounters: 290, enc_duration: 425, doc_time: 4488, admin_time: 388, quit_prob: 0.0556 },
+          { procedures: 62.5, work_rvu: 231.50, encounters: 285, enc_duration: 478, doc_time: 3987, admin_time: 362, quit_prob: 0.0398 },
+        ),
+      },
     ],
   },
 }

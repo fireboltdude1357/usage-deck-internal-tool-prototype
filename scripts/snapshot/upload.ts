@@ -11,6 +11,7 @@ import {
   PlatformSnapshot,
   ProvisionedUsersSnapshot,
   SnapshotFileSchema,
+  SuccessStoriesSnapshot,
   type SnapshotFile,
 } from "../../src/lib/schema/snapshot.ts"
 
@@ -53,15 +54,23 @@ const TMP = path.join(ROOT, "tmp", "snapshot", client, month)
 const schemaFor = (file: SnapshotFile): Schema.Schema<unknown, unknown> => {
   if (file === "metrics.json") return PlatformSnapshot as unknown as Schema.Schema<unknown, unknown>
   if (file === "market_metrics.json") return MarketSnapshot as unknown as Schema.Schema<unknown, unknown>
-  return ProvisionedUsersSnapshot as unknown as Schema.Schema<unknown, unknown>
+  if (file === "provisioned_users.json") return ProvisionedUsersSnapshot as unknown as Schema.Schema<unknown, unknown>
+  return SuccessStoriesSnapshot as unknown as Schema.Schema<unknown, unknown>
 }
 
 const ALL_FILES: SnapshotFile[] = [
   "metrics.json",
   "market_metrics.json",
   "provisioned_users.json",
+  "success_stories.json",
 ]
-const targets = onlyFile ? [onlyFile] : ALL_FILES
+// When uploading all files, skip ones that don't exist locally — success_
+// stories.json is opt-in (the Athena CSVs aren't always present, e.g. older
+// months pre Athena-seam). When the user explicitly names a file via --file,
+// keep it in the list so the existing existence check surfaces a clear error.
+const targets = onlyFile
+  ? [onlyFile]
+  : ALL_FILES.filter((file) => fs.existsSync(path.join(TMP, file)))
 
 const s3 = dryRun
   ? null

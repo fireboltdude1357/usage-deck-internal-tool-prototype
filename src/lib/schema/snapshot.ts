@@ -3,16 +3,14 @@ import { Schema } from "effect"
 export const Client = Schema.Literal("bsmh", "ssm", "duke", "ucsf")
 export type Client = Schema.Schema.Type<typeof Client>
 
-// BSMH markets per market-engagement-metrics.md § "BU Code to Market Mapping".
+// Market labels are client-specific (BSMH has 6 geographic markets; SSM has
+// 7 regional units; Duke/UCSF have none meaningfully — see
+// src/lib/server/posthog/config.ts MARKETS_BY_CLIENT). Kept as an open string
+// in the schema so each client can publish its own market names without a
+// schema migration; the per-client allow-list is enforced upstream by the
+// aggregator (it only emits markets it knows about).
 // "all" is the page-level "no market filter" sentinel (URL value), not a snapshot value.
-export const Market = Schema.Literal(
-  "Hampton Roads",
-  "Lorain",
-  "Lima",
-  "Youngstown",
-  "Kentucky",
-  "Toledo",
-)
+export const Market = Schema.String
 export type Market = Schema.Schema.Type<typeof Market>
 
 const MONTH_PATTERN = /^\d{4}-(0[1-9]|1[0-2])$/
@@ -131,13 +129,69 @@ const ProvisionedUsers = Schema.Struct({
   user_detail: Schema.Array(UserRow),
 })
 
+// The improvement labels used by the success-stories card. Lives in the
+// schema (not just in derive code) because the page renders/filters by
+// these names and they must stay consistent across producer + consumer.
+export const SuccessStoryImprovement = Schema.Literal(
+  "turnover",
+  "volume",
+  "time_with_patients",
+  "efficiency",
+  "rvu",
+)
+export type SuccessStoryImprovement = Schema.Schema.Type<typeof SuccessStoryImprovement>
+
+// One month of raw, unaggregated metrics for a single provider. The producer
+// emits one row per (provider, month) in the analysis window; pre/post pairing
+// is decided live by the page loader based on the user-selected date range.
+export const SuccessStoryProviderMonth = Schema.Struct({
+  month: Month,
+  procedures: Schema.NullOr(Schema.Number),
+  work_rvu: Schema.NullOr(Schema.Number),
+  encounters: Schema.NullOr(Schema.Number),
+  enc_duration: Schema.NullOr(Schema.Number),
+  doc_time: Schema.NullOr(Schema.Number),
+  admin_time: Schema.NullOr(Schema.Number),
+  quit_prob: Schema.NullOr(Schema.Number),
+})
+export type SuccessStoryProviderMonth = Schema.Schema.Type<typeof SuccessStoryProviderMonth>
+
+// One provider's per-month series + display metadata. The pre/post derivation
+// (turnover/procedures/rvu/enc_duration/doc_time/admin_time + n_improvements)
+// is computed live by `src/lib/success-stories.ts` against the picker range.
+export const SuccessStoryProvider = Schema.Struct({
+  provider_id: Schema.String,
+  name: Schema.String,
+  specialty: Schema.String,
+  category: Schema.String,
+  department: Schema.String,
+  // null when the client has no market split (Duke, UCSF) or when the
+  // businessunitname for the provider isn't mapped in BU_CODE_MARKET.
+  market: Schema.NullOr(Market),
+  monthly: Schema.Array(SuccessStoryProviderMonth),
+})
+export type SuccessStoryProvider = Schema.Schema.Type<typeof SuccessStoryProvider>
+
+const SuccessStoriesMetrics = Schema.Struct({
+  // Gate applied live by the page loader: providers whose pre-window
+  // procedure average falls below this are excluded (signal-to-noise).
+  min_pre_procedures: Schema.Number,
+  // Sorted list of every month that appears in any provider's series — the
+  // page uses this to clamp the picker range to a valid window when the
+  // current selection has no data on either side of the split.
+  available_months: Schema.Array(Month),
+  providers: Schema.Array(SuccessStoryProvider),
+})
+
 export const PlatformSnapshot = envelope(PlatformMetrics)
 export const MarketSnapshot = envelope(MarketMetrics)
 export const ProvisionedUsersSnapshot = envelope(ProvisionedUsers)
+export const SuccessStoriesSnapshot = envelope(SuccessStoriesMetrics)
 
 export type PlatformSnapshot = Schema.Schema.Type<typeof PlatformSnapshot>
 export type MarketSnapshot = Schema.Schema.Type<typeof MarketSnapshot>
 export type ProvisionedUsersSnapshot = Schema.Schema.Type<typeof ProvisionedUsersSnapshot>
+export type SuccessStoriesSnapshot = Schema.Schema.Type<typeof SuccessStoriesSnapshot>
 
 // Map file basename → Schema. The /api/snapshot/[file] route uses this to pick
 // the right Schema for the requested file.
@@ -145,6 +199,7 @@ export const SnapshotByFile = {
   "metrics.json": PlatformSnapshot,
   "market_metrics.json": MarketSnapshot,
   "provisioned_users.json": ProvisionedUsersSnapshot,
+  "success_stories.json": SuccessStoriesSnapshot,
 } as const
 export type SnapshotFile = keyof typeof SnapshotByFile
 
@@ -152,4 +207,5 @@ export const SnapshotFileSchema = Schema.Literal(
   "metrics.json",
   "market_metrics.json",
   "provisioned_users.json",
+  "success_stories.json",
 )

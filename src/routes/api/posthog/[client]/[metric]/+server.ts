@@ -7,10 +7,11 @@ import {
   runMarketPipeline,
   runPlatformPipeline,
   runProvisionedPipeline,
+  runSuccessStoriesCohortPipeline,
 } from "$lib/server/posthog/pipeline"
 import type { RequestHandler } from "./$types"
 
-const Metric = Schema.Literal("metrics", "market", "provisioned")
+const Metric = Schema.Literal("metrics", "market", "provisioned", "success-stories-cohort")
 type Metric = Schema.Schema.Type<typeof Metric>
 
 const decode = <A, I>(schema: Schema.Schema<A, I>, value: unknown): A | null => {
@@ -32,6 +33,8 @@ const dispatch = (
       return runMarketPipeline(client, start, end, opts)
     case "provisioned":
       return runProvisionedPipeline(client, start, end, opts)
+    case "success-stories-cohort":
+      return runSuccessStoriesCohortPipeline(client, start, end, opts)
   }
 }
 

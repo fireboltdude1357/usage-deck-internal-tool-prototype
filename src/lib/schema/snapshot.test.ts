@@ -111,9 +111,13 @@ describe("snapshot Schemas", () => {
     expect(Either.isLeft(result)).toBe(true)
   })
 
-  it("rejects an unknown Market literal", () => {
-    const result = Schema.decodeUnknownEither(Market)("Atlantis")
-    expect(Either.isLeft(result)).toBe(true)
+  it("accepts any string for Market (per-client allow-list enforced upstream)", () => {
+    // Market is intentionally open-ended in the schema so each client can
+    // publish its own region names without a schema migration. Validity of
+    // a given label for a given client is enforced by the aggregator
+    // (MARKETS_BY_CLIENT) and by the selection clamp in the browser.
+    expect(Either.isRight(Schema.decodeUnknownEither(Market)("Atlantis"))).toBe(true)
+    expect(Either.isLeft(Schema.decodeUnknownEither(Market)(123))).toBe(true)
   })
 
   it("rejects a malformed Month string", () => {

@@ -17,7 +17,9 @@ import {
   monthlyUserActivityQuery,
   riskFactorViewEventsQuery,
   userActivityByMonthQuery,
+  successStoriesCohortQuery,
 } from "./queries"
+import { runHogQL } from "./client"
 import {
   buildMarketSnapshot,
   buildPlatformSnapshot,
@@ -31,7 +33,7 @@ import type {
   UserActivityMonth,
 } from "./aggregator"
 import type { Market } from "$lib/schema/snapshot"
-import { ALL_MARKETS } from "./config"
+import { MARKETS_BY_CLIENT } from "./config"
 import { cached } from "./cache"
 import { CLIENTS } from "./config"
 import { PostHogError } from "./client"
@@ -244,9 +246,9 @@ export const runPlatformPipeline = (
 // Zero-filled clinician roster — PostHog doesn't know roster counts. The page
 // loader fills these from the sibling market_metrics.json snapshot, then
 // patches the resulting card values.
-const emptyCliniciansByMarket = (): Record<Market, number> => {
+const emptyCliniciansByMarket = (client: Client): Record<Market, number> => {
   const out: Partial<Record<Market, number>> = {}
-  for (const m of ALL_MARKETS) out[m] = 0
+  for (const m of MARKETS_BY_CLIENT[client]) out[m] = 0
   return out as Record<Market, number>
 }
 
@@ -271,7 +273,7 @@ const marketImpl = (
           endMonth,
           providerEvents,
           unitEvents,
-          cliniciansByMarket: emptyCliniciansByMarket(),
+          cliniciansByMarket: emptyCliniciansByMarket(client),
         }),
         "market aggregator output",
       ),
@@ -335,5 +337,55 @@ export const runProvisionedPipeline = (
   cached(
     `provisioned:${client}:${startMonth}:${endMonth}`,
     provisionedImpl(client, startMonth, endMonth),
+    { bypass: opts.refresh },
+  )
+
+// Provider legacy_ids viewed externally in the success-stories window. The
+// window is iter-12-fixed today (Aug 2025 – Feb 2026) but parameterized so a
+// future UI can vary it. Returns `{ provider_ids }` so the route handler
+// doesn't have to know about the underlying row shape.
+const cohortFromMonths = (
+  startMonth: string,
+  endMonth: string,
+): { from: string; to: string } => {
+  const [ey, em] = endMonth.split("-").map(Number)
+  const nextMonth = em === 12 ? `${ey + 1}-01` : `${ey}-${String(em + 1).padStart(2, "0")}`
+  return { from: `${startMonth}-01`, to: `${nextMonth}-01` }
+}
+
+export interface SuccessStoriesCohort {
+  readonly provider_ids: readonly string[]
+}
+
+const cohortImpl = (
+  client: Client,
+  startMonth: string,
+  endMonth: string,
+): Effect.Effect<SuccessStoriesCohort, PostHogError> => {
+  const { from, to } = cohortFromMonths(startMonth, endMonth)
+  return runHogQL(successStoriesCohortQuery(client, from, to), {
+    label: `success-stories-cohort ${client}`,
+  }).pipe(
+    Effect.map((res) => {
+      const idIdx = res.columns.indexOf("legacy_id")
+      const ids = idIdx === -1
+        ? []
+        : res.results
+            .map((r) => (typeof r[idIdx] === "string" ? (r[idIdx] as string) : ""))
+            .filter((s) => s.length > 0)
+      return { provider_ids: ids }
+    }),
+  )
+}
+
+export const runSuccessStoriesCohortPipeline = (
+  client: Client,
+  startMonth: string,
+  endMonth: string,
+  opts: PipelineOptions = {},
+): Effect.Effect<SuccessStoriesCohort, PostHogError> =>
+  cached(
+    `success-stories-cohort:${client}:${startMonth}:${endMonth}`,
+    cohortImpl(client, startMonth, endMonth),
     { bypass: opts.refresh },
   )

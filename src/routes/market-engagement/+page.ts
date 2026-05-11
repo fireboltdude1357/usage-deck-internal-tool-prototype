@@ -8,13 +8,13 @@ import type {
 } from "$lib/schema/snapshot"
 import { selection } from "$lib/selection.svelte"
 import { refresh } from "$lib/refresh.svelte"
+import { LATEST_SNAPSHOT_MONTH } from "$lib/snapshot-months"
 import type { PageLoad } from "./$types"
 
-// Roster snapshot is per-calendar-month and only `2026-04` is uploaded today.
 // Live PostHog drives the three by-market arrays + market_cards; the snapshot
 // supplies the roster side (clinicians_by_market + each card's clinicians /
-// pct_clinicians_viewed). Future: pick latest month from S3.
-const ROSTER_MONTH = "2026-04"
+// pct_clinicians_viewed). The roster snapshot is per-client (latest run_date
+// in S3) — see $lib/snapshot-months.ts.
 
 const round1 = (n: number) => Math.round(n * 10) / 10
 
@@ -58,7 +58,9 @@ export const load: PageLoad = async ({ fetch, depends }) => {
     fetch(
       `/api/posthog/${selection.system}/market?start=${selection.start}&end=${selection.end}${refreshFlag}`,
     ),
-    fetch(`/api/snapshot/${selection.system}/${ROSTER_MONTH}/market_metrics.json`),
+    fetch(
+      `/api/snapshot/${selection.system}/${LATEST_SNAPSHOT_MONTH[selection.system]}/market_metrics.json`,
+    ),
   ])
 
   const snap = snapRes.ok

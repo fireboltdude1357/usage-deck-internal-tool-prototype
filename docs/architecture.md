@@ -93,8 +93,12 @@ three page loaders, the snapshot API route). Changing a field type without
 updating every producer breaks page rendering loudly, which is the point —
 the API route schema-validates on read.
 
-`Client` literal is `"bsmh" | "ssm" | "duke" | "ucsf"`. `Market` literal is
-the six BSMH markets. `Month` is a regex-validated `YYYY-MM` string.
+`Client` literal is `"bsmh" | "ssm" | "duke" | "ucsf"`. `Market` is an open
+string in the schema — the allow-list is per-client (see `$lib/markets`,
+`MARKETS_BY_CLIENT`). BSMH has six geographic markets; SSM has seven regional
+units (Wisconsin, St. Louis, Oklahoma, Mid-Missouri, Southern Illinois,
+Corporate, Continuum of Care); Duke and UCSF have none — their dashboards
+hide the market view entirely. `Month` is a regex-validated `YYYY-MM` string.
 
 `PlatformMetrics` carries (in addition to `kpis` / `provider_views_by_month` /
 `unit_views_by_month` / `top_units_viewed`) the Leaders' Retention Workflow
@@ -105,18 +109,29 @@ inputs: `risk_factor_views: {total, overview, drilldown, other}`,
 `MarketMetrics` carries the per-market `market_cards: Array<MarketCard>` with
 the same retention-workflow fields scoped to one market, plus the unchanged
 four `*_by_market` bar arrays for cross-market comparison.
+`SuccessStoriesMetrics` carries `min_pre_procedures`, `available_months`,
+and `providers: Array<SuccessStoryProvider>`. Each provider is the raw
+per-month series — `monthly: Array<{month, procedures, work_rvu,
+encounters, enc_duration, doc_time, admin_time, quit_prob}>` — plus
+display metadata (name/specialty/category/department) and the resolved
+`market` (null for clients without a BU mapping). Pre/post pairing, the
+five-category scorecard (`turnover`, `volume`, `time_with_patients`,
+`efficiency`, `rvu`), the `n_improvements` tally, and the market /
+cohort filters are all derived **live** in
+`src/lib/success-stories.ts` against the user-selected date range —
+see § Success-stories analysis.
 
 ### PostHog client — `src/lib/server/posthog/`
 
 | File | Role |
 |---|---|
-| `client.ts` | `runHogQL(query, opts)` — Effect-wrapped POST to `${POSTHOG_ENDPOINT}` with 30s timeout, exponential backoff (500ms / 1s / 2s, two retries) on `Network` / `Timeout` / `BadStatus ≥ 500`. Returns `{ results, columns }`. `PostHogError` kinds: `Configuration` (no API key) / `Network` / `Timeout` / `BadStatus` / `Decode`. |
+| `client.ts` | `runHogQL(query, opts)` — Effect-wrapped POST to `${POSTHOG_ENDPOINT}` with 30s timeout, exponential backoff (1s/2s/4s/8s, four retries) on `Network` / `Timeout` / `BadStatus` in {408, 425, 429, ≥500}. Every request is gated by a module-level semaphore with **permits=2**, below PostHog's per-team cap of 3 concurrent HogQL queries — this is the primary 429-avoidance mechanism; retries are the safety net. Returns `{ results, columns }`. `PostHogError` kinds: `Configuration` (no API key) / `Network` / `Timeout` / `BadStatus` / `Decode`. |
 | `pagination.ts` | `fetchByMonth(start, end, buildQuery, label)` runs the same template once per calendar month with `concurrency: 4`. Each month that returns ≥ 100 rows (PostHog's default page limit) gets bisected up to depth 4 (~2-day chunks). Returns flattened rows + columns. |
-| `queries.ts` | The five canonical HogQL templates: `providerViewEventsQuery`, `unitViewEventsQuery`, `monthlyUserActivityQuery`, `userActivityByMonthQuery`, `riskFactorViewEventsQuery`. All filter on `event = 'Page Load'` + `properties.\`client-username\`` + email-domain prefix + `timestamp` window. URL-era regex matches `/regions|units|physicians/units|nurses/units` — leaving any era out silently drops pre-Oct 2025 data. The risk-factor query classifies each row as `overview` / `drilldown` / `other` via `multiIf` so the aggregator can tally without re-matching URLs. |
+| `queries.ts` | The six canonical HogQL templates: `providerViewEventsQuery`, `unitViewEventsQuery`, `monthlyUserActivityQuery`, `userActivityByMonthQuery`, `riskFactorViewEventsQuery`, and `successStoriesCohortQuery` (provider `legacy_id`s viewed in a window — used by `/success-stories` to gate the snapshot analysis live). All filter on `event = 'Page Load'` + `properties.\`client-username\`` + email-domain prefix + `timestamp` window. URL-era regex matches `/regions|units|physicians/units|nurses/units` — leaving any era out silently drops pre-Oct 2025 data. The risk-factor query classifies each row as `overview` / `drilldown` / `other` via `multiIf`. The cohort query carries an explicit `LIMIT 10000` because the HogQL API otherwise truncates at 100. |
 | `aggregator.ts` | Pure functions: `buildPlatformSnapshot`, `buildMarketSnapshot`, `buildProvisionedSnapshot`. Take typed event arrays, return a snapshot object that validates against the matching schema. |
-| `pipeline.ts` | `runPlatformPipeline` / `runMarketPipeline` / `runProvisionedPipeline` — the public entry points. Each composes the right `fetch*` helpers, hands them to the aggregator, and decodes the result against the schema. |
+| `pipeline.ts` | `runPlatformPipeline` / `runMarketPipeline` / `runProvisionedPipeline` / `runSuccessStoriesCohortPipeline` — the public entry points. Each composes the right `fetch*` helpers, hands them to the aggregator, and decodes the result against the schema. The cohort pipeline returns a `{ provider_ids: string[] }` envelope and is the only one that doesn't go through an aggregator (the raw HogQL result is already the answer). |
 | `cache.ts` | 15-minute in-process `Map` cache. Per-warm-instance only (one map per Vercel function). `cached(key, effect, { bypass })` — `bypass: true` skips the read but still writes the fresh value back. |
-| `config.ts` | `POSTHOG_PROJECT_ID = "71649"`, `CLIENTS` (per-client `clientUsername` + `emailDomains` + provisioned-user counts), `BU_UUID_MARKET` for BSMH market attribution, `ALL_MARKETS` zero-fill list. |
+| `config.ts` | `POSTHOG_PROJECT_ID = "71649"`, `CLIENTS` (per-client `clientUsername` + `emailDomains` + provisioned-user counts), `BU_UUID_MARKET` (per-client `bu_uuid → market` map for the PostHog path). Re-exports `MARKETS_BY_CLIENT` from `$lib/markets` (browser-safe; the zero-fill list used by the aggregator). |
 
 Caching strategy: each `fetch*` is independently cached by `(event-shape, client, range)`,
 and each pipeline result is cached by `(metric, client, range)`. The pipeline
@@ -138,7 +153,19 @@ the session from locals. Three pages — `/platform-engagement`,
 
 Selection state (`system`, `market`, `start`, `end`) lives in `localStorage` under
 `internal-tool:selection`, owned by `src/lib/selection.svelte.ts`. URLs stay
-clean; only the route changes between pages.
+clean; only the route changes between pages. The `setSystem(client)` helper
+is an atomic swap — it resets `market` to `"all"` and snaps `start`/`end` to
+the client's `defaultRange()` (trailing 7 months from
+`AVAILABLE_MONTHS[client]` in `src/lib/snapshot-months.ts`). `loadInitial()`
+clamps any persisted payload against the same lists so older localStorage
+state can't render a picker pointed at a month with no S3 object.
+
+The market dimension is per-client (BSMH: 6 geographic markets, SSM: 7 SSM
+Health regions, Duke/UCSF: none). `TopBar` hides `<MarketPicker />` whenever
+`hasMarkets(selection.system)` is false (sourced from `$lib/markets`); the
+`/market-engagement` page renders an empty-state card for those clients.
+`TimeRangePicker` reads `AVAILABLE_MONTHS[selection.system]` reactively so its
+dropdowns repopulate when the system changes.
 
 UI primitives (`KpiTile`, `TimeSeries`, `CategoryBars`, `DataTable`,
 `MarketPicker`, `SystemPicker`, `TimeRangePicker`, `TopBar`, `RefreshButton`)
@@ -151,18 +178,79 @@ runtime, so a malformed export fails at write time before it can hit S3.
 
 | Script | What it does |
 |---|---|
-| `query.ts` | Opens an SSH tunnel to the RDS bastion (`rds/bastion.ts`), runs every `.sql` file under `rds/queries/` (or the one named via `--query`) with `{{client}}` / `{{month}}` placeholders, writes one CSV per query to `tmp/snapshot/{client}/{month}/`. |
-| `build.ts` | Reads `clinician-roster.csv`, runs the `shape/roster.ts` aggregators, schema-validates via `schema-roundtrip.ts`, writes `metrics.json` / `market_metrics.json` / `provisioned_users.json` to the same `tmp/snapshot/...` dir. |
-| `upload.ts` | Re-validates the local JSON, `PutObjectCommand`s to `s3://${SNAPSHOT_BUCKET}/{client}/{month}/{file}` with `Cache-Control: public, max-age=31536000, immutable`. `--dry-run` prints what it would PUT. |
+| `query.ts` | Runs every `.sql` file under `rds/queries/` and `athena/queries/` (or the one named via `--query`, or scoped via `--source rds\|athena\|all`) with `{{client}}` / `{{month}}` placeholders, writes one CSV per query to `tmp/snapshot/{client}/{month}/`. RDS path opens an SSH tunnel via `rds/bastion.ts`; Athena path uses `@aws-sdk/client-athena` + the snapshot bucket as its `OutputLocation` (prefix `ATHENA_OUTPUT_PREFIX`, default `athena-results/`). |
+| `athena/run-query.ts` | PHI block-list pre-flight (substring scan against the CLAUDE.md list) → `StartQueryExecution` → poll `GetQueryExecution` every 2s (max 180s) → `S3 GetObject` on the `{qid}.csv` result → write to local CSV. Optional `-- @database: <name>` header comment overrides `ATHENA_DATABASE` per file. |
+| `build.ts` | Reads `clinician-roster.csv`, runs the `shape/roster.ts` aggregators, schema-validates via `schema-roundtrip.ts`, writes `metrics.json` / `market_metrics.json` / `provisioned_users.json` to the same `tmp/snapshot/...` dir. If the five success-stories input CSVs (`provider-metadata`, `quit-prob-trajectories`, `claims-monthly`, `encounters-monthly`, `ehr-monthly`) are all present, also runs `shape/success-stories.ts` (which takes the roster CSV for market lookup) and writes `success_stories.json` carrying the raw per-provider per-month series. Otherwise the success-stories job is skipped quietly. `--file <name>` scopes the build to a single output. |
+| `upload.ts` | Re-validates the local JSON, `PutObjectCommand`s to `s3://${SNAPSHOT_BUCKET}/{client}/{month}/{file}` with `Cache-Control: public, max-age=31536000, immutable`. `--file <name>` uploads only one of the four; `--dry-run` prints what it would PUT. |
+| `backfill-all.sh` | One-shot orchestrator that wipes `s3://${SNAPSHOT_BUCKET}/{bsmh,ssm,duke,ucsf}/` and re-runs query/build/upload for the hard-coded `(client, run_date)` list (derived from the 2026-05-11 probe of `provider_quit_risk_v2`). Roster-only — does not generate `success_stories.json`. |
+| `backfill-success.sh` | Builds `success_stories.json` once per client (at the client's canonical / latest run-date) and uploads it to that single month-prefix only. The snapshot carries the full per-provider per-month series, so the page loader picks up the same file regardless of which month-key the picker has selected. Skips clients whose roster yields zero providers. |
 
 Both runtime and pipeline share the same `SNAPSHOT_AWS_*` IAM key today
 (Tanner's prototype identity). Splitting the reader to a dedicated read-only
 principal scoped to `internal-tool-snapshots/*` is a deferred security
 hardening item — see `archive/design/05-workos-setup/PLAN.md`.
 
-The `scripts/snapshot/athena/queries/` directory exists but is empty in v1;
-RDS covers everything currently rendered. Athena reads land when (and if) a
-metric requires `dbt_dev_gold.*` data.
+Athena queries live in `scripts/snapshot/athena/queries/` and run through the
+SDK path described above. Currently used for the success-stories pipeline
+(per-provider per-month features from `sql_outputs.monthly_claims_features` /
+`monthly_encounters_features` / `ehr_usage_features`). Partition keys on
+those three tables are `(client, run_date, batch_ds)`. The monthly queries
+filter on `client` only — pre/post pairing is derived live in the page
+loader from the picker range, so the snapshot needs the full per-month
+series. `feature_ds` is a regular column and won't prune by itself.
+
+### Success-stories analysis — raw snapshot + live derivation
+
+The page is a **hybrid**:
+
+- **Snapshot producer** — `scripts/snapshot/shape/success-stories.ts`
+  joins six CSVs (RDS roster, RDS metadata, RDS monthly quit-prob, three
+  Athena monthly feature tables) into one record per provider with the
+  raw per-month series (`procedures`, `work_rvu`, `encounters`,
+  `enc_duration`, `doc_time`, `admin_time`, `quit_prob`). The roster CSV
+  is the source of the `market` field; everything else is keyed on
+  `provider_id`. No pre/post pairing, no improvement scoring, no
+  filtering — the snapshot is the unfiltered raw input.
+- **Live derivation** — `src/lib/success-stories.ts` exposes
+  `splitWindow(start, end, available)` and `deriveProviders(providers,
+  pre, post, opts)`. The page loader
+  (`src/routes/success-stories/+page.ts`) reads `selection.start` /
+  `selection.end` (the TimeRangePicker), splits the range in half (floor
+  pre, ceil post — post gets the longer side on odd counts), then runs
+  each provider's monthly series through the five-category scorecard
+  (turnover, patient volume = procedures OR encounters up, time with
+  patients = encounter duration up, workflow efficiency = doc time OR
+  admin time down, work RVUs). The pre-window procedure gate
+  (`min_pre_procedures = 10`) and the providers-missing-trajectory drop
+  happen here. Sort order: `n_improvements` desc, then `turnover.pct`
+  asc.
+- **Live cohort** — `successStoriesCohortQuery` in
+  `src/lib/server/posthog/queries.ts` returns provider `legacy_id`s
+  viewed in the picker range, exposed at
+  `/api/posthog/[client]/success-stories-cohort?start=…&end=…` via
+  `runSuccessStoriesCohortPipeline`. The page intersects this with the
+  derived providers; PostHog 503 falls through to an un-cohort-gated
+  view with a banner.
+
+The page hides itself behind a "widen your range" empty state when the
+selection covers fewer than 2 months (one pre + one post is the minimum).
+The market filter (`selection.market`) is applied at derive time;
+providers without a mapped market are dropped when a specific market is
+selected.
+
+### Per-month query semantics
+
+`clinician-roster.sql` and `provider-metadata.sql` filter on
+`run_date = ({{month}} || '-01')::date`. A `{{month}}` with no matching
+`run_date` returns zero rows; `build.ts` then fails on the empty roster.
+That's the intended failure mode — every month-key in S3 is backed by an
+actual model run rather than a silently-stale most-recent fallback.
+
+The trajectory + monthly feature queries
+(`quit-prob-trajectories.sql`, `claims-monthly.sql`,
+`encounters-monthly.sql`, `ehr-monthly.sql`) **do not** filter on
+`{{month}}` — they return every month the client has data for, and the
+page loader splits pre/post live from the picker range.
 
 ## Hard rules carried forward
 
@@ -175,7 +263,9 @@ metric requires `dbt_dev_gold.*` data.
   any era silently drops pre-Oct 2025 data.
 - **RDS > Athena source priority** when a metric exists in both.
 - **Athena partition pruning** — every `dbt_dev_gold.gold_model_output` query
-  must filter on `partition_date`.
+  must filter on `partition_date`. Every `sql_outputs.monthly_*` /
+  `sql_outputs.ehr_usage_features` query must filter on `client` + `batch_ds`
+  (those tables' partition keys are `(client, run_date, batch_ds)`).
 - **Athena `output_type` casing is lowercase** (`quit_probability`, `shap_value`).
 - **Credentials never in the browser bundle.** Vercel env vars live in server
   code only; never expose anything via `VITE_*` except non-secret URLs.

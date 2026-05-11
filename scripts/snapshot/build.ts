@@ -11,6 +11,7 @@ import {
   PlatformSnapshot,
   ProvisionedUsersSnapshot,
   SnapshotFileSchema,
+  SuccessStoriesSnapshot,
   type SnapshotFile,
 } from "../../src/lib/schema/snapshot.ts"
 import {
@@ -20,6 +21,14 @@ import {
   type EnvelopeOpts,
   type RosterRow,
 } from "./shape/roster.ts"
+import {
+  buildSuccessStoriesSnapshot,
+  type ClaimsMonthlyRow,
+  type EhrMonthlyRow,
+  type EncountersMonthlyRow,
+  type ProviderMetadataRow,
+  type QuitProbRow,
+} from "./shape/success-stories.ts"
 import { roundtrip } from "./schema-roundtrip.ts"
 
 const ROOT = path.resolve(import.meta.dirname, "..", "..")
@@ -57,13 +66,31 @@ if (!fs.existsSync(ROSTER_CSV)) {
   )
 }
 
-const rosterRows = parseCsv(fs.readFileSync(ROSTER_CSV), {
-  columns: true,
-  skip_empty_lines: true,
-  trim: true,
-}) as RosterRow[]
+const readCsv = <T>(file: string): T[] =>
+  parseCsv(fs.readFileSync(file), {
+    columns: true,
+    skip_empty_lines: true,
+    trim: true,
+  }) as T[]
+
+const rosterRows = readCsv<RosterRow>(ROSTER_CSV)
 
 console.log(`read ${rosterRows.length} roster rows`)
+
+// Success-stories inputs are optional — when any are absent, the success-
+// stories job skips itself. Earlier snapshots (pre Athena-seam) only had
+// the roster CSV.
+const SUCCESS_INPUTS = {
+  metadata: path.join(TMP, "provider-metadata.csv"),
+  quitProb: path.join(TMP, "quit-prob-trajectories.csv"),
+  claims: path.join(TMP, "claims-monthly.csv"),
+  encounters: path.join(TMP, "encounters-monthly.csv"),
+  ehr: path.join(TMP, "ehr-monthly.csv"),
+} as const
+
+const haveAllSuccessInputs = Object.values(SUCCESS_INPUTS).every((p) =>
+  fs.existsSync(p),
+)
 
 fs.mkdirSync(TMP, { recursive: true })
 
@@ -92,6 +119,30 @@ const jobs: Job[] = [
     schema: ProvisionedUsersSnapshot as unknown as Schema.Schema<unknown, unknown>,
   },
 ]
+
+if (haveAllSuccessInputs) {
+  jobs.push({
+    file: "success_stories.json",
+    build: () =>
+      buildSuccessStoriesSnapshot(
+        {
+          roster: rosterRows,
+          metadata: readCsv<ProviderMetadataRow>(SUCCESS_INPUTS.metadata),
+          quitProb: readCsv<QuitProbRow>(SUCCESS_INPUTS.quitProb),
+          claims: readCsv<ClaimsMonthlyRow>(SUCCESS_INPUTS.claims),
+          encounters: readCsv<EncountersMonthlyRow>(SUCCESS_INPUTS.encounters),
+          ehr: readCsv<EhrMonthlyRow>(SUCCESS_INPUTS.ehr),
+        },
+        env,
+      ),
+    schema: SuccessStoriesSnapshot as unknown as Schema.Schema<unknown, unknown>,
+  })
+} else if (onlyFile === "success_stories.json") {
+  const missing = Object.entries(SUCCESS_INPUTS)
+    .filter(([, p]) => !fs.existsSync(p))
+    .map(([, p]) => path.relative(ROOT, p))
+  die(`success_stories.json requested but missing inputs: ${missing.join(", ")}`)
+}
 
 const selected = onlyFile ? jobs.filter((j) => j.file === onlyFile) : jobs
 

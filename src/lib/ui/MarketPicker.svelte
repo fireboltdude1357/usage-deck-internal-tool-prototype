@@ -1,15 +1,13 @@
 <script lang="ts">
   import { selection, type MarketParam } from "$lib/selection.svelte"
+  import { MARKETS_BY_CLIENT } from "$lib/markets"
 
-  const MARKETS: MarketParam[] = [
+  // Show "all" + the markets the current client actually has. Hides itself if
+  // the client has no market split (see TopBar.svelte for the gate).
+  const options = $derived<MarketParam[]>([
     "all",
-    "Hampton Roads",
-    "Lorain",
-    "Lima",
-    "Youngstown",
-    "Kentucky",
-    "Toledo",
-  ]
+    ...(MARKETS_BY_CLIENT[selection.system] as readonly MarketParam[]),
+  ])
 
   const onChange = (e: Event): void => {
     const target = e.currentTarget as HTMLSelectElement
@@ -24,7 +22,7 @@
     value={selection.market}
     onchange={onChange}
   >
-    {#each MARKETS as m (m)}
+    {#each options as m (m)}
       <option value={m}>{m === "all" ? "All markets" : m}</option>
     {/each}
   </select>

@@ -38,6 +38,7 @@
     "vitest": "^3.2.4"
   },
   "dependencies": {
+    "@aws-sdk/client-athena": "^3.1045.0",
     "@workos-inc/node": "^9.2.0",
     "effect": "^3.21.2",
     "layerchart": "^1.0.13"

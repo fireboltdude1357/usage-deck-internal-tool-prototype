@@ -23,6 +23,14 @@ export type PostHogResponse = Schema.Schema.Type<typeof PostHogResponse>
 // 30s on our side is queue + network slack; never extends the server limit.
 const FETCH_TIMEOUT = Duration.seconds(30)
 
+// PostHog enforces a hard cap of 3 concurrent HogQL queries per team. A single
+// page load fans out across multiple event-shapes × multiple months and stacks
+// pipelines (platform + market + provisioned) in parallel, which trivially
+// blows past 3 and triggers 429 storms. Gate every HogQL request through a
+// shared semaphore with permits=2, leaving one slot of headroom for ad-hoc
+// queries from another dashboard or notebook session.
+const semaphore = Effect.unsafeMakeSemaphore(2)
+
 const apiKey = (): Effect.Effect<string, PostHogError> => {
   const key = env.POSTHOG_API_KEY
   return key
@@ -85,14 +93,21 @@ const decode = (raw: unknown): Effect.Effect<PostHogResponse, PostHogError> =>
       }),
   })
 
-const isTransient = (e: PostHogError): boolean =>
-  e.kind === "Network" ||
-  e.kind === "Timeout" ||
-  (e.kind === "BadStatus" && (e.status ?? 0) >= 500)
+const isTransient = (e: PostHogError): boolean => {
+  if (e.kind === "Network" || e.kind === "Timeout") return true
+  if (e.kind === "BadStatus") {
+    const s = e.status ?? 0
+    // 408 Request Timeout, 425 Too Early, 429 Too Many Requests, all 5xx.
+    return s === 408 || s === 425 || s === 429 || s >= 500
+  }
+  return false
+}
 
-// Up to two retries on transient failures with 500ms / 1s / 2s exponential backoff.
-const retrySchedule = Schedule.exponential(Duration.millis(500)).pipe(
-  Schedule.intersect(Schedule.recurs(2)),
+// Up to 4 retries on transient failures with 1s/2s/4s/8s exponential backoff.
+// PostHog's throttle window clears within a few seconds once a slot frees up;
+// the longer tail (up to ~15s total) absorbs bursts where every slot is hot.
+const retrySchedule = Schedule.exponential(Duration.seconds(1)).pipe(
+  Schedule.intersect(Schedule.recurs(4)),
   Schedule.whileInput(isTransient),
 )
 
@@ -107,7 +122,7 @@ export const runHogQL = (
   Effect.suspend(() => {
     const label = opts.label ?? "hogql"
     const started = Date.now()
-    return apiKey().pipe(
+    const attempt = apiKey().pipe(
       Effect.flatMap((key) => fetchOnce(query, key)),
       Effect.timeoutFail({
         duration: FETCH_TIMEOUT,
@@ -115,7 +130,12 @@ export const runHogQL = (
           new PostHogError({ kind: "Timeout", message: "fetch exceeded 30s" }),
       }),
       Effect.flatMap(decode),
-      Effect.retry(retrySchedule),
+    )
+    // Semaphore wraps the *whole* retry loop: once a query owns a slot it
+    // keeps it across backoffs, which prevents the retry-storm pattern where
+    // freshly-released slots are immediately grabbed by queries that will
+    // also 429.
+    return semaphore.withPermits(1)(Effect.retry(attempt, retrySchedule)).pipe(
       Effect.tap((res) =>
         Effect.sync(() => {
           const ms = Date.now() - started

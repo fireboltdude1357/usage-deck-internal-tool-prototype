@@ -3,12 +3,13 @@ import { Schema } from "effect"
 import { ProvisionedUsersSnapshot } from "$lib/schema/snapshot"
 import { selection } from "$lib/selection.svelte"
 import { refresh } from "$lib/refresh.svelte"
+import { LATEST_SNAPSHOT_MONTH } from "$lib/snapshot-months"
 import type { PageLoad } from "./$types"
 
 // Live PostHog already produces total/lima/user_detail; no roster merge needed.
 // Snapshot is only used as the 503 (POSTHOG_API_KEY unset) fallback so dev
-// without a key still renders something.
-const FALLBACK_SNAPSHOT_MONTH = "2026-04"
+// without a key still renders something. Snapshot month is per-client — see
+// $lib/snapshot-months.ts.
 
 export const load: PageLoad = async ({ fetch, depends }) => {
   depends("app:selection")
@@ -37,7 +38,7 @@ export const load: PageLoad = async ({ fetch, depends }) => {
   }
 
   const fixture = await fetch(
-    `/api/snapshot/${selection.system}/${FALLBACK_SNAPSHOT_MONTH}/provisioned_users.json`,
+    `/api/snapshot/${selection.system}/${LATEST_SNAPSHOT_MONTH[selection.system]}/provisioned_users.json`,
   )
   if (!fixture.ok) {
     return {

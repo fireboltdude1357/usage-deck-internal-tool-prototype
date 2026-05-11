@@ -1,5 +1,7 @@
 <script lang="ts">
   import { page } from "$app/state"
+  import { selection } from "$lib/selection.svelte"
+  import { hasMarkets } from "$lib/markets"
   import SystemPicker from "./SystemPicker.svelte"
   import MarketPicker from "./MarketPicker.svelte"
   import TimeRangePicker from "./TimeRangePicker.svelte"
@@ -9,6 +11,7 @@
     { href: "/platform-engagement", label: "Platform engagement" },
     { href: "/market-engagement", label: "Market engagement" },
     { href: "/provisioned-users", label: "Provisioned users" },
+    { href: "/success-stories", label: "Success stories" },
   ]
 
   const sessionEmail = $derived(page.data.session?.user?.email ?? null)
@@ -21,7 +24,9 @@
     </div>
     <div class="ml-auto flex flex-wrap items-center gap-3">
       <SystemPicker />
-      <MarketPicker />
+      {#if hasMarkets(selection.system)}
+        <MarketPicker />
+      {/if}
       <TimeRangePicker />
       <RefreshButton />
       {#if sessionEmail}

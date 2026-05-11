@@ -104,6 +104,29 @@ WHERE ${baseFilter(client, from, to)}
   AND (properties.url = '/risk-factors' OR match(properties.url, '^/risk-factors/[0-9]+'))
 ORDER BY timestamp`
 
+// Provider legacy_ids viewed externally in a window — the "treatment cohort"
+// for the success-stories page. Same URL-era coverage and `client-username`
+// filter as the other queries. Internal viewers are excluded using the same
+// email-domain inclusion list (i.e. only the client's own users count). The
+// HogQL API caps results at 100 unless an explicit LIMIT is set higher;
+// 10000 is well above any realistic per-client cohort.
+//
+// `from`/`to` are inclusive-month boundaries that the caller converts to
+// the half-open `[from-01, next-month-01)` range used elsewhere.
+export const successStoriesCohortQuery = (
+  client: Client,
+  from: string,
+  to: string,
+): string => `SELECT
+  extract(properties.url, '([a-f0-9-]{36})$') AS legacy_id,
+  count() AS total_views
+FROM events
+WHERE ${baseFilter(client, from, to)}
+  AND match(properties.url, '${PROVIDER_URL_REGEX}')
+GROUP BY legacy_id
+ORDER BY total_views DESC
+LIMIT 10000`
+
 // Per-(month, user) day-level activity summary used to populate the user-detail
 // table on /provisioned-users. Returns one row per (month, user) with that
 // month's page-load count, distinct active days, first/last seen dates. The

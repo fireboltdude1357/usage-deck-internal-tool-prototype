@@ -8,8 +8,10 @@
 --   parent-db-investigations/.../bsmh-usage-deck/engagement/
 --   platform-engagement-metrics/12-retention-workflow-visuals/queries/clinician-roster.sql
 -- Generalized:
---   - dropped the `run_date <= '2026-02-28'` cutoff (most-recent run, no time fence)
 --   - parameterized `client_username` as `{{client}}`
+--   - parameterized `run_date` as `{{month}}` (YYYY-MM) so each snapshot
+--     reflects that month's model run rather than the latest. `run_date` in
+--     `provider_quit_risk_v2` always lands on the 1st of the month.
 SELECT
   qr.provider_id,
   qr.quit_prob,
@@ -23,9 +25,5 @@ JOIN public.provider_info_v2 pi
   ON qr.provider_id = pi.provider_id
  AND qr.client_username = pi.client_username
 WHERE qr.client_username = {{client}}
-  AND qr.run_date = (
-    SELECT MAX(run_date)
-    FROM public.provider_quit_risk_v2
-    WHERE client_username = {{client}}
-  )
+  AND qr.run_date = ({{month}} || '-01')::date
 ORDER BY pi.businessunitname, pi.provider_name
