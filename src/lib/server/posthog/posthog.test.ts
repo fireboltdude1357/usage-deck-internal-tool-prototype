@@ -8,6 +8,7 @@ import {
   userActivityByMonthQuery,
 } from "./queries"
 import {
+  buildAdoptionEngagementSnapshot,
   buildMarketSnapshot,
   buildPlatformSnapshot,
   buildProvisionedSnapshot,
@@ -481,3 +482,232 @@ const kpi = (
   label: string,
 ): { value: number; denominator?: number } | undefined =>
   snap.metrics.kpis.find((k) => k.label === label)
+
+describe("buildAdoptionEngagementSnapshot", () => {
+  const ua = (
+    rows: { month: string; user_email: string; page_loads?: number; active_days?: number }[],
+  ): UserActivityMonth[] =>
+    rows.map((r) => ({
+      month: r.month,
+      user_email: r.user_email,
+      page_loads: r.page_loads ?? 1,
+      active_days: r.active_days ?? 1,
+      first_seen: `${r.month}-01`,
+      last_seen: `${r.month}-15`,
+    }))
+
+  const engagedBy = (
+    snap: ReturnType<typeof buildAdoptionEngagementSnapshot>,
+    def: string,
+  ): Record<string, number> => {
+    const view = snap.metrics.views.find((v) => v.definition === def)!
+    return Object.fromEntries(view.engaged_by_month.map((p) => [p.month, p.value]))
+  }
+
+  it("builds adoption curve from first-seen months (definition-independent)", () => {
+    const snap = buildAdoptionEngagementSnapshot({
+      client: "bsmh",
+      startMonth: "2025-08",
+      endMonth: "2025-10",
+      userActivity: ua([
+        { month: "2025-08", user_email: "a@x" },
+        { month: "2025-08", user_email: "b@x" },
+        { month: "2025-09", user_email: "b@x" },
+        { month: "2025-09", user_email: "c@x" },
+        { month: "2025-10", user_email: "d@x" },
+      ]),
+    })
+
+    expect(snap.metrics.adoption).toEqual([
+      { month: "2025-08", new_adopters: 2, adopters: 2 },
+      { month: "2025-09", new_adopters: 1, adopters: 3 },
+      { month: "2025-10", new_adopters: 1, adopters: 4 },
+    ])
+    expect(snap.metrics.views.map((v) => v.definition)).toEqual([
+      "mau",
+      "rolling_3mo",
+      "rolling_6mo",
+      "l2_3",
+      "l3_6",
+      "power_user",
+      "multi_day",
+      "no_gap_3mo",
+      "ever_3_months",
+    ])
+  })
+
+  it("MAU counts only users active in M itself", () => {
+    const snap = buildAdoptionEngagementSnapshot({
+      client: "bsmh",
+      startMonth: "2025-08",
+      endMonth: "2025-10",
+      userActivity: ua([
+        { month: "2025-08", user_email: "a@x" },
+        { month: "2025-09", user_email: "b@x" },
+        { month: "2025-10", user_email: "a@x" },
+      ]),
+    })
+    expect(engagedBy(snap, "mau")).toEqual({
+      "2025-08": 1, // A
+      "2025-09": 1, // B
+      "2025-10": 1, // A again
+    })
+  })
+
+  it("rolling 3-mo lets silent users drop and re-engage", () => {
+    // A: Aug only. B: Aug, Sep, then returns in Dec.
+    const snap = buildAdoptionEngagementSnapshot({
+      client: "bsmh",
+      startMonth: "2025-08",
+      endMonth: "2025-12",
+      userActivity: ua([
+        { month: "2025-08", user_email: "a@x" },
+        { month: "2025-08", user_email: "b@x" },
+        { month: "2025-09", user_email: "b@x" },
+        { month: "2025-12", user_email: "b@x" },
+      ]),
+    })
+    expect(engagedBy(snap, "rolling_3mo")).toEqual({
+      "2025-08": 2,
+      "2025-09": 2,
+      "2025-10": 2, // A still in [Aug..Oct]
+      "2025-11": 1, // A's Aug now out of [Sep..Nov]; B's Sep still in
+      "2025-12": 1, // A out; B re-engaged via Dec
+    })
+  })
+
+  it("rolling 6-mo is strictly more permissive than rolling 3-mo", () => {
+    const userActivity = ua([
+      { month: "2025-08", user_email: "a@x" },
+      { month: "2025-09", user_email: "b@x" },
+    ])
+    const snap = buildAdoptionEngagementSnapshot({
+      client: "bsmh",
+      startMonth: "2025-08",
+      endMonth: "2026-01",
+      userActivity,
+    })
+    // A active Aug only. By Jan, A is 5 months silent.
+    // Rolling-3 drops A in Nov; rolling-6 keeps A through Jan.
+    expect(engagedBy(snap, "rolling_3mo")["2026-01"]).toBe(0)
+    expect(engagedBy(snap, "rolling_6mo")["2026-01"]).toBe(2) // both A + B still within 6
+  })
+
+  it("L2/3 requires 2 of the last 3 months — one-touch users excluded", () => {
+    const snap = buildAdoptionEngagementSnapshot({
+      client: "bsmh",
+      startMonth: "2025-08",
+      endMonth: "2025-10",
+      userActivity: ua([
+        { month: "2025-08", user_email: "a@x" }, // one-touch
+        { month: "2025-08", user_email: "b@x" },
+        { month: "2025-10", user_email: "b@x" }, // 2 of last 3 (Aug+Oct in [Aug..Oct])
+      ]),
+    })
+    expect(engagedBy(snap, "l2_3")).toEqual({
+      "2025-08": 0,
+      "2025-09": 0,
+      "2025-10": 1, // B only
+    })
+  })
+
+  it("L3/6 captures users who hit 3 of 6 even with a gap", () => {
+    const snap = buildAdoptionEngagementSnapshot({
+      client: "bsmh",
+      startMonth: "2025-08",
+      endMonth: "2026-01",
+      userActivity: ua([
+        { month: "2025-08", user_email: "a@x" },
+        { month: "2025-10", user_email: "a@x" },
+        { month: "2026-01", user_email: "a@x" }, // 3 active months in 6, with gaps
+      ]),
+    })
+    expect(engagedBy(snap, "l3_6")["2026-01"]).toBe(1)
+    expect(engagedBy(snap, "l2_3")["2026-01"]).toBe(0) // not 2 of last 3 (only Jan)
+  })
+
+  it("power_user requires ≥5 page-loads across [M-2, M]", () => {
+    const snap = buildAdoptionEngagementSnapshot({
+      client: "bsmh",
+      startMonth: "2025-08",
+      endMonth: "2025-10",
+      userActivity: ua([
+        { month: "2025-08", user_email: "a@x", page_loads: 2 },
+        { month: "2025-09", user_email: "a@x", page_loads: 2 },
+        { month: "2025-10", user_email: "a@x", page_loads: 1 }, // sum = 5
+        { month: "2025-10", user_email: "b@x", page_loads: 4 }, // sum = 4
+      ]),
+    })
+    expect(engagedBy(snap, "power_user")["2025-10"]).toBe(1)
+  })
+
+  it("multi_day requires ≥2 distinct active days across [M-2, M]", () => {
+    const snap = buildAdoptionEngagementSnapshot({
+      client: "bsmh",
+      startMonth: "2025-08",
+      endMonth: "2025-08",
+      userActivity: ua([
+        { month: "2025-08", user_email: "a@x", active_days: 2 },
+        { month: "2025-08", user_email: "b@x", active_days: 1 },
+      ]),
+    })
+    expect(engagedBy(snap, "multi_day")["2025-08"]).toBe(1)
+  })
+
+  it("no_3mo_gap is terminal — one silent stretch and the user is out forever", () => {
+    // A: Aug only — never disengages because picker only sees through Oct here.
+    // B: Aug, then 3 silent months (Sep/Oct/Nov silent → disengage at Nov).
+    const snap = buildAdoptionEngagementSnapshot({
+      client: "bsmh",
+      startMonth: "2025-08",
+      endMonth: "2025-12",
+      userActivity: ua([
+        { month: "2025-08", user_email: "b@x" },
+        { month: "2025-12", user_email: "b@x" }, // comes back but already out
+      ]),
+    })
+    const series = engagedBy(snap, "no_gap_3mo")
+    expect(series["2025-08"]).toBe(1)
+    expect(series["2025-09"]).toBe(1) // [Jul..Sep] still has Aug activity
+    expect(series["2025-10"]).toBe(1)
+    expect(series["2025-11"]).toBe(0) // [Sep..Nov] silent — disengaged here
+    expect(series["2025-12"]).toBe(0) // permanently out
+  })
+
+  it("ever_3_months is permanent once cleared", () => {
+    const snap = buildAdoptionEngagementSnapshot({
+      client: "bsmh",
+      startMonth: "2025-08",
+      endMonth: "2025-12",
+      userActivity: ua([
+        { month: "2025-08", user_email: "a@x" },
+        { month: "2025-09", user_email: "a@x" },
+        { month: "2025-10", user_email: "a@x" }, // achieves 3 in Oct
+        // A stays out of Nov/Dec but should remain engaged
+      ]),
+    })
+    expect(engagedBy(snap, "ever_3_months")).toEqual({
+      "2025-08": 0,
+      "2025-09": 0,
+      "2025-10": 1,
+      "2025-11": 1,
+      "2025-12": 1,
+    })
+  })
+
+  it("handles empty input — every view zero, no exceptions", () => {
+    const snap = buildAdoptionEngagementSnapshot({
+      client: "bsmh",
+      startMonth: "2025-08",
+      endMonth: "2025-08",
+      userActivity: [],
+    })
+    expect(snap.metrics.adoption).toEqual([
+      { month: "2025-08", new_adopters: 0, adopters: 0 },
+    ])
+    for (const view of snap.metrics.views) {
+      expect(view.engaged_by_month).toEqual([{ month: "2025-08", value: 0 }])
+      expect(view.kpis.find((k) => k.label === "Engagement rate")?.value).toBe(0)
+    }
+  })
+})

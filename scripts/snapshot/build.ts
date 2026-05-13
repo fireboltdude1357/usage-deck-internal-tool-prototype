@@ -5,6 +5,7 @@ import { parse as parseCsv } from "csv-parse/sync"
 import { Schema } from "effect"
 import { loadEnv } from "./load-env.ts"
 import {
+  AdoptionEngagementSnapshot,
   Client,
   MarketSnapshot,
   Month,
@@ -15,6 +16,7 @@ import {
   type SnapshotFile,
 } from "../../src/lib/schema/snapshot.ts"
 import {
+  buildAdoptionEngagementSnapshot,
   buildMarketSnapshot,
   buildPlatformSnapshot,
   buildProvisionedSnapshot,
@@ -117,6 +119,11 @@ const jobs: Job[] = [
     file: "provisioned_users.json",
     build: () => buildProvisionedSnapshot(rosterRows, env),
     schema: ProvisionedUsersSnapshot as unknown as Schema.Schema<unknown, unknown>,
+  },
+  {
+    file: "adoption_engagement.json",
+    build: () => buildAdoptionEngagementSnapshot(rosterRows, env),
+    schema: AdoptionEngagementSnapshot as unknown as Schema.Schema<unknown, unknown>,
   },
 ]
 

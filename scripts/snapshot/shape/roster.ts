@@ -1,4 +1,5 @@
 import type {
+  AdoptionEngagementSnapshot,
   Client,
   Market,
   MarketBar,
@@ -127,6 +128,24 @@ export const buildProvisionedSnapshot = (
     },
   }
 }
+
+// Adoption/engagement is purely PostHog-derived; the offline RDS pipeline
+// writes a zero-shell so the file exists in S3 as a fixture-fallback target.
+// The shell carries an empty `views` array — the page treats no views as a
+// load failure and shows a clearer error than rendering an empty tab strip.
+export const buildAdoptionEngagementSnapshot = (
+  _rows: RosterRow[],
+  opts: EnvelopeOpts,
+): AdoptionEngagementSnapshot => ({
+  client: opts.client,
+  month: opts.month,
+  generated_at: opts.generated_at,
+  source: "rds",
+  metrics: {
+    adoption: [],
+    views: [],
+  },
+})
 
 export const buildPlatformSnapshot = (
   rows: RosterRow[],

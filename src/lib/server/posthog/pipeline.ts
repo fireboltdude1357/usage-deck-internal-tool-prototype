@@ -1,11 +1,13 @@
 import { Effect, Schema } from "effect"
 import type {
+  AdoptionEngagementSnapshot,
   Client,
   MarketSnapshot,
   PlatformSnapshot,
   ProvisionedUsersSnapshot,
 } from "$lib/schema/snapshot"
 import {
+  AdoptionEngagementSnapshot as AdoptionEngagementSnapshotSchema,
   MarketSnapshot as MarketSnapshotSchema,
   PlatformSnapshot as PlatformSnapshotSchema,
   ProvisionedUsersSnapshot as ProvisionedUsersSnapshotSchema,
@@ -21,6 +23,7 @@ import {
 } from "./queries"
 import { runHogQL } from "./client"
 import {
+  buildAdoptionEngagementSnapshot,
   buildMarketSnapshot,
   buildPlatformSnapshot,
   buildProvisionedSnapshot,
@@ -387,5 +390,40 @@ export const runSuccessStoriesCohortPipeline = (
   cached(
     `success-stories-cohort:${client}:${startMonth}:${endMonth}`,
     cohortImpl(client, startMonth, endMonth),
+    { bypass: opts.refresh },
+  )
+
+const adoptionEngagementImpl = (
+  client: Client,
+  startMonth: string,
+  endMonth: string,
+): Effect.Effect<AdoptionEngagementSnapshot, PostHogError> =>
+  fetchUserActivityByMonth(client, startMonth, endMonth).pipe(
+    Effect.flatMap((userActivity) =>
+      decodeOrFail(
+        AdoptionEngagementSnapshotSchema as unknown as Schema.Schema<
+          AdoptionEngagementSnapshot,
+          unknown
+        >,
+        buildAdoptionEngagementSnapshot({
+          client,
+          startMonth,
+          endMonth,
+          userActivity,
+        }),
+        "adoption-engagement aggregator output",
+      ),
+    ),
+  )
+
+export const runAdoptionEngagementPipeline = (
+  client: Client,
+  startMonth: string,
+  endMonth: string,
+  opts: PipelineOptions = {},
+): Effect.Effect<AdoptionEngagementSnapshot, PostHogError> =>
+  cached(
+    `adoption-engagement:${client}:${startMonth}:${endMonth}`,
+    adoptionEngagementImpl(client, startMonth, endMonth),
     { bypass: opts.refresh },
   )

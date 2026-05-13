@@ -183,15 +183,67 @@ const SuccessStoriesMetrics = Schema.Struct({
   providers: Schema.Array(SuccessStoryProvider),
 })
 
+// Adoption is definition-independent: a user is "adopted" the first month they
+// appear in the picker window. The adoption curve below is shared across every
+// engagement view.
+export const AdoptionMonthPoint = Schema.Struct({
+  month: Month,
+  new_adopters: Schema.Number, // first-ever session within the window in this month
+  adopters: Schema.Number, // cumulative distinct adopters up to and including M
+})
+export type AdoptionMonthPoint = Schema.Schema.Type<typeof AdoptionMonthPoint>
+
+// The 9 engagement definitions shipped today. Stable string IDs; the page uses
+// them as tab keys and as keys for persisting the selected tab in URL state.
+//   mau            — Monthly active: ≥1 session in M itself.
+//   rolling_3mo    — ≥1 session in trailing 3 months [M-2, M].
+//   rolling_6mo    — ≥1 session in trailing 6 months [M-5, M].
+//   l2_3           — Active in ≥2 of the last 3 months.
+//   l3_6           — Active in ≥3 of the last 6 months.
+//   power_user     — ≥5 page-loads summed across [M-2, M].
+//   multi_day      — ≥2 distinct active days summed across [M-2, M].
+//   no_gap_3mo     — Never silent for 3 consecutive months since first-seen;
+//                    once a user disengages by this rule they're out permanently.
+//   ever_3_months  — Once a user has any session in ≥3 distinct months, engaged
+//                    permanently from the third such month onward.
+export const EngagementDefinition = Schema.Literal(
+  "mau",
+  "rolling_3mo",
+  "rolling_6mo",
+  "l2_3",
+  "l3_6",
+  "power_user",
+  "multi_day",
+  "no_gap_3mo",
+  "ever_3_months",
+)
+export type EngagementDefinition = Schema.Schema.Type<typeof EngagementDefinition>
+
+export const AdoptionEngagementView = Schema.Struct({
+  definition: EngagementDefinition,
+  label: Schema.String, // short tab label, e.g. "Rolling 3-mo"
+  description: Schema.String, // one-sentence explanation shown above the chart
+  kpis: Schema.Array(Kpi),
+  engaged_by_month: Series,
+})
+export type AdoptionEngagementView = Schema.Schema.Type<typeof AdoptionEngagementView>
+
+const AdoptionEngagementMetrics = Schema.Struct({
+  adoption: Schema.Array(AdoptionMonthPoint),
+  views: Schema.Array(AdoptionEngagementView),
+})
+
 export const PlatformSnapshot = envelope(PlatformMetrics)
 export const MarketSnapshot = envelope(MarketMetrics)
 export const ProvisionedUsersSnapshot = envelope(ProvisionedUsers)
 export const SuccessStoriesSnapshot = envelope(SuccessStoriesMetrics)
+export const AdoptionEngagementSnapshot = envelope(AdoptionEngagementMetrics)
 
 export type PlatformSnapshot = Schema.Schema.Type<typeof PlatformSnapshot>
 export type MarketSnapshot = Schema.Schema.Type<typeof MarketSnapshot>
 export type ProvisionedUsersSnapshot = Schema.Schema.Type<typeof ProvisionedUsersSnapshot>
 export type SuccessStoriesSnapshot = Schema.Schema.Type<typeof SuccessStoriesSnapshot>
+export type AdoptionEngagementSnapshot = Schema.Schema.Type<typeof AdoptionEngagementSnapshot>
 
 // Map file basename → Schema. The /api/snapshot/[file] route uses this to pick
 // the right Schema for the requested file.
@@ -200,6 +252,7 @@ export const SnapshotByFile = {
   "market_metrics.json": MarketSnapshot,
   "provisioned_users.json": ProvisionedUsersSnapshot,
   "success_stories.json": SuccessStoriesSnapshot,
+  "adoption_engagement.json": AdoptionEngagementSnapshot,
 } as const
 export type SnapshotFile = keyof typeof SnapshotByFile
 
@@ -208,4 +261,5 @@ export const SnapshotFileSchema = Schema.Literal(
   "market_metrics.json",
   "provisioned_users.json",
   "success_stories.json",
+  "adoption_engagement.json",
 )

@@ -2,6 +2,7 @@ import * as fs from "node:fs"
 import * as path from "node:path"
 import { Schema } from "effect"
 import {
+  AdoptionEngagementSnapshot,
   MarketSnapshot,
   PlatformSnapshot,
   ProvisionedUsersSnapshot,
@@ -9,6 +10,7 @@ import {
 } from "../schema/snapshot.js"
 import { roundtrip } from "../../../scripts/snapshot/schema-roundtrip.js"
 import {
+  adoptionEngagement,
   market,
   platform,
   provisionedUsers,
@@ -34,4 +36,5 @@ writeOne(PlatformSnapshot, "metrics.json", platform)
 writeOne(MarketSnapshot, "market_metrics.json", market)
 writeOne(ProvisionedUsersSnapshot, "provisioned_users.json", provisionedUsers)
 writeOne(SuccessStoriesSnapshot, "success_stories.json", successStories)
+writeOne(AdoptionEngagementSnapshot, "adoption_engagement.json", adoptionEngagement)
 console.log("Done.")

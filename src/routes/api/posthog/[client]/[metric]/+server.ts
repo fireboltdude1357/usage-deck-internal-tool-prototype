@@ -4,6 +4,7 @@ import type { Client as ClientT } from "$lib/schema/snapshot"
 import { Client, Month } from "$lib/schema/snapshot"
 import { PostHogError } from "$lib/server/posthog/client"
 import {
+  runAdoptionEngagementPipeline,
   runMarketPipeline,
   runPlatformPipeline,
   runProvisionedPipeline,
@@ -11,7 +12,13 @@ import {
 } from "$lib/server/posthog/pipeline"
 import type { RequestHandler } from "./$types"
 
-const Metric = Schema.Literal("metrics", "market", "provisioned", "success-stories-cohort")
+const Metric = Schema.Literal(
+  "metrics",
+  "market",
+  "provisioned",
+  "success-stories-cohort",
+  "adoption-engagement",
+)
 type Metric = Schema.Schema.Type<typeof Metric>
 
 const decode = <A, I>(schema: Schema.Schema<A, I>, value: unknown): A | null => {
@@ -35,6 +42,8 @@ const dispatch = (
       return runProvisionedPipeline(client, start, end, opts)
     case "success-stories-cohort":
       return runSuccessStoriesCohortPipeline(client, start, end, opts)
+    case "adoption-engagement":
+      return runAdoptionEngagementPipeline(client, start, end, opts)
   }
 }
 

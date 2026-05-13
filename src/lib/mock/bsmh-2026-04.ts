@@ -14,6 +14,7 @@
  * Counts and distributions are real.
  */
 import type {
+  AdoptionEngagementSnapshot,
   MarketSnapshot,
   PlatformSnapshot,
   ProvisionedUsersSnapshot,
@@ -407,6 +408,142 @@ export const successStories: SuccessStoriesSnapshot = {
           { procedures: 64.0, work_rvu: 244.10, encounters: 290, enc_duration: 425, doc_time: 4488, admin_time: 388, quit_prob: 0.0556 },
           { procedures: 62.5, work_rvu: 231.50, encounters: 285, enc_duration: 478, doc_time: 3987, admin_time: 362, quit_prob: 0.0398 },
         ),
+      },
+    ],
+  },
+}
+
+// Illustrative — derived shape, not pulled from a specific investigation CSV.
+// Adoption ramps then plateaus; each engagement definition tells a different
+// story over the same population (numbers chosen to make the tradeoffs visible
+// in a dev screenshot — generous defs are higher, strict ones lower).
+const MONTHS = [
+  "2025-08",
+  "2025-09",
+  "2025-10",
+  "2025-11",
+  "2025-12",
+  "2026-01",
+  "2026-02",
+] as const
+
+const engagedSeries = (vals: readonly number[]) =>
+  MONTHS.map((month, i) => ({ month, value: vals[i] }))
+
+export const adoptionEngagement: AdoptionEngagementSnapshot = {
+  client: "bsmh",
+  month: "2026-04",
+  generated_at,
+  source: "posthog",
+  metrics: {
+    adoption: [
+      { month: "2025-08", new_adopters: 6, adopters: 6 },
+      { month: "2025-09", new_adopters: 4, adopters: 10 },
+      { month: "2025-10", new_adopters: 5, adopters: 15 },
+      { month: "2025-11", new_adopters: 3, adopters: 18 },
+      { month: "2025-12", new_adopters: 1, adopters: 19 },
+      { month: "2026-01", new_adopters: 1, adopters: 20 },
+      { month: "2026-02", new_adopters: 2, adopters: 22 },
+    ],
+    views: [
+      {
+        definition: "mau",
+        label: "Monthly active",
+        description: "≥1 session in this month.",
+        kpis: [
+          { label: "Total adopters", value: 22, unit: "count" },
+          { label: "Engaged (Monthly active)", value: 7, denominator: 22, unit: "count" },
+          { label: "Engagement rate", value: 32, unit: "percent" },
+        ],
+        engaged_by_month: engagedSeries([6, 6, 8, 5, 4, 3, 7]),
+      },
+      {
+        definition: "rolling_3mo",
+        label: "Rolling 3-mo",
+        description: "≥1 session in the trailing 3 months. Users can drop out after 3 silent months and re-engage later.",
+        kpis: [
+          { label: "Total adopters", value: 22, unit: "count" },
+          { label: "Engaged (Rolling 3-mo)", value: 9, denominator: 22, unit: "count" },
+          { label: "Engagement rate", value: 41, unit: "percent" },
+        ],
+        engaged_by_month: engagedSeries([6, 10, 14, 12, 10, 8, 9]),
+      },
+      {
+        definition: "rolling_6mo",
+        label: "Rolling 6-mo",
+        description: "≥1 session in the trailing 6 months. More permissive than rolling 3-mo; catches quarterly-cadence users.",
+        kpis: [
+          { label: "Total adopters", value: 22, unit: "count" },
+          { label: "Engaged (Rolling 6-mo)", value: 17, denominator: 22, unit: "count" },
+          { label: "Engagement rate", value: 77, unit: "percent" },
+        ],
+        engaged_by_month: engagedSeries([6, 10, 14, 15, 16, 16, 17]),
+      },
+      {
+        definition: "l2_3",
+        label: "L2/3",
+        description: "Active in ≥2 of the last 3 months — frequency-based, filters one-touch users out of \"engaged\".",
+        kpis: [
+          { label: "Total adopters", value: 22, unit: "count" },
+          { label: "Engaged (L2/3)", value: 5, denominator: 22, unit: "count" },
+          { label: "Engagement rate", value: 23, unit: "percent" },
+        ],
+        engaged_by_month: engagedSeries([0, 4, 7, 6, 5, 3, 5]),
+      },
+      {
+        definition: "l3_6",
+        label: "L3/6",
+        description: "Active in ≥3 of the last 6 months — captures consistent but not necessarily monthly use.",
+        kpis: [
+          { label: "Total adopters", value: 22, unit: "count" },
+          { label: "Engaged (L3/6)", value: 6, denominator: 22, unit: "count" },
+          { label: "Engagement rate", value: 27, unit: "percent" },
+        ],
+        engaged_by_month: engagedSeries([0, 0, 4, 5, 7, 6, 6]),
+      },
+      {
+        definition: "power_user",
+        label: "Power user",
+        description: "≥5 page-loads in the trailing 3 months. Depth threshold — differentiates \"opened it\" from \"working with it\".",
+        kpis: [
+          { label: "Total adopters", value: 22, unit: "count" },
+          { label: "Engaged (Power user)", value: 4, denominator: 22, unit: "count" },
+          { label: "Engagement rate", value: 18, unit: "percent" },
+        ],
+        engaged_by_month: engagedSeries([2, 5, 8, 7, 5, 3, 4]),
+      },
+      {
+        definition: "multi_day",
+        label: "Multi-day",
+        description: "≥2 distinct active days in the trailing 3 months. Stronger than page-load count alone; filters single-binge sessions.",
+        kpis: [
+          { label: "Total adopters", value: 22, unit: "count" },
+          { label: "Engaged (Multi-day)", value: 6, denominator: 22, unit: "count" },
+          { label: "Engagement rate", value: 27, unit: "percent" },
+        ],
+        engaged_by_month: engagedSeries([3, 6, 9, 8, 6, 5, 6]),
+      },
+      {
+        definition: "no_gap_3mo",
+        label: "No 3-mo gap",
+        description: "Never silent for 3 consecutive months since first-seen. One slip and a user is permanently out.",
+        kpis: [
+          { label: "Total adopters", value: 22, unit: "count" },
+          { label: "Engaged (No 3-mo gap)", value: 3, denominator: 22, unit: "count" },
+          { label: "Engagement rate", value: 14, unit: "percent" },
+        ],
+        engaged_by_month: engagedSeries([6, 10, 13, 9, 6, 4, 3]),
+      },
+      {
+        definition: "ever_3_months",
+        label: "Lifetime 3+ mo",
+        description: "Any session in ≥3 distinct months. Once a user clears the bar, they're permanently engaged.",
+        kpis: [
+          { label: "Total adopters", value: 22, unit: "count" },
+          { label: "Engaged (Lifetime 3+ mo)", value: 11, denominator: 22, unit: "count" },
+          { label: "Engagement rate", value: 50, unit: "percent" },
+        ],
+        engaged_by_month: engagedSeries([0, 0, 4, 7, 9, 10, 11]),
       },
     ],
   },

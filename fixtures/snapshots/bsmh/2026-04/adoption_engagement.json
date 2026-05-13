@@ -1,0 +1,524 @@
+{
+  "client": "bsmh",
+  "month": "2026-04",
+  "generated_at": "2026-05-01T17:30:00Z",
+  "source": "posthog",
+  "metrics": {
+    "adoption": [
+      {
+        "month": "2025-08",
+        "new_adopters": 6,
+        "adopters": 6
+      },
+      {
+        "month": "2025-09",
+        "new_adopters": 4,
+        "adopters": 10
+      },
+      {
+        "month": "2025-10",
+        "new_adopters": 5,
+        "adopters": 15
+      },
+      {
+        "month": "2025-11",
+        "new_adopters": 3,
+        "adopters": 18
+      },
+      {
+        "month": "2025-12",
+        "new_adopters": 1,
+        "adopters": 19
+      },
+      {
+        "month": "2026-01",
+        "new_adopters": 1,
+        "adopters": 20
+      },
+      {
+        "month": "2026-02",
+        "new_adopters": 2,
+        "adopters": 22
+      }
+    ],
+    "views": [
+      {
+        "definition": "mau",
+        "label": "Monthly active",
+        "description": "≥1 session in this month.",
+        "kpis": [
+          {
+            "label": "Total adopters",
+            "value": 22,
+            "unit": "count"
+          },
+          {
+            "label": "Engaged (Monthly active)",
+            "value": 7,
+            "denominator": 22,
+            "unit": "count"
+          },
+          {
+            "label": "Engagement rate",
+            "value": 32,
+            "unit": "percent"
+          }
+        ],
+        "engaged_by_month": [
+          {
+            "month": "2025-08",
+            "value": 6
+          },
+          {
+            "month": "2025-09",
+            "value": 6
+          },
+          {
+            "month": "2025-10",
+            "value": 8
+          },
+          {
+            "month": "2025-11",
+            "value": 5
+          },
+          {
+            "month": "2025-12",
+            "value": 4
+          },
+          {
+            "month": "2026-01",
+            "value": 3
+          },
+          {
+            "month": "2026-02",
+            "value": 7
+          }
+        ]
+      },
+      {
+        "definition": "rolling_3mo",
+        "label": "Rolling 3-mo",
+        "description": "≥1 session in the trailing 3 months. Users can drop out after 3 silent months and re-engage later.",
+        "kpis": [
+          {
+            "label": "Total adopters",
+            "value": 22,
+            "unit": "count"
+          },
+          {
+            "label": "Engaged (Rolling 3-mo)",
+            "value": 9,
+            "denominator": 22,
+            "unit": "count"
+          },
+          {
+            "label": "Engagement rate",
+            "value": 41,
+            "unit": "percent"
+          }
+        ],
+        "engaged_by_month": [
+          {
+            "month": "2025-08",
+            "value": 6
+          },
+          {
+            "month": "2025-09",
+            "value": 10
+          },
+          {
+            "month": "2025-10",
+            "value": 14
+          },
+          {
+            "month": "2025-11",
+            "value": 12
+          },
+          {
+            "month": "2025-12",
+            "value": 10
+          },
+          {
+            "month": "2026-01",
+            "value": 8
+          },
+          {
+            "month": "2026-02",
+            "value": 9
+          }
+        ]
+      },
+      {
+        "definition": "rolling_6mo",
+        "label": "Rolling 6-mo",
+        "description": "≥1 session in the trailing 6 months. More permissive than rolling 3-mo; catches quarterly-cadence users.",
+        "kpis": [
+          {
+            "label": "Total adopters",
+            "value": 22,
+            "unit": "count"
+          },
+          {
+            "label": "Engaged (Rolling 6-mo)",
+            "value": 17,
+            "denominator": 22,
+            "unit": "count"
+          },
+          {
+            "label": "Engagement rate",
+            "value": 77,
+            "unit": "percent"
+          }
+        ],
+        "engaged_by_month": [
+          {
+            "month": "2025-08",
+            "value": 6
+          },
+          {
+            "month": "2025-09",
+            "value": 10
+          },
+          {
+            "month": "2025-10",
+            "value": 14
+          },
+          {
+            "month": "2025-11",
+            "value": 15
+          },
+          {
+            "month": "2025-12",
+            "value": 16
+          },
+          {
+            "month": "2026-01",
+            "value": 16
+          },
+          {
+            "month": "2026-02",
+            "value": 17
+          }
+        ]
+      },
+      {
+        "definition": "l2_3",
+        "label": "L2/3",
+        "description": "Active in ≥2 of the last 3 months — frequency-based, filters one-touch users out of \"engaged\".",
+        "kpis": [
+          {
+            "label": "Total adopters",
+            "value": 22,
+            "unit": "count"
+          },
+          {
+            "label": "Engaged (L2/3)",
+            "value": 5,
+            "denominator": 22,
+            "unit": "count"
+          },
+          {
+            "label": "Engagement rate",
+            "value": 23,
+            "unit": "percent"
+          }
+        ],
+        "engaged_by_month": [
+          {
+            "month": "2025-08",
+            "value": 0
+          },
+          {
+            "month": "2025-09",
+            "value": 4
+          },
+          {
+            "month": "2025-10",
+            "value": 7
+          },
+          {
+            "month": "2025-11",
+            "value": 6
+          },
+          {
+            "month": "2025-12",
+            "value": 5
+          },
+          {
+            "month": "2026-01",
+            "value": 3
+          },
+          {
+            "month": "2026-02",
+            "value": 5
+          }
+        ]
+      },
+      {
+        "definition": "l3_6",
+        "label": "L3/6",
+        "description": "Active in ≥3 of the last 6 months — captures consistent but not necessarily monthly use.",
+        "kpis": [
+          {
+            "label": "Total adopters",
+            "value": 22,
+            "unit": "count"
+          },
+          {
+            "label": "Engaged (L3/6)",
+            "value": 6,
+            "denominator": 22,
+            "unit": "count"
+          },
+          {
+            "label": "Engagement rate",
+            "value": 27,
+            "unit": "percent"
+          }
+        ],
+        "engaged_by_month": [
+          {
+            "month": "2025-08",
+            "value": 0
+          },
+          {
+            "month": "2025-09",
+            "value": 0
+          },
+          {
+            "month": "2025-10",
+            "value": 4
+          },
+          {
+            "month": "2025-11",
+            "value": 5
+          },
+          {
+            "month": "2025-12",
+            "value": 7
+          },
+          {
+            "month": "2026-01",
+            "value": 6
+          },
+          {
+            "month": "2026-02",
+            "value": 6
+          }
+        ]
+      },
+      {
+        "definition": "power_user",
+        "label": "Power user",
+        "description": "≥5 page-loads in the trailing 3 months. Depth threshold — differentiates \"opened it\" from \"working with it\".",
+        "kpis": [
+          {
+            "label": "Total adopters",
+            "value": 22,
+            "unit": "count"
+          },
+          {
+            "label": "Engaged (Power user)",
+            "value": 4,
+            "denominator": 22,
+            "unit": "count"
+          },
+          {
+            "label": "Engagement rate",
+            "value": 18,
+            "unit": "percent"
+          }
+        ],
+        "engaged_by_month": [
+          {
+            "month": "2025-08",
+            "value": 2
+          },
+          {
+            "month": "2025-09",
+            "value": 5
+          },
+          {
+            "month": "2025-10",
+            "value": 8
+          },
+          {
+            "month": "2025-11",
+            "value": 7
+          },
+          {
+            "month": "2025-12",
+            "value": 5
+          },
+          {
+            "month": "2026-01",
+            "value": 3
+          },
+          {
+            "month": "2026-02",
+            "value": 4
+          }
+        ]
+      },
+      {
+        "definition": "multi_day",
+        "label": "Multi-day",
+        "description": "≥2 distinct active days in the trailing 3 months. Stronger than page-load count alone; filters single-binge sessions.",
+        "kpis": [
+          {
+            "label": "Total adopters",
+            "value": 22,
+            "unit": "count"
+          },
+          {
+            "label": "Engaged (Multi-day)",
+            "value": 6,
+            "denominator": 22,
+            "unit": "count"
+          },
+          {
+            "label": "Engagement rate",
+            "value": 27,
+            "unit": "percent"
+          }
+        ],
+        "engaged_by_month": [
+          {
+            "month": "2025-08",
+            "value": 3
+          },
+          {
+            "month": "2025-09",
+            "value": 6
+          },
+          {
+            "month": "2025-10",
+            "value": 9
+          },
+          {
+            "month": "2025-11",
+            "value": 8
+          },
+          {
+            "month": "2025-12",
+            "value": 6
+          },
+          {
+            "month": "2026-01",
+            "value": 5
+          },
+          {
+            "month": "2026-02",
+            "value": 6
+          }
+        ]
+      },
+      {
+        "definition": "no_gap_3mo",
+        "label": "No 3-mo gap",
+        "description": "Never silent for 3 consecutive months since first-seen. One slip and a user is permanently out.",
+        "kpis": [
+          {
+            "label": "Total adopters",
+            "value": 22,
+            "unit": "count"
+          },
+          {
+            "label": "Engaged (No 3-mo gap)",
+            "value": 3,
+            "denominator": 22,
+            "unit": "count"
+          },
+          {
+            "label": "Engagement rate",
+            "value": 14,
+            "unit": "percent"
+          }
+        ],
+        "engaged_by_month": [
+          {
+            "month": "2025-08",
+            "value": 6
+          },
+          {
+            "month": "2025-09",
+            "value": 10
+          },
+          {
+            "month": "2025-10",
+            "value": 13
+          },
+          {
+            "month": "2025-11",
+            "value": 9
+          },
+          {
+            "month": "2025-12",
+            "value": 6
+          },
+          {
+            "month": "2026-01",
+            "value": 4
+          },
+          {
+            "month": "2026-02",
+            "value": 3
+          }
+        ]
+      },
+      {
+        "definition": "ever_3_months",
+        "label": "Lifetime 3+ mo",
+        "description": "Any session in ≥3 distinct months. Once a user clears the bar, they're permanently engaged.",
+        "kpis": [
+          {
+            "label": "Total adopters",
+            "value": 22,
+            "unit": "count"
+          },
+          {
+            "label": "Engaged (Lifetime 3+ mo)",
+            "value": 11,
+            "denominator": 22,
+            "unit": "count"
+          },
+          {
+            "label": "Engagement rate",
+            "value": 50,
+            "unit": "percent"
+          }
+        ],
+        "engaged_by_month": [
+          {
+            "month": "2025-08",
+            "value": 0
+          },
+          {
+            "month": "2025-09",
+            "value": 0
+          },
+          {
+            "month": "2025-10",
+            "value": 4
+          },
+          {
+            "month": "2025-11",
+            "value": 7
+          },
+          {
+            "month": "2025-12",
+            "value": 9
+          },
+          {
+            "month": "2026-01",
+            "value": 10
+          },
+          {
+            "month": "2026-02",
+            "value": 11
+          }
+        ]
+      }
+    ]
+  }
+}
