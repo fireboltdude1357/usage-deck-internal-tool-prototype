@@ -2,12 +2,9 @@ import { json, error } from "@sveltejs/kit"
 import { Effect, Schema, Either } from "effect"
 import {
   Client,
-  MarketSnapshot,
   Month,
-  PlatformSnapshot,
-  ProvisionedUsersSnapshot,
+  SnapshotByFile,
   SnapshotFileSchema,
-  SuccessStoriesSnapshot,
   type SnapshotFile,
 } from "$lib/schema/snapshot"
 import {
@@ -21,14 +18,7 @@ const decodeForFile = (
   file: SnapshotFile,
   raw: unknown,
 ): Effect.Effect<unknown, SnapshotSourceError> => {
-  const schema =
-    file === "metrics.json"
-      ? PlatformSnapshot
-      : file === "market_metrics.json"
-        ? MarketSnapshot
-        : file === "provisioned_users.json"
-          ? ProvisionedUsersSnapshot
-          : SuccessStoriesSnapshot
+  const schema = SnapshotByFile[file]
   return Schema.decodeUnknown(schema as Schema.Schema<unknown>)(raw).pipe(
     Effect.mapError(
       (e) => new SnapshotSourceError({ kind: "Decode", message: String(e) }),

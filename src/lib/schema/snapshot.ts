@@ -233,17 +233,122 @@ const AdoptionEngagementMetrics = Schema.Struct({
   views: Schema.Array(AdoptionEngagementView),
 })
 
+// --- Turnover (QBR replica) ---
+
+// "all" = APC + Physician rate combined. Residents/fellows/nurses/age 65+ are
+// dropped upstream (producer) and never reach the schema. The page can show
+// or hide "all" independently of the per-category lines.
+export const TurnoverCategory = Schema.Literal("all", "apc", "physician")
+export type TurnoverCategory = Schema.Schema.Type<typeof TurnoverCategory>
+
+// scope = "system" sentinel OR a Market label. Kept as open string in the
+// schema so each client can publish its own market names without a migration;
+// the producer only emits scopes whose markets are in BU_CODE_MARKET[client].
+export const TurnoverScope = Schema.String
+export type TurnoverScope = Schema.Schema.Type<typeof TurnoverScope>
+
+export const TurnoverMonthlyPoint = Schema.Struct({
+  month: Month,
+  scope: TurnoverScope,
+  category: TurnoverCategory,
+  headcount: Schema.Number,
+  // null for projection months (we have no actual quits past forecast_origin)
+  quits: Schema.NullOr(Schema.Number),
+  // sum(quit_prob) across the cohort. Present for every month the model ran
+  // (and every projection month, where we extrapolate using the latest run).
+  expected_quits: Schema.NullOr(Schema.Number),
+  // 0..1 — sum(quits in trailing 12) / mean(headcount in trailing 12). For
+  // projection months, the numerator mixes actual + expected quits to bridge
+  // the projection horizon.
+  rolling_12_turnover: Schema.Number,
+  is_projection: Schema.Boolean,
+})
+export type TurnoverMonthlyPoint = Schema.Schema.Type<typeof TurnoverMonthlyPoint>
+
+const TurnoverFlaggingScope = Schema.Struct({
+  n_quitters: Schema.Number,
+  n_flagged: Schema.Number,
+  flag_rate: Schema.Number, // 0..1
+  mean_lead_months: Schema.Number,
+  median_lead_months: Schema.Number,
+  avg_flagged_per_month: Schema.Number,
+  most_recent_headcount: Schema.Number,
+})
+
+const TurnoverFlaggingByMarket = Schema.Struct({
+  market: Market,
+  n_quitters: Schema.Number,
+  n_flagged: Schema.Number,
+  flag_rate: Schema.Number,
+  mean_lead_months: Schema.Number,
+  avg_flagged_per_month: Schema.Number,
+})
+
+const TurnoverActiveScope = Schema.Struct({
+  active: Schema.Number,
+  flagged: Schema.Number,
+  quit: Schema.Number,
+})
+
+const TurnoverActiveByMarket = Schema.Struct({
+  market: Market,
+  active: Schema.Number,
+  flagged: Schema.Number,
+  quit: Schema.Number,
+})
+
+export const TurnoverProviderCategory = Schema.Literal("Physician", "APC", "Other")
+export type TurnoverProviderCategory = Schema.Schema.Type<typeof TurnoverProviderCategory>
+
+export const TurnoverProviderDetail = Schema.Struct({
+  provider_id: Schema.String,
+  name: Schema.String,
+  category: TurnoverProviderCategory,
+  specialty: Schema.String,
+  market: Schema.NullOr(Market),
+  quit_date: Month,
+  flag_date: Schema.NullOr(Month),
+  months_prior: Schema.NullOr(Schema.Number),
+})
+export type TurnoverProviderDetail = Schema.Schema.Type<typeof TurnoverProviderDetail>
+
+const TurnoverMetrics = Schema.Struct({
+  // Constant metadata so the page can describe the methodology in a footer.
+  excluded_roles: Schema.Array(Schema.String),
+  national_benchmarks: Schema.Struct({
+    apc: Schema.Number,
+    physician: Schema.Number,
+  }),
+  // Last month with actuals (headcount + quits). Everything past this is
+  // is_projection=true; the page styles the projection segment differently.
+  forecast_origin: Month,
+  monthly: Schema.Array(TurnoverMonthlyPoint),
+  flagging: Schema.Struct({
+    analysis_window: Schema.Struct({ start: Month, end: Month }),
+    flag_percentile: Schema.Number, // e.g. 80 → top 20th percentile
+    system: TurnoverFlaggingScope,
+    by_market: Schema.Array(TurnoverFlaggingByMarket),
+    active: Schema.Struct({
+      system: TurnoverActiveScope,
+      by_market: Schema.Array(TurnoverActiveByMarket),
+    }),
+  }),
+  provider_detail: Schema.Array(TurnoverProviderDetail),
+})
+
 export const PlatformSnapshot = envelope(PlatformMetrics)
 export const MarketSnapshot = envelope(MarketMetrics)
 export const ProvisionedUsersSnapshot = envelope(ProvisionedUsers)
 export const SuccessStoriesSnapshot = envelope(SuccessStoriesMetrics)
 export const AdoptionEngagementSnapshot = envelope(AdoptionEngagementMetrics)
+export const TurnoverSnapshot = envelope(TurnoverMetrics)
 
 export type PlatformSnapshot = Schema.Schema.Type<typeof PlatformSnapshot>
 export type MarketSnapshot = Schema.Schema.Type<typeof MarketSnapshot>
 export type ProvisionedUsersSnapshot = Schema.Schema.Type<typeof ProvisionedUsersSnapshot>
 export type SuccessStoriesSnapshot = Schema.Schema.Type<typeof SuccessStoriesSnapshot>
 export type AdoptionEngagementSnapshot = Schema.Schema.Type<typeof AdoptionEngagementSnapshot>
+export type TurnoverSnapshot = Schema.Schema.Type<typeof TurnoverSnapshot>
 
 // Map file basename → Schema. The /api/snapshot/[file] route uses this to pick
 // the right Schema for the requested file.
@@ -253,6 +358,7 @@ export const SnapshotByFile = {
   "provisioned_users.json": ProvisionedUsersSnapshot,
   "success_stories.json": SuccessStoriesSnapshot,
   "adoption_engagement.json": AdoptionEngagementSnapshot,
+  "turnover.json": TurnoverSnapshot,
 } as const
 export type SnapshotFile = keyof typeof SnapshotByFile
 
@@ -262,4 +368,5 @@ export const SnapshotFileSchema = Schema.Literal(
   "provisioned_users.json",
   "success_stories.json",
   "adoption_engagement.json",
+  "turnover.json",
 )

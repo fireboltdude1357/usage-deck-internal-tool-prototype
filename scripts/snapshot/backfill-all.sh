@@ -7,9 +7,20 @@
 # 2026-05-11 scan of public.provider_quit_risk_v2 (only months with a model
 # run).
 #
-# clinician-roster.sql + provider-metadata.sql are now month-filtered;
-# trajectory + Athena prepost queries are skipped (iter-12-specific windows),
-# so success_stories.json is not produced in this run.
+# Per-iteration pipeline:
+#   1. RDS clinician-roster  → drives the four roster-derived snapshots
+#      (metrics, market_metrics, provisioned_users, adoption_engagement).
+#   2. Four Athena turnover queries → produce the CSVs that build.ts joins
+#      into turnover.json (Phase 5 of PLAN-turnover-dashboard.md).
+#   3. build.ts → emits every snapshot whose inputs are present; missing
+#      inputs cause that file to be skipped quietly. upload.ts only PUTs
+#      files that exist locally, so a skipped turnover.json is a no-op.
+#
+# Deliberately skipped: provider-metadata + quit-prob-trajectories (RDS)
+# and claims/encounters/ehr-monthly (Athena) — those feed
+# success_stories.json which is iter-12-specific (fixed pre/post windows
+# baked into the queries). Wire them back in when success-stories stops
+# being iter-12-shaped.
 set -euo pipefail
 
 cd "$(dirname "$0")/../.."
@@ -42,6 +53,14 @@ for pair in "${PAIRS[@]}"; do
   echo "[$i/${#PAIRS[@]}] $client/$month"
   rm -rf "tmp/snapshot/${client}/${month}"
   npx tsx scripts/snapshot/query.ts  --client "$client" --month "$month" --query clinician-roster --source rds
+  # Turnover Athena inputs. Each query is invoked individually (rather than
+  # `--source athena`) to leave the success-stories Athena queries untouched
+  # — see header comment for why.
+  for q in employment-monthly employee-timelines quit-prob-history provider-detail; do
+    if ! npx tsx scripts/snapshot/query.ts --client "$client" --month "$month" --query "$q" --source athena; then
+      echo "  WARN: turnover query $q failed for $client/$month — turnover.json will be skipped" >&2
+    fi
+  done
   npx tsx scripts/snapshot/build.ts  --client "$client" --month "$month"
   npx tsx scripts/snapshot/upload.ts --client "$client" --month "$month"
 done

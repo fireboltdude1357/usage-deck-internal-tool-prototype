@@ -16,9 +16,12 @@
 import type {
   AdoptionEngagementSnapshot,
   MarketSnapshot,
+  Month,
   PlatformSnapshot,
   ProvisionedUsersSnapshot,
   SuccessStoriesSnapshot,
+  TurnoverMonthlyPoint,
+  TurnoverSnapshot,
 } from "$lib/schema/snapshot"
 
 const generated_at = "2026-05-01T17:30:00Z"
@@ -546,5 +549,153 @@ export const adoptionEngagement: AdoptionEngagementSnapshot = {
         engaged_by_month: engagedSeries([0, 0, 4, 7, 9, 10, 11]),
       },
     ],
+  },
+}
+
+// --- Turnover fixture ---
+//
+// Hand-authored to roughly mirror the BSMH QBR (May 2026, Q1 2026 numbers):
+//   system overall rolling-12 ≈ 8.3%, system APC ≈ 14%, Lorain physician ≈ 9%,
+//   system flag rate ≈ 86% with median lead ≈ 11 months. Headcounts and quits
+//   are stylized but in the right ballpark so the chart shapes and KPI tiles
+//   land near the QBR visuals when the picker is left at the default window.
+//
+// Forecast origin = 2026-04. 18 actuals + 6 projection = 24 monthly points per
+// (scope, category) line. Rolling-12 is treated as a constant per line for
+// fixture purposes (real producer computes it from the 12-month trailing
+// window); this avoids reimplementing the math in mock-land at the cost of a
+// flat trend line in dev screenshots.
+
+const monthOffset = (m: Month, delta: number): Month => {
+  const [y, mo] = m.split("-").map(Number)
+  const idx = y * 12 + (mo - 1) + delta
+  const yy = Math.floor(idx / 12)
+  const mm = (idx % 12) + 1
+  return `${yy}-${String(mm).padStart(2, "0")}` as Month
+}
+
+const TURNOVER_FORECAST_ORIGIN: Month = "2026-04"
+const TURNOVER_ACTUAL_START: Month = monthOffset(TURNOVER_FORECAST_ORIGIN, -17) // 2024-11
+const TURNOVER_PROJECTION_HORIZON = 6
+
+const turnoverMonths: Month[] = Array.from(
+  { length: 18 + TURNOVER_PROJECTION_HORIZON },
+  (_, i) => monthOffset(TURNOVER_ACTUAL_START, i),
+)
+
+type TurnoverLineSpec = {
+  scope: string
+  category: "all" | "apc" | "physician"
+  headcount: number
+  rolling12: number
+}
+
+const turnoverLine = (spec: TurnoverLineSpec): TurnoverMonthlyPoint[] => {
+  const monthlyExpected = (spec.headcount * spec.rolling12) / 12
+  return turnoverMonths.map((month) => {
+    const isProjection =
+      month > TURNOVER_FORECAST_ORIGIN
+    return {
+      month,
+      scope: spec.scope,
+      category: spec.category,
+      headcount: spec.headcount,
+      quits: isProjection ? null : Math.max(0, Math.round(monthlyExpected)),
+      expected_quits: monthlyExpected,
+      rolling_12_turnover: spec.rolling12,
+      is_projection: isProjection,
+    }
+  })
+}
+
+// (scope, category) cells. "all" is the headline; APC + Physician break it out.
+// Numbers chosen so APC × weight + Physician × weight ≈ "all" rate.
+const turnoverSpecs: TurnoverLineSpec[] = [
+  { scope: "system", category: "all", headcount: 1820, rolling12: 0.0826 },
+  { scope: "system", category: "apc", headcount: 540, rolling12: 0.1398 },
+  { scope: "system", category: "physician", headcount: 1280, rolling12: 0.066 },
+  { scope: "Hampton Roads", category: "all", headcount: 295, rolling12: 0.078 },
+  { scope: "Hampton Roads", category: "apc", headcount: 95, rolling12: 0.124 },
+  { scope: "Hampton Roads", category: "physician", headcount: 200, rolling12: 0.057 },
+  { scope: "Lorain", category: "all", headcount: 240, rolling12: 0.092 },
+  { scope: "Lorain", category: "apc", headcount: 80, rolling12: 0.118 },
+  { scope: "Lorain", category: "physician", headcount: 160, rolling12: 0.0914 },
+  { scope: "Lima", category: "all", headcount: 180, rolling12: 0.087 },
+  { scope: "Lima", category: "apc", headcount: 60, rolling12: 0.143 },
+  { scope: "Lima", category: "physician", headcount: 120, rolling12: 0.06 },
+  { scope: "Youngstown", category: "all", headcount: 410, rolling12: 0.081 },
+  { scope: "Youngstown", category: "apc", headcount: 130, rolling12: 0.142 },
+  { scope: "Youngstown", category: "physician", headcount: 280, rolling12: 0.052 },
+  { scope: "Kentucky", category: "all", headcount: 165, rolling12: 0.094 },
+  { scope: "Kentucky", category: "apc", headcount: 55, rolling12: 0.158 },
+  { scope: "Kentucky", category: "physician", headcount: 110, rolling12: 0.062 },
+  { scope: "Toledo", category: "all", headcount: 230, rolling12: 0.075 },
+  { scope: "Toledo", category: "apc", headcount: 70, rolling12: 0.121 },
+  { scope: "Toledo", category: "physician", headcount: 160, rolling12: 0.055 },
+]
+
+const turnoverMonthly: TurnoverMonthlyPoint[] = turnoverSpecs.flatMap(turnoverLine)
+
+// §4 provider_detail — stylized roster of recent BSMH quitters. Names match
+// the success-stories fixture style ("Provider NN") so we don't claim to leak
+// PHI from the test data.
+const turnoverProviderDetail: TurnoverSnapshot["metrics"]["provider_detail"] = [
+  { provider_id: "11111111-0000-0000-0000-000000000001", name: "Provider 21", category: "Physician", specialty: "Hospitalist", market: "Lorain", quit_date: "2026-03", flag_date: "2025-05", months_prior: 10 },
+  { provider_id: "11111111-0000-0000-0000-000000000002", name: "Provider 22", category: "APC", specialty: "Internal Medicine", market: "Hampton Roads", quit_date: "2026-02", flag_date: "2025-03", months_prior: 11 },
+  { provider_id: "11111111-0000-0000-0000-000000000003", name: "Provider 23", category: "Physician", specialty: "Family Medicine", market: "Youngstown", quit_date: "2026-02", flag_date: "2025-02", months_prior: 12 },
+  { provider_id: "11111111-0000-0000-0000-000000000004", name: "Provider 24", category: "APC", specialty: "Behavioral Health", market: "Kentucky", quit_date: "2026-01", flag_date: "2025-03", months_prior: 10 },
+  { provider_id: "11111111-0000-0000-0000-000000000005", name: "Provider 25", category: "Physician", specialty: "Cardiology", market: "Lorain", quit_date: "2025-12", flag_date: "2025-01", months_prior: 11 },
+  { provider_id: "11111111-0000-0000-0000-000000000006", name: "Provider 26", category: "APC", specialty: "OB/GYN", market: "Lima", quit_date: "2025-12", flag_date: null, months_prior: null },
+  { provider_id: "11111111-0000-0000-0000-000000000007", name: "Provider 27", category: "Physician", specialty: "Pediatrics", market: "Hampton Roads", quit_date: "2025-11", flag_date: "2024-11", months_prior: 12 },
+  { provider_id: "11111111-0000-0000-0000-000000000008", name: "Provider 28", category: "Physician", specialty: "Orthopedics", market: "Youngstown", quit_date: "2025-10", flag_date: "2024-12", months_prior: 10 },
+  { provider_id: "11111111-0000-0000-0000-000000000009", name: "Provider 29", category: "APC", specialty: "Emergency Medicine", market: "Lorain", quit_date: "2025-09", flag_date: "2024-10", months_prior: 11 },
+  { provider_id: "11111111-0000-0000-0000-000000000010", name: "Provider 30", category: "Physician", specialty: "Neurology", market: "Kentucky", quit_date: "2025-08", flag_date: null, months_prior: null },
+  { provider_id: "11111111-0000-0000-0000-000000000011", name: "Provider 31", category: "Physician", specialty: "General Surgery", market: "Hampton Roads", quit_date: "2025-07", flag_date: "2024-08", months_prior: 11 },
+  { provider_id: "11111111-0000-0000-0000-000000000012", name: "Provider 32", category: "APC", specialty: "Family Medicine", market: "Toledo", quit_date: "2025-06", flag_date: "2024-07", months_prior: 11 },
+]
+
+export const turnover: TurnoverSnapshot = {
+  client: "bsmh",
+  month: "2026-04",
+  generated_at,
+  source: "athena",
+  metrics: {
+    excluded_roles: ["resident", "fellow", "nurse", "age_65_plus"],
+    national_benchmarks: { apc: 0.086, physician: 0.07 },
+    forecast_origin: TURNOVER_FORECAST_ORIGIN,
+    monthly: turnoverMonthly,
+    flagging: {
+      analysis_window: { start: "2025-05", end: "2026-04" },
+      flag_percentile: 80,
+      system: {
+        n_quitters: 144,
+        n_flagged: 124,
+        flag_rate: 0.861,
+        mean_lead_months: 10.4,
+        median_lead_months: 11,
+        avg_flagged_per_month: 10.3,
+        most_recent_headcount: 1820,
+      },
+      by_market: [
+        { market: "Hampton Roads", n_quitters: 24, n_flagged: 22, flag_rate: 0.917, mean_lead_months: 11.1, avg_flagged_per_month: 1.83 },
+        { market: "Kentucky", n_quitters: 16, n_flagged: 13, flag_rate: 0.813, mean_lead_months: 9.7, avg_flagged_per_month: 1.08 },
+        { market: "Lima", n_quitters: 16, n_flagged: 13, flag_rate: 0.813, mean_lead_months: 9.4, avg_flagged_per_month: 1.08 },
+        { market: "Lorain", n_quitters: 22, n_flagged: 20, flag_rate: 0.909, mean_lead_months: 10.8, avg_flagged_per_month: 1.67 },
+        { market: "Toledo", n_quitters: 18, n_flagged: 14, flag_rate: 0.778, mean_lead_months: 9.5, avg_flagged_per_month: 1.17 },
+        { market: "Youngstown", n_quitters: 34, n_flagged: 30, flag_rate: 0.882, mean_lead_months: 11.0, avg_flagged_per_month: 2.5 },
+      ],
+      active: {
+        system: { active: 1820, flagged: 364, quit: 102 },
+        by_market: [
+          { market: "Hampton Roads", active: 295, flagged: 59, quit: 19 },
+          { market: "Kentucky", active: 165, flagged: 33, quit: 11 },
+          { market: "Lima", active: 180, flagged: 36, quit: 11 },
+          { market: "Lorain", active: 240, flagged: 48, quit: 18 },
+          { market: "Toledo", active: 230, flagged: 46, quit: 12 },
+          { market: "Youngstown", active: 410, flagged: 82, quit: 25 },
+        ],
+      },
+    },
+    provider_detail: turnoverProviderDetail,
   },
 }

@@ -13,6 +13,7 @@ import {
   ProvisionedUsersSnapshot,
   SnapshotFileSchema,
   SuccessStoriesSnapshot,
+  TurnoverSnapshot,
   type SnapshotFile,
 } from "../../src/lib/schema/snapshot.ts"
 import {
@@ -31,6 +32,13 @@ import {
   type ProviderMetadataRow,
   type QuitProbRow,
 } from "./shape/success-stories.ts"
+import {
+  buildTurnoverSnapshot,
+  type EmployeeTimelineRow,
+  type EmploymentMonthlyRow,
+  type QuitProbHistoryRow,
+  type TurnoverProviderRow,
+} from "./shape/turnover.ts"
 import { roundtrip } from "./schema-roundtrip.ts"
 
 const ROOT = path.resolve(import.meta.dirname, "..", "..")
@@ -149,6 +157,41 @@ if (haveAllSuccessInputs) {
     .filter(([, p]) => !fs.existsSync(p))
     .map(([, p]) => path.relative(ROOT, p))
   die(`success_stories.json requested but missing inputs: ${missing.join(", ")}`)
+}
+
+// Turnover inputs (Phase 2 of PLAN-turnover-dashboard.md). Four CSVs produced
+// by scripts/snapshot/athena/queries/*.sql. Skip quietly if any are missing.
+const TURNOVER_INPUTS = {
+  employmentMonthly: path.join(TMP, "employment-monthly.csv"),
+  employeeTimelines: path.join(TMP, "employee-timelines.csv"),
+  quitProbHistory: path.join(TMP, "quit-prob-history.csv"),
+  providerDetail: path.join(TMP, "provider-detail.csv"),
+} as const
+
+const haveAllTurnoverInputs = Object.values(TURNOVER_INPUTS).every((p) =>
+  fs.existsSync(p),
+)
+
+if (haveAllTurnoverInputs) {
+  jobs.push({
+    file: "turnover.json",
+    build: () =>
+      buildTurnoverSnapshot(
+        {
+          employmentMonthly: readCsv<EmploymentMonthlyRow>(TURNOVER_INPUTS.employmentMonthly),
+          employeeTimelines: readCsv<EmployeeTimelineRow>(TURNOVER_INPUTS.employeeTimelines),
+          quitProbHistory: readCsv<QuitProbHistoryRow>(TURNOVER_INPUTS.quitProbHistory),
+          providerDetail: readCsv<TurnoverProviderRow>(TURNOVER_INPUTS.providerDetail),
+        },
+        env,
+      ),
+    schema: TurnoverSnapshot as unknown as Schema.Schema<unknown, unknown>,
+  })
+} else if (onlyFile === "turnover.json") {
+  const missing = Object.entries(TURNOVER_INPUTS)
+    .filter(([, p]) => !fs.existsSync(p))
+    .map(([, p]) => path.relative(ROOT, p))
+  die(`turnover.json requested but missing inputs: ${missing.join(", ")}`)
 }
 
 const selected = onlyFile ? jobs.filter((j) => j.file === onlyFile) : jobs

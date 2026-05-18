@@ -1,0 +1,5294 @@
+{
+  "client": "bsmh",
+  "month": "2026-04",
+  "generated_at": "2026-05-01T17:30:00Z",
+  "source": "athena",
+  "metrics": {
+    "excluded_roles": [
+      "resident",
+      "fellow",
+      "nurse",
+      "age_65_plus"
+    ],
+    "national_benchmarks": {
+      "apc": 0.086,
+      "physician": 0.07
+    },
+    "forecast_origin": "2026-04",
+    "monthly": [
+      {
+        "month": "2024-11",
+        "scope": "system",
+        "category": "all",
+        "headcount": 1820,
+        "quits": 13,
+        "expected_quits": 12.527666666666669,
+        "rolling_12_turnover": 0.0826,
+        "is_projection": false
+      },
+      {
+        "month": "2024-12",
+        "scope": "system",
+        "category": "all",
+        "headcount": 1820,
+        "quits": 13,
+        "expected_quits": 12.527666666666669,
+        "rolling_12_turnover": 0.0826,
+        "is_projection": false
+      },
+      {
+        "month": "2025-01",
+        "scope": "system",
+        "category": "all",
+        "headcount": 1820,
+        "quits": 13,
+        "expected_quits": 12.527666666666669,
+        "rolling_12_turnover": 0.0826,
+        "is_projection": false
+      },
+      {
+        "month": "2025-02",
+        "scope": "system",
+        "category": "all",
+        "headcount": 1820,
+        "quits": 13,
+        "expected_quits": 12.527666666666669,
+        "rolling_12_turnover": 0.0826,
+        "is_projection": false
+      },
+      {
+        "month": "2025-03",
+        "scope": "system",
+        "category": "all",
+        "headcount": 1820,
+        "quits": 13,
+        "expected_quits": 12.527666666666669,
+        "rolling_12_turnover": 0.0826,
+        "is_projection": false
+      },
+      {
+        "month": "2025-04",
+        "scope": "system",
+        "category": "all",
+        "headcount": 1820,
+        "quits": 13,
+        "expected_quits": 12.527666666666669,
+        "rolling_12_turnover": 0.0826,
+        "is_projection": false
+      },
+      {
+        "month": "2025-05",
+        "scope": "system",
+        "category": "all",
+        "headcount": 1820,
+        "quits": 13,
+        "expected_quits": 12.527666666666669,
+        "rolling_12_turnover": 0.0826,
+        "is_projection": false
+      },
+      {
+        "month": "2025-06",
+        "scope": "system",
+        "category": "all",
+        "headcount": 1820,
+        "quits": 13,
+        "expected_quits": 12.527666666666669,
+        "rolling_12_turnover": 0.0826,
+        "is_projection": false
+      },
+      {
+        "month": "2025-07",
+        "scope": "system",
+        "category": "all",
+        "headcount": 1820,
+        "quits": 13,
+        "expected_quits": 12.527666666666669,
+        "rolling_12_turnover": 0.0826,
+        "is_projection": false
+      },
+      {
+        "month": "2025-08",
+        "scope": "system",
+        "category": "all",
+        "headcount": 1820,
+        "quits": 13,
+        "expected_quits": 12.527666666666669,
+        "rolling_12_turnover": 0.0826,
+        "is_projection": false
+      },
+      {
+        "month": "2025-09",
+        "scope": "system",
+        "category": "all",
+        "headcount": 1820,
+        "quits": 13,
+        "expected_quits": 12.527666666666669,
+        "rolling_12_turnover": 0.0826,
+        "is_projection": false
+      },
+      {
+        "month": "2025-10",
+        "scope": "system",
+        "category": "all",
+        "headcount": 1820,
+        "quits": 13,
+        "expected_quits": 12.527666666666669,
+        "rolling_12_turnover": 0.0826,
+        "is_projection": false
+      },
+      {
+        "month": "2025-11",
+        "scope": "system",
+        "category": "all",
+        "headcount": 1820,
+        "quits": 13,
+        "expected_quits": 12.527666666666669,
+        "rolling_12_turnover": 0.0826,
+        "is_projection": false
+      },
+      {
+        "month": "2025-12",
+        "scope": "system",
+        "category": "all",
+        "headcount": 1820,
+        "quits": 13,
+        "expected_quits": 12.527666666666669,
+        "rolling_12_turnover": 0.0826,
+        "is_projection": false
+      },
+      {
+        "month": "2026-01",
+        "scope": "system",
+        "category": "all",
+        "headcount": 1820,
+        "quits": 13,
+        "expected_quits": 12.527666666666669,
+        "rolling_12_turnover": 0.0826,
+        "is_projection": false
+      },
+      {
+        "month": "2026-02",
+        "scope": "system",
+        "category": "all",
+        "headcount": 1820,
+        "quits": 13,
+        "expected_quits": 12.527666666666669,
+        "rolling_12_turnover": 0.0826,
+        "is_projection": false
+      },
+      {
+        "month": "2026-03",
+        "scope": "system",
+        "category": "all",
+        "headcount": 1820,
+        "quits": 13,
+        "expected_quits": 12.527666666666669,
+        "rolling_12_turnover": 0.0826,
+        "is_projection": false
+      },
+      {
+        "month": "2026-04",
+        "scope": "system",
+        "category": "all",
+        "headcount": 1820,
+        "quits": 13,
+        "expected_quits": 12.527666666666669,
+        "rolling_12_turnover": 0.0826,
+        "is_projection": false
+      },
+      {
+        "month": "2026-05",
+        "scope": "system",
+        "category": "all",
+        "headcount": 1820,
+        "quits": null,
+        "expected_quits": 12.527666666666669,
+        "rolling_12_turnover": 0.0826,
+        "is_projection": true
+      },
+      {
+        "month": "2026-06",
+        "scope": "system",
+        "category": "all",
+        "headcount": 1820,
+        "quits": null,
+        "expected_quits": 12.527666666666669,
+        "rolling_12_turnover": 0.0826,
+        "is_projection": true
+      },
+      {
+        "month": "2026-07",
+        "scope": "system",
+        "category": "all",
+        "headcount": 1820,
+        "quits": null,
+        "expected_quits": 12.527666666666669,
+        "rolling_12_turnover": 0.0826,
+        "is_projection": true
+      },
+      {
+        "month": "2026-08",
+        "scope": "system",
+        "category": "all",
+        "headcount": 1820,
+        "quits": null,
+        "expected_quits": 12.527666666666669,
+        "rolling_12_turnover": 0.0826,
+        "is_projection": true
+      },
+      {
+        "month": "2026-09",
+        "scope": "system",
+        "category": "all",
+        "headcount": 1820,
+        "quits": null,
+        "expected_quits": 12.527666666666669,
+        "rolling_12_turnover": 0.0826,
+        "is_projection": true
+      },
+      {
+        "month": "2026-10",
+        "scope": "system",
+        "category": "all",
+        "headcount": 1820,
+        "quits": null,
+        "expected_quits": 12.527666666666669,
+        "rolling_12_turnover": 0.0826,
+        "is_projection": true
+      },
+      {
+        "month": "2024-11",
+        "scope": "system",
+        "category": "apc",
+        "headcount": 540,
+        "quits": 6,
+        "expected_quits": 6.291,
+        "rolling_12_turnover": 0.1398,
+        "is_projection": false
+      },
+      {
+        "month": "2024-12",
+        "scope": "system",
+        "category": "apc",
+        "headcount": 540,
+        "quits": 6,
+        "expected_quits": 6.291,
+        "rolling_12_turnover": 0.1398,
+        "is_projection": false
+      },
+      {
+        "month": "2025-01",
+        "scope": "system",
+        "category": "apc",
+        "headcount": 540,
+        "quits": 6,
+        "expected_quits": 6.291,
+        "rolling_12_turnover": 0.1398,
+        "is_projection": false
+      },
+      {
+        "month": "2025-02",
+        "scope": "system",
+        "category": "apc",
+        "headcount": 540,
+        "quits": 6,
+        "expected_quits": 6.291,
+        "rolling_12_turnover": 0.1398,
+        "is_projection": false
+      },
+      {
+        "month": "2025-03",
+        "scope": "system",
+        "category": "apc",
+        "headcount": 540,
+        "quits": 6,
+        "expected_quits": 6.291,
+        "rolling_12_turnover": 0.1398,
+        "is_projection": false
+      },
+      {
+        "month": "2025-04",
+        "scope": "system",
+        "category": "apc",
+        "headcount": 540,
+        "quits": 6,
+        "expected_quits": 6.291,
+        "rolling_12_turnover": 0.1398,
+        "is_projection": false
+      },
+      {
+        "month": "2025-05",
+        "scope": "system",
+        "category": "apc",
+        "headcount": 540,
+        "quits": 6,
+        "expected_quits": 6.291,
+        "rolling_12_turnover": 0.1398,
+        "is_projection": false
+      },
+      {
+        "month": "2025-06",
+        "scope": "system",
+        "category": "apc",
+        "headcount": 540,
+        "quits": 6,
+        "expected_quits": 6.291,
+        "rolling_12_turnover": 0.1398,
+        "is_projection": false
+      },
+      {
+        "month": "2025-07",
+        "scope": "system",
+        "category": "apc",
+        "headcount": 540,
+        "quits": 6,
+        "expected_quits": 6.291,
+        "rolling_12_turnover": 0.1398,
+        "is_projection": false
+      },
+      {
+        "month": "2025-08",
+        "scope": "system",
+        "category": "apc",
+        "headcount": 540,
+        "quits": 6,
+        "expected_quits": 6.291,
+        "rolling_12_turnover": 0.1398,
+        "is_projection": false
+      },
+      {
+        "month": "2025-09",
+        "scope": "system",
+        "category": "apc",
+        "headcount": 540,
+        "quits": 6,
+        "expected_quits": 6.291,
+        "rolling_12_turnover": 0.1398,
+        "is_projection": false
+      },
+      {
+        "month": "2025-10",
+        "scope": "system",
+        "category": "apc",
+        "headcount": 540,
+        "quits": 6,
+        "expected_quits": 6.291,
+        "rolling_12_turnover": 0.1398,
+        "is_projection": false
+      },
+      {
+        "month": "2025-11",
+        "scope": "system",
+        "category": "apc",
+        "headcount": 540,
+        "quits": 6,
+        "expected_quits": 6.291,
+        "rolling_12_turnover": 0.1398,
+        "is_projection": false
+      },
+      {
+        "month": "2025-12",
+        "scope": "system",
+        "category": "apc",
+        "headcount": 540,
+        "quits": 6,
+        "expected_quits": 6.291,
+        "rolling_12_turnover": 0.1398,
+        "is_projection": false
+      },
+      {
+        "month": "2026-01",
+        "scope": "system",
+        "category": "apc",
+        "headcount": 540,
+        "quits": 6,
+        "expected_quits": 6.291,
+        "rolling_12_turnover": 0.1398,
+        "is_projection": false
+      },
+      {
+        "month": "2026-02",
+        "scope": "system",
+        "category": "apc",
+        "headcount": 540,
+        "quits": 6,
+        "expected_quits": 6.291,
+        "rolling_12_turnover": 0.1398,
+        "is_projection": false
+      },
+      {
+        "month": "2026-03",
+        "scope": "system",
+        "category": "apc",
+        "headcount": 540,
+        "quits": 6,
+        "expected_quits": 6.291,
+        "rolling_12_turnover": 0.1398,
+        "is_projection": false
+      },
+      {
+        "month": "2026-04",
+        "scope": "system",
+        "category": "apc",
+        "headcount": 540,
+        "quits": 6,
+        "expected_quits": 6.291,
+        "rolling_12_turnover": 0.1398,
+        "is_projection": false
+      },
+      {
+        "month": "2026-05",
+        "scope": "system",
+        "category": "apc",
+        "headcount": 540,
+        "quits": null,
+        "expected_quits": 6.291,
+        "rolling_12_turnover": 0.1398,
+        "is_projection": true
+      },
+      {
+        "month": "2026-06",
+        "scope": "system",
+        "category": "apc",
+        "headcount": 540,
+        "quits": null,
+        "expected_quits": 6.291,
+        "rolling_12_turnover": 0.1398,
+        "is_projection": true
+      },
+      {
+        "month": "2026-07",
+        "scope": "system",
+        "category": "apc",
+        "headcount": 540,
+        "quits": null,
+        "expected_quits": 6.291,
+        "rolling_12_turnover": 0.1398,
+        "is_projection": true
+      },
+      {
+        "month": "2026-08",
+        "scope": "system",
+        "category": "apc",
+        "headcount": 540,
+        "quits": null,
+        "expected_quits": 6.291,
+        "rolling_12_turnover": 0.1398,
+        "is_projection": true
+      },
+      {
+        "month": "2026-09",
+        "scope": "system",
+        "category": "apc",
+        "headcount": 540,
+        "quits": null,
+        "expected_quits": 6.291,
+        "rolling_12_turnover": 0.1398,
+        "is_projection": true
+      },
+      {
+        "month": "2026-10",
+        "scope": "system",
+        "category": "apc",
+        "headcount": 540,
+        "quits": null,
+        "expected_quits": 6.291,
+        "rolling_12_turnover": 0.1398,
+        "is_projection": true
+      },
+      {
+        "month": "2024-11",
+        "scope": "system",
+        "category": "physician",
+        "headcount": 1280,
+        "quits": 7,
+        "expected_quits": 7.04,
+        "rolling_12_turnover": 0.066,
+        "is_projection": false
+      },
+      {
+        "month": "2024-12",
+        "scope": "system",
+        "category": "physician",
+        "headcount": 1280,
+        "quits": 7,
+        "expected_quits": 7.04,
+        "rolling_12_turnover": 0.066,
+        "is_projection": false
+      },
+      {
+        "month": "2025-01",
+        "scope": "system",
+        "category": "physician",
+        "headcount": 1280,
+        "quits": 7,
+        "expected_quits": 7.04,
+        "rolling_12_turnover": 0.066,
+        "is_projection": false
+      },
+      {
+        "month": "2025-02",
+        "scope": "system",
+        "category": "physician",
+        "headcount": 1280,
+        "quits": 7,
+        "expected_quits": 7.04,
+        "rolling_12_turnover": 0.066,
+        "is_projection": false
+      },
+      {
+        "month": "2025-03",
+        "scope": "system",
+        "category": "physician",
+        "headcount": 1280,
+        "quits": 7,
+        "expected_quits": 7.04,
+        "rolling_12_turnover": 0.066,
+        "is_projection": false
+      },
+      {
+        "month": "2025-04",
+        "scope": "system",
+        "category": "physician",
+        "headcount": 1280,
+        "quits": 7,
+        "expected_quits": 7.04,
+        "rolling_12_turnover": 0.066,
+        "is_projection": false
+      },
+      {
+        "month": "2025-05",
+        "scope": "system",
+        "category": "physician",
+        "headcount": 1280,
+        "quits": 7,
+        "expected_quits": 7.04,
+        "rolling_12_turnover": 0.066,
+        "is_projection": false
+      },
+      {
+        "month": "2025-06",
+        "scope": "system",
+        "category": "physician",
+        "headcount": 1280,
+        "quits": 7,
+        "expected_quits": 7.04,
+        "rolling_12_turnover": 0.066,
+        "is_projection": false
+      },
+      {
+        "month": "2025-07",
+        "scope": "system",
+        "category": "physician",
+        "headcount": 1280,
+        "quits": 7,
+        "expected_quits": 7.04,
+        "rolling_12_turnover": 0.066,
+        "is_projection": false
+      },
+      {
+        "month": "2025-08",
+        "scope": "system",
+        "category": "physician",
+        "headcount": 1280,
+        "quits": 7,
+        "expected_quits": 7.04,
+        "rolling_12_turnover": 0.066,
+        "is_projection": false
+      },
+      {
+        "month": "2025-09",
+        "scope": "system",
+        "category": "physician",
+        "headcount": 1280,
+        "quits": 7,
+        "expected_quits": 7.04,
+        "rolling_12_turnover": 0.066,
+        "is_projection": false
+      },
+      {
+        "month": "2025-10",
+        "scope": "system",
+        "category": "physician",
+        "headcount": 1280,
+        "quits": 7,
+        "expected_quits": 7.04,
+        "rolling_12_turnover": 0.066,
+        "is_projection": false
+      },
+      {
+        "month": "2025-11",
+        "scope": "system",
+        "category": "physician",
+        "headcount": 1280,
+        "quits": 7,
+        "expected_quits": 7.04,
+        "rolling_12_turnover": 0.066,
+        "is_projection": false
+      },
+      {
+        "month": "2025-12",
+        "scope": "system",
+        "category": "physician",
+        "headcount": 1280,
+        "quits": 7,
+        "expected_quits": 7.04,
+        "rolling_12_turnover": 0.066,
+        "is_projection": false
+      },
+      {
+        "month": "2026-01",
+        "scope": "system",
+        "category": "physician",
+        "headcount": 1280,
+        "quits": 7,
+        "expected_quits": 7.04,
+        "rolling_12_turnover": 0.066,
+        "is_projection": false
+      },
+      {
+        "month": "2026-02",
+        "scope": "system",
+        "category": "physician",
+        "headcount": 1280,
+        "quits": 7,
+        "expected_quits": 7.04,
+        "rolling_12_turnover": 0.066,
+        "is_projection": false
+      },
+      {
+        "month": "2026-03",
+        "scope": "system",
+        "category": "physician",
+        "headcount": 1280,
+        "quits": 7,
+        "expected_quits": 7.04,
+        "rolling_12_turnover": 0.066,
+        "is_projection": false
+      },
+      {
+        "month": "2026-04",
+        "scope": "system",
+        "category": "physician",
+        "headcount": 1280,
+        "quits": 7,
+        "expected_quits": 7.04,
+        "rolling_12_turnover": 0.066,
+        "is_projection": false
+      },
+      {
+        "month": "2026-05",
+        "scope": "system",
+        "category": "physician",
+        "headcount": 1280,
+        "quits": null,
+        "expected_quits": 7.04,
+        "rolling_12_turnover": 0.066,
+        "is_projection": true
+      },
+      {
+        "month": "2026-06",
+        "scope": "system",
+        "category": "physician",
+        "headcount": 1280,
+        "quits": null,
+        "expected_quits": 7.04,
+        "rolling_12_turnover": 0.066,
+        "is_projection": true
+      },
+      {
+        "month": "2026-07",
+        "scope": "system",
+        "category": "physician",
+        "headcount": 1280,
+        "quits": null,
+        "expected_quits": 7.04,
+        "rolling_12_turnover": 0.066,
+        "is_projection": true
+      },
+      {
+        "month": "2026-08",
+        "scope": "system",
+        "category": "physician",
+        "headcount": 1280,
+        "quits": null,
+        "expected_quits": 7.04,
+        "rolling_12_turnover": 0.066,
+        "is_projection": true
+      },
+      {
+        "month": "2026-09",
+        "scope": "system",
+        "category": "physician",
+        "headcount": 1280,
+        "quits": null,
+        "expected_quits": 7.04,
+        "rolling_12_turnover": 0.066,
+        "is_projection": true
+      },
+      {
+        "month": "2026-10",
+        "scope": "system",
+        "category": "physician",
+        "headcount": 1280,
+        "quits": null,
+        "expected_quits": 7.04,
+        "rolling_12_turnover": 0.066,
+        "is_projection": true
+      },
+      {
+        "month": "2024-11",
+        "scope": "Hampton Roads",
+        "category": "all",
+        "headcount": 295,
+        "quits": 2,
+        "expected_quits": 1.9175000000000002,
+        "rolling_12_turnover": 0.078,
+        "is_projection": false
+      },
+      {
+        "month": "2024-12",
+        "scope": "Hampton Roads",
+        "category": "all",
+        "headcount": 295,
+        "quits": 2,
+        "expected_quits": 1.9175000000000002,
+        "rolling_12_turnover": 0.078,
+        "is_projection": false
+      },
+      {
+        "month": "2025-01",
+        "scope": "Hampton Roads",
+        "category": "all",
+        "headcount": 295,
+        "quits": 2,
+        "expected_quits": 1.9175000000000002,
+        "rolling_12_turnover": 0.078,
+        "is_projection": false
+      },
+      {
+        "month": "2025-02",
+        "scope": "Hampton Roads",
+        "category": "all",
+        "headcount": 295,
+        "quits": 2,
+        "expected_quits": 1.9175000000000002,
+        "rolling_12_turnover": 0.078,
+        "is_projection": false
+      },
+      {
+        "month": "2025-03",
+        "scope": "Hampton Roads",
+        "category": "all",
+        "headcount": 295,
+        "quits": 2,
+        "expected_quits": 1.9175000000000002,
+        "rolling_12_turnover": 0.078,
+        "is_projection": false
+      },
+      {
+        "month": "2025-04",
+        "scope": "Hampton Roads",
+        "category": "all",
+        "headcount": 295,
+        "quits": 2,
+        "expected_quits": 1.9175000000000002,
+        "rolling_12_turnover": 0.078,
+        "is_projection": false
+      },
+      {
+        "month": "2025-05",
+        "scope": "Hampton Roads",
+        "category": "all",
+        "headcount": 295,
+        "quits": 2,
+        "expected_quits": 1.9175000000000002,
+        "rolling_12_turnover": 0.078,
+        "is_projection": false
+      },
+      {
+        "month": "2025-06",
+        "scope": "Hampton Roads",
+        "category": "all",
+        "headcount": 295,
+        "quits": 2,
+        "expected_quits": 1.9175000000000002,
+        "rolling_12_turnover": 0.078,
+        "is_projection": false
+      },
+      {
+        "month": "2025-07",
+        "scope": "Hampton Roads",
+        "category": "all",
+        "headcount": 295,
+        "quits": 2,
+        "expected_quits": 1.9175000000000002,
+        "rolling_12_turnover": 0.078,
+        "is_projection": false
+      },
+      {
+        "month": "2025-08",
+        "scope": "Hampton Roads",
+        "category": "all",
+        "headcount": 295,
+        "quits": 2,
+        "expected_quits": 1.9175000000000002,
+        "rolling_12_turnover": 0.078,
+        "is_projection": false
+      },
+      {
+        "month": "2025-09",
+        "scope": "Hampton Roads",
+        "category": "all",
+        "headcount": 295,
+        "quits": 2,
+        "expected_quits": 1.9175000000000002,
+        "rolling_12_turnover": 0.078,
+        "is_projection": false
+      },
+      {
+        "month": "2025-10",
+        "scope": "Hampton Roads",
+        "category": "all",
+        "headcount": 295,
+        "quits": 2,
+        "expected_quits": 1.9175000000000002,
+        "rolling_12_turnover": 0.078,
+        "is_projection": false
+      },
+      {
+        "month": "2025-11",
+        "scope": "Hampton Roads",
+        "category": "all",
+        "headcount": 295,
+        "quits": 2,
+        "expected_quits": 1.9175000000000002,
+        "rolling_12_turnover": 0.078,
+        "is_projection": false
+      },
+      {
+        "month": "2025-12",
+        "scope": "Hampton Roads",
+        "category": "all",
+        "headcount": 295,
+        "quits": 2,
+        "expected_quits": 1.9175000000000002,
+        "rolling_12_turnover": 0.078,
+        "is_projection": false
+      },
+      {
+        "month": "2026-01",
+        "scope": "Hampton Roads",
+        "category": "all",
+        "headcount": 295,
+        "quits": 2,
+        "expected_quits": 1.9175000000000002,
+        "rolling_12_turnover": 0.078,
+        "is_projection": false
+      },
+      {
+        "month": "2026-02",
+        "scope": "Hampton Roads",
+        "category": "all",
+        "headcount": 295,
+        "quits": 2,
+        "expected_quits": 1.9175000000000002,
+        "rolling_12_turnover": 0.078,
+        "is_projection": false
+      },
+      {
+        "month": "2026-03",
+        "scope": "Hampton Roads",
+        "category": "all",
+        "headcount": 295,
+        "quits": 2,
+        "expected_quits": 1.9175000000000002,
+        "rolling_12_turnover": 0.078,
+        "is_projection": false
+      },
+      {
+        "month": "2026-04",
+        "scope": "Hampton Roads",
+        "category": "all",
+        "headcount": 295,
+        "quits": 2,
+        "expected_quits": 1.9175000000000002,
+        "rolling_12_turnover": 0.078,
+        "is_projection": false
+      },
+      {
+        "month": "2026-05",
+        "scope": "Hampton Roads",
+        "category": "all",
+        "headcount": 295,
+        "quits": null,
+        "expected_quits": 1.9175000000000002,
+        "rolling_12_turnover": 0.078,
+        "is_projection": true
+      },
+      {
+        "month": "2026-06",
+        "scope": "Hampton Roads",
+        "category": "all",
+        "headcount": 295,
+        "quits": null,
+        "expected_quits": 1.9175000000000002,
+        "rolling_12_turnover": 0.078,
+        "is_projection": true
+      },
+      {
+        "month": "2026-07",
+        "scope": "Hampton Roads",
+        "category": "all",
+        "headcount": 295,
+        "quits": null,
+        "expected_quits": 1.9175000000000002,
+        "rolling_12_turnover": 0.078,
+        "is_projection": true
+      },
+      {
+        "month": "2026-08",
+        "scope": "Hampton Roads",
+        "category": "all",
+        "headcount": 295,
+        "quits": null,
+        "expected_quits": 1.9175000000000002,
+        "rolling_12_turnover": 0.078,
+        "is_projection": true
+      },
+      {
+        "month": "2026-09",
+        "scope": "Hampton Roads",
+        "category": "all",
+        "headcount": 295,
+        "quits": null,
+        "expected_quits": 1.9175000000000002,
+        "rolling_12_turnover": 0.078,
+        "is_projection": true
+      },
+      {
+        "month": "2026-10",
+        "scope": "Hampton Roads",
+        "category": "all",
+        "headcount": 295,
+        "quits": null,
+        "expected_quits": 1.9175000000000002,
+        "rolling_12_turnover": 0.078,
+        "is_projection": true
+      },
+      {
+        "month": "2024-11",
+        "scope": "Hampton Roads",
+        "category": "apc",
+        "headcount": 95,
+        "quits": 1,
+        "expected_quits": 0.9816666666666666,
+        "rolling_12_turnover": 0.124,
+        "is_projection": false
+      },
+      {
+        "month": "2024-12",
+        "scope": "Hampton Roads",
+        "category": "apc",
+        "headcount": 95,
+        "quits": 1,
+        "expected_quits": 0.9816666666666666,
+        "rolling_12_turnover": 0.124,
+        "is_projection": false
+      },
+      {
+        "month": "2025-01",
+        "scope": "Hampton Roads",
+        "category": "apc",
+        "headcount": 95,
+        "quits": 1,
+        "expected_quits": 0.9816666666666666,
+        "rolling_12_turnover": 0.124,
+        "is_projection": false
+      },
+      {
+        "month": "2025-02",
+        "scope": "Hampton Roads",
+        "category": "apc",
+        "headcount": 95,
+        "quits": 1,
+        "expected_quits": 0.9816666666666666,
+        "rolling_12_turnover": 0.124,
+        "is_projection": false
+      },
+      {
+        "month": "2025-03",
+        "scope": "Hampton Roads",
+        "category": "apc",
+        "headcount": 95,
+        "quits": 1,
+        "expected_quits": 0.9816666666666666,
+        "rolling_12_turnover": 0.124,
+        "is_projection": false
+      },
+      {
+        "month": "2025-04",
+        "scope": "Hampton Roads",
+        "category": "apc",
+        "headcount": 95,
+        "quits": 1,
+        "expected_quits": 0.9816666666666666,
+        "rolling_12_turnover": 0.124,
+        "is_projection": false
+      },
+      {
+        "month": "2025-05",
+        "scope": "Hampton Roads",
+        "category": "apc",
+        "headcount": 95,
+        "quits": 1,
+        "expected_quits": 0.9816666666666666,
+        "rolling_12_turnover": 0.124,
+        "is_projection": false
+      },
+      {
+        "month": "2025-06",
+        "scope": "Hampton Roads",
+        "category": "apc",
+        "headcount": 95,
+        "quits": 1,
+        "expected_quits": 0.9816666666666666,
+        "rolling_12_turnover": 0.124,
+        "is_projection": false
+      },
+      {
+        "month": "2025-07",
+        "scope": "Hampton Roads",
+        "category": "apc",
+        "headcount": 95,
+        "quits": 1,
+        "expected_quits": 0.9816666666666666,
+        "rolling_12_turnover": 0.124,
+        "is_projection": false
+      },
+      {
+        "month": "2025-08",
+        "scope": "Hampton Roads",
+        "category": "apc",
+        "headcount": 95,
+        "quits": 1,
+        "expected_quits": 0.9816666666666666,
+        "rolling_12_turnover": 0.124,
+        "is_projection": false
+      },
+      {
+        "month": "2025-09",
+        "scope": "Hampton Roads",
+        "category": "apc",
+        "headcount": 95,
+        "quits": 1,
+        "expected_quits": 0.9816666666666666,
+        "rolling_12_turnover": 0.124,
+        "is_projection": false
+      },
+      {
+        "month": "2025-10",
+        "scope": "Hampton Roads",
+        "category": "apc",
+        "headcount": 95,
+        "quits": 1,
+        "expected_quits": 0.9816666666666666,
+        "rolling_12_turnover": 0.124,
+        "is_projection": false
+      },
+      {
+        "month": "2025-11",
+        "scope": "Hampton Roads",
+        "category": "apc",
+        "headcount": 95,
+        "quits": 1,
+        "expected_quits": 0.9816666666666666,
+        "rolling_12_turnover": 0.124,
+        "is_projection": false
+      },
+      {
+        "month": "2025-12",
+        "scope": "Hampton Roads",
+        "category": "apc",
+        "headcount": 95,
+        "quits": 1,
+        "expected_quits": 0.9816666666666666,
+        "rolling_12_turnover": 0.124,
+        "is_projection": false
+      },
+      {
+        "month": "2026-01",
+        "scope": "Hampton Roads",
+        "category": "apc",
+        "headcount": 95,
+        "quits": 1,
+        "expected_quits": 0.9816666666666666,
+        "rolling_12_turnover": 0.124,
+        "is_projection": false
+      },
+      {
+        "month": "2026-02",
+        "scope": "Hampton Roads",
+        "category": "apc",
+        "headcount": 95,
+        "quits": 1,
+        "expected_quits": 0.9816666666666666,
+        "rolling_12_turnover": 0.124,
+        "is_projection": false
+      },
+      {
+        "month": "2026-03",
+        "scope": "Hampton Roads",
+        "category": "apc",
+        "headcount": 95,
+        "quits": 1,
+        "expected_quits": 0.9816666666666666,
+        "rolling_12_turnover": 0.124,
+        "is_projection": false
+      },
+      {
+        "month": "2026-04",
+        "scope": "Hampton Roads",
+        "category": "apc",
+        "headcount": 95,
+        "quits": 1,
+        "expected_quits": 0.9816666666666666,
+        "rolling_12_turnover": 0.124,
+        "is_projection": false
+      },
+      {
+        "month": "2026-05",
+        "scope": "Hampton Roads",
+        "category": "apc",
+        "headcount": 95,
+        "quits": null,
+        "expected_quits": 0.9816666666666666,
+        "rolling_12_turnover": 0.124,
+        "is_projection": true
+      },
+      {
+        "month": "2026-06",
+        "scope": "Hampton Roads",
+        "category": "apc",
+        "headcount": 95,
+        "quits": null,
+        "expected_quits": 0.9816666666666666,
+        "rolling_12_turnover": 0.124,
+        "is_projection": true
+      },
+      {
+        "month": "2026-07",
+        "scope": "Hampton Roads",
+        "category": "apc",
+        "headcount": 95,
+        "quits": null,
+        "expected_quits": 0.9816666666666666,
+        "rolling_12_turnover": 0.124,
+        "is_projection": true
+      },
+      {
+        "month": "2026-08",
+        "scope": "Hampton Roads",
+        "category": "apc",
+        "headcount": 95,
+        "quits": null,
+        "expected_quits": 0.9816666666666666,
+        "rolling_12_turnover": 0.124,
+        "is_projection": true
+      },
+      {
+        "month": "2026-09",
+        "scope": "Hampton Roads",
+        "category": "apc",
+        "headcount": 95,
+        "quits": null,
+        "expected_quits": 0.9816666666666666,
+        "rolling_12_turnover": 0.124,
+        "is_projection": true
+      },
+      {
+        "month": "2026-10",
+        "scope": "Hampton Roads",
+        "category": "apc",
+        "headcount": 95,
+        "quits": null,
+        "expected_quits": 0.9816666666666666,
+        "rolling_12_turnover": 0.124,
+        "is_projection": true
+      },
+      {
+        "month": "2024-11",
+        "scope": "Hampton Roads",
+        "category": "physician",
+        "headcount": 200,
+        "quits": 1,
+        "expected_quits": 0.9500000000000001,
+        "rolling_12_turnover": 0.057,
+        "is_projection": false
+      },
+      {
+        "month": "2024-12",
+        "scope": "Hampton Roads",
+        "category": "physician",
+        "headcount": 200,
+        "quits": 1,
+        "expected_quits": 0.9500000000000001,
+        "rolling_12_turnover": 0.057,
+        "is_projection": false
+      },
+      {
+        "month": "2025-01",
+        "scope": "Hampton Roads",
+        "category": "physician",
+        "headcount": 200,
+        "quits": 1,
+        "expected_quits": 0.9500000000000001,
+        "rolling_12_turnover": 0.057,
+        "is_projection": false
+      },
+      {
+        "month": "2025-02",
+        "scope": "Hampton Roads",
+        "category": "physician",
+        "headcount": 200,
+        "quits": 1,
+        "expected_quits": 0.9500000000000001,
+        "rolling_12_turnover": 0.057,
+        "is_projection": false
+      },
+      {
+        "month": "2025-03",
+        "scope": "Hampton Roads",
+        "category": "physician",
+        "headcount": 200,
+        "quits": 1,
+        "expected_quits": 0.9500000000000001,
+        "rolling_12_turnover": 0.057,
+        "is_projection": false
+      },
+      {
+        "month": "2025-04",
+        "scope": "Hampton Roads",
+        "category": "physician",
+        "headcount": 200,
+        "quits": 1,
+        "expected_quits": 0.9500000000000001,
+        "rolling_12_turnover": 0.057,
+        "is_projection": false
+      },
+      {
+        "month": "2025-05",
+        "scope": "Hampton Roads",
+        "category": "physician",
+        "headcount": 200,
+        "quits": 1,
+        "expected_quits": 0.9500000000000001,
+        "rolling_12_turnover": 0.057,
+        "is_projection": false
+      },
+      {
+        "month": "2025-06",
+        "scope": "Hampton Roads",
+        "category": "physician",
+        "headcount": 200,
+        "quits": 1,
+        "expected_quits": 0.9500000000000001,
+        "rolling_12_turnover": 0.057,
+        "is_projection": false
+      },
+      {
+        "month": "2025-07",
+        "scope": "Hampton Roads",
+        "category": "physician",
+        "headcount": 200,
+        "quits": 1,
+        "expected_quits": 0.9500000000000001,
+        "rolling_12_turnover": 0.057,
+        "is_projection": false
+      },
+      {
+        "month": "2025-08",
+        "scope": "Hampton Roads",
+        "category": "physician",
+        "headcount": 200,
+        "quits": 1,
+        "expected_quits": 0.9500000000000001,
+        "rolling_12_turnover": 0.057,
+        "is_projection": false
+      },
+      {
+        "month": "2025-09",
+        "scope": "Hampton Roads",
+        "category": "physician",
+        "headcount": 200,
+        "quits": 1,
+        "expected_quits": 0.9500000000000001,
+        "rolling_12_turnover": 0.057,
+        "is_projection": false
+      },
+      {
+        "month": "2025-10",
+        "scope": "Hampton Roads",
+        "category": "physician",
+        "headcount": 200,
+        "quits": 1,
+        "expected_quits": 0.9500000000000001,
+        "rolling_12_turnover": 0.057,
+        "is_projection": false
+      },
+      {
+        "month": "2025-11",
+        "scope": "Hampton Roads",
+        "category": "physician",
+        "headcount": 200,
+        "quits": 1,
+        "expected_quits": 0.9500000000000001,
+        "rolling_12_turnover": 0.057,
+        "is_projection": false
+      },
+      {
+        "month": "2025-12",
+        "scope": "Hampton Roads",
+        "category": "physician",
+        "headcount": 200,
+        "quits": 1,
+        "expected_quits": 0.9500000000000001,
+        "rolling_12_turnover": 0.057,
+        "is_projection": false
+      },
+      {
+        "month": "2026-01",
+        "scope": "Hampton Roads",
+        "category": "physician",
+        "headcount": 200,
+        "quits": 1,
+        "expected_quits": 0.9500000000000001,
+        "rolling_12_turnover": 0.057,
+        "is_projection": false
+      },
+      {
+        "month": "2026-02",
+        "scope": "Hampton Roads",
+        "category": "physician",
+        "headcount": 200,
+        "quits": 1,
+        "expected_quits": 0.9500000000000001,
+        "rolling_12_turnover": 0.057,
+        "is_projection": false
+      },
+      {
+        "month": "2026-03",
+        "scope": "Hampton Roads",
+        "category": "physician",
+        "headcount": 200,
+        "quits": 1,
+        "expected_quits": 0.9500000000000001,
+        "rolling_12_turnover": 0.057,
+        "is_projection": false
+      },
+      {
+        "month": "2026-04",
+        "scope": "Hampton Roads",
+        "category": "physician",
+        "headcount": 200,
+        "quits": 1,
+        "expected_quits": 0.9500000000000001,
+        "rolling_12_turnover": 0.057,
+        "is_projection": false
+      },
+      {
+        "month": "2026-05",
+        "scope": "Hampton Roads",
+        "category": "physician",
+        "headcount": 200,
+        "quits": null,
+        "expected_quits": 0.9500000000000001,
+        "rolling_12_turnover": 0.057,
+        "is_projection": true
+      },
+      {
+        "month": "2026-06",
+        "scope": "Hampton Roads",
+        "category": "physician",
+        "headcount": 200,
+        "quits": null,
+        "expected_quits": 0.9500000000000001,
+        "rolling_12_turnover": 0.057,
+        "is_projection": true
+      },
+      {
+        "month": "2026-07",
+        "scope": "Hampton Roads",
+        "category": "physician",
+        "headcount": 200,
+        "quits": null,
+        "expected_quits": 0.9500000000000001,
+        "rolling_12_turnover": 0.057,
+        "is_projection": true
+      },
+      {
+        "month": "2026-08",
+        "scope": "Hampton Roads",
+        "category": "physician",
+        "headcount": 200,
+        "quits": null,
+        "expected_quits": 0.9500000000000001,
+        "rolling_12_turnover": 0.057,
+        "is_projection": true
+      },
+      {
+        "month": "2026-09",
+        "scope": "Hampton Roads",
+        "category": "physician",
+        "headcount": 200,
+        "quits": null,
+        "expected_quits": 0.9500000000000001,
+        "rolling_12_turnover": 0.057,
+        "is_projection": true
+      },
+      {
+        "month": "2026-10",
+        "scope": "Hampton Roads",
+        "category": "physician",
+        "headcount": 200,
+        "quits": null,
+        "expected_quits": 0.9500000000000001,
+        "rolling_12_turnover": 0.057,
+        "is_projection": true
+      },
+      {
+        "month": "2024-11",
+        "scope": "Lorain",
+        "category": "all",
+        "headcount": 240,
+        "quits": 2,
+        "expected_quits": 1.8399999999999999,
+        "rolling_12_turnover": 0.092,
+        "is_projection": false
+      },
+      {
+        "month": "2024-12",
+        "scope": "Lorain",
+        "category": "all",
+        "headcount": 240,
+        "quits": 2,
+        "expected_quits": 1.8399999999999999,
+        "rolling_12_turnover": 0.092,
+        "is_projection": false
+      },
+      {
+        "month": "2025-01",
+        "scope": "Lorain",
+        "category": "all",
+        "headcount": 240,
+        "quits": 2,
+        "expected_quits": 1.8399999999999999,
+        "rolling_12_turnover": 0.092,
+        "is_projection": false
+      },
+      {
+        "month": "2025-02",
+        "scope": "Lorain",
+        "category": "all",
+        "headcount": 240,
+        "quits": 2,
+        "expected_quits": 1.8399999999999999,
+        "rolling_12_turnover": 0.092,
+        "is_projection": false
+      },
+      {
+        "month": "2025-03",
+        "scope": "Lorain",
+        "category": "all",
+        "headcount": 240,
+        "quits": 2,
+        "expected_quits": 1.8399999999999999,
+        "rolling_12_turnover": 0.092,
+        "is_projection": false
+      },
+      {
+        "month": "2025-04",
+        "scope": "Lorain",
+        "category": "all",
+        "headcount": 240,
+        "quits": 2,
+        "expected_quits": 1.8399999999999999,
+        "rolling_12_turnover": 0.092,
+        "is_projection": false
+      },
+      {
+        "month": "2025-05",
+        "scope": "Lorain",
+        "category": "all",
+        "headcount": 240,
+        "quits": 2,
+        "expected_quits": 1.8399999999999999,
+        "rolling_12_turnover": 0.092,
+        "is_projection": false
+      },
+      {
+        "month": "2025-06",
+        "scope": "Lorain",
+        "category": "all",
+        "headcount": 240,
+        "quits": 2,
+        "expected_quits": 1.8399999999999999,
+        "rolling_12_turnover": 0.092,
+        "is_projection": false
+      },
+      {
+        "month": "2025-07",
+        "scope": "Lorain",
+        "category": "all",
+        "headcount": 240,
+        "quits": 2,
+        "expected_quits": 1.8399999999999999,
+        "rolling_12_turnover": 0.092,
+        "is_projection": false
+      },
+      {
+        "month": "2025-08",
+        "scope": "Lorain",
+        "category": "all",
+        "headcount": 240,
+        "quits": 2,
+        "expected_quits": 1.8399999999999999,
+        "rolling_12_turnover": 0.092,
+        "is_projection": false
+      },
+      {
+        "month": "2025-09",
+        "scope": "Lorain",
+        "category": "all",
+        "headcount": 240,
+        "quits": 2,
+        "expected_quits": 1.8399999999999999,
+        "rolling_12_turnover": 0.092,
+        "is_projection": false
+      },
+      {
+        "month": "2025-10",
+        "scope": "Lorain",
+        "category": "all",
+        "headcount": 240,
+        "quits": 2,
+        "expected_quits": 1.8399999999999999,
+        "rolling_12_turnover": 0.092,
+        "is_projection": false
+      },
+      {
+        "month": "2025-11",
+        "scope": "Lorain",
+        "category": "all",
+        "headcount": 240,
+        "quits": 2,
+        "expected_quits": 1.8399999999999999,
+        "rolling_12_turnover": 0.092,
+        "is_projection": false
+      },
+      {
+        "month": "2025-12",
+        "scope": "Lorain",
+        "category": "all",
+        "headcount": 240,
+        "quits": 2,
+        "expected_quits": 1.8399999999999999,
+        "rolling_12_turnover": 0.092,
+        "is_projection": false
+      },
+      {
+        "month": "2026-01",
+        "scope": "Lorain",
+        "category": "all",
+        "headcount": 240,
+        "quits": 2,
+        "expected_quits": 1.8399999999999999,
+        "rolling_12_turnover": 0.092,
+        "is_projection": false
+      },
+      {
+        "month": "2026-02",
+        "scope": "Lorain",
+        "category": "all",
+        "headcount": 240,
+        "quits": 2,
+        "expected_quits": 1.8399999999999999,
+        "rolling_12_turnover": 0.092,
+        "is_projection": false
+      },
+      {
+        "month": "2026-03",
+        "scope": "Lorain",
+        "category": "all",
+        "headcount": 240,
+        "quits": 2,
+        "expected_quits": 1.8399999999999999,
+        "rolling_12_turnover": 0.092,
+        "is_projection": false
+      },
+      {
+        "month": "2026-04",
+        "scope": "Lorain",
+        "category": "all",
+        "headcount": 240,
+        "quits": 2,
+        "expected_quits": 1.8399999999999999,
+        "rolling_12_turnover": 0.092,
+        "is_projection": false
+      },
+      {
+        "month": "2026-05",
+        "scope": "Lorain",
+        "category": "all",
+        "headcount": 240,
+        "quits": null,
+        "expected_quits": 1.8399999999999999,
+        "rolling_12_turnover": 0.092,
+        "is_projection": true
+      },
+      {
+        "month": "2026-06",
+        "scope": "Lorain",
+        "category": "all",
+        "headcount": 240,
+        "quits": null,
+        "expected_quits": 1.8399999999999999,
+        "rolling_12_turnover": 0.092,
+        "is_projection": true
+      },
+      {
+        "month": "2026-07",
+        "scope": "Lorain",
+        "category": "all",
+        "headcount": 240,
+        "quits": null,
+        "expected_quits": 1.8399999999999999,
+        "rolling_12_turnover": 0.092,
+        "is_projection": true
+      },
+      {
+        "month": "2026-08",
+        "scope": "Lorain",
+        "category": "all",
+        "headcount": 240,
+        "quits": null,
+        "expected_quits": 1.8399999999999999,
+        "rolling_12_turnover": 0.092,
+        "is_projection": true
+      },
+      {
+        "month": "2026-09",
+        "scope": "Lorain",
+        "category": "all",
+        "headcount": 240,
+        "quits": null,
+        "expected_quits": 1.8399999999999999,
+        "rolling_12_turnover": 0.092,
+        "is_projection": true
+      },
+      {
+        "month": "2026-10",
+        "scope": "Lorain",
+        "category": "all",
+        "headcount": 240,
+        "quits": null,
+        "expected_quits": 1.8399999999999999,
+        "rolling_12_turnover": 0.092,
+        "is_projection": true
+      },
+      {
+        "month": "2024-11",
+        "scope": "Lorain",
+        "category": "apc",
+        "headcount": 80,
+        "quits": 1,
+        "expected_quits": 0.7866666666666666,
+        "rolling_12_turnover": 0.118,
+        "is_projection": false
+      },
+      {
+        "month": "2024-12",
+        "scope": "Lorain",
+        "category": "apc",
+        "headcount": 80,
+        "quits": 1,
+        "expected_quits": 0.7866666666666666,
+        "rolling_12_turnover": 0.118,
+        "is_projection": false
+      },
+      {
+        "month": "2025-01",
+        "scope": "Lorain",
+        "category": "apc",
+        "headcount": 80,
+        "quits": 1,
+        "expected_quits": 0.7866666666666666,
+        "rolling_12_turnover": 0.118,
+        "is_projection": false
+      },
+      {
+        "month": "2025-02",
+        "scope": "Lorain",
+        "category": "apc",
+        "headcount": 80,
+        "quits": 1,
+        "expected_quits": 0.7866666666666666,
+        "rolling_12_turnover": 0.118,
+        "is_projection": false
+      },
+      {
+        "month": "2025-03",
+        "scope": "Lorain",
+        "category": "apc",
+        "headcount": 80,
+        "quits": 1,
+        "expected_quits": 0.7866666666666666,
+        "rolling_12_turnover": 0.118,
+        "is_projection": false
+      },
+      {
+        "month": "2025-04",
+        "scope": "Lorain",
+        "category": "apc",
+        "headcount": 80,
+        "quits": 1,
+        "expected_quits": 0.7866666666666666,
+        "rolling_12_turnover": 0.118,
+        "is_projection": false
+      },
+      {
+        "month": "2025-05",
+        "scope": "Lorain",
+        "category": "apc",
+        "headcount": 80,
+        "quits": 1,
+        "expected_quits": 0.7866666666666666,
+        "rolling_12_turnover": 0.118,
+        "is_projection": false
+      },
+      {
+        "month": "2025-06",
+        "scope": "Lorain",
+        "category": "apc",
+        "headcount": 80,
+        "quits": 1,
+        "expected_quits": 0.7866666666666666,
+        "rolling_12_turnover": 0.118,
+        "is_projection": false
+      },
+      {
+        "month": "2025-07",
+        "scope": "Lorain",
+        "category": "apc",
+        "headcount": 80,
+        "quits": 1,
+        "expected_quits": 0.7866666666666666,
+        "rolling_12_turnover": 0.118,
+        "is_projection": false
+      },
+      {
+        "month": "2025-08",
+        "scope": "Lorain",
+        "category": "apc",
+        "headcount": 80,
+        "quits": 1,
+        "expected_quits": 0.7866666666666666,
+        "rolling_12_turnover": 0.118,
+        "is_projection": false
+      },
+      {
+        "month": "2025-09",
+        "scope": "Lorain",
+        "category": "apc",
+        "headcount": 80,
+        "quits": 1,
+        "expected_quits": 0.7866666666666666,
+        "rolling_12_turnover": 0.118,
+        "is_projection": false
+      },
+      {
+        "month": "2025-10",
+        "scope": "Lorain",
+        "category": "apc",
+        "headcount": 80,
+        "quits": 1,
+        "expected_quits": 0.7866666666666666,
+        "rolling_12_turnover": 0.118,
+        "is_projection": false
+      },
+      {
+        "month": "2025-11",
+        "scope": "Lorain",
+        "category": "apc",
+        "headcount": 80,
+        "quits": 1,
+        "expected_quits": 0.7866666666666666,
+        "rolling_12_turnover": 0.118,
+        "is_projection": false
+      },
+      {
+        "month": "2025-12",
+        "scope": "Lorain",
+        "category": "apc",
+        "headcount": 80,
+        "quits": 1,
+        "expected_quits": 0.7866666666666666,
+        "rolling_12_turnover": 0.118,
+        "is_projection": false
+      },
+      {
+        "month": "2026-01",
+        "scope": "Lorain",
+        "category": "apc",
+        "headcount": 80,
+        "quits": 1,
+        "expected_quits": 0.7866666666666666,
+        "rolling_12_turnover": 0.118,
+        "is_projection": false
+      },
+      {
+        "month": "2026-02",
+        "scope": "Lorain",
+        "category": "apc",
+        "headcount": 80,
+        "quits": 1,
+        "expected_quits": 0.7866666666666666,
+        "rolling_12_turnover": 0.118,
+        "is_projection": false
+      },
+      {
+        "month": "2026-03",
+        "scope": "Lorain",
+        "category": "apc",
+        "headcount": 80,
+        "quits": 1,
+        "expected_quits": 0.7866666666666666,
+        "rolling_12_turnover": 0.118,
+        "is_projection": false
+      },
+      {
+        "month": "2026-04",
+        "scope": "Lorain",
+        "category": "apc",
+        "headcount": 80,
+        "quits": 1,
+        "expected_quits": 0.7866666666666666,
+        "rolling_12_turnover": 0.118,
+        "is_projection": false
+      },
+      {
+        "month": "2026-05",
+        "scope": "Lorain",
+        "category": "apc",
+        "headcount": 80,
+        "quits": null,
+        "expected_quits": 0.7866666666666666,
+        "rolling_12_turnover": 0.118,
+        "is_projection": true
+      },
+      {
+        "month": "2026-06",
+        "scope": "Lorain",
+        "category": "apc",
+        "headcount": 80,
+        "quits": null,
+        "expected_quits": 0.7866666666666666,
+        "rolling_12_turnover": 0.118,
+        "is_projection": true
+      },
+      {
+        "month": "2026-07",
+        "scope": "Lorain",
+        "category": "apc",
+        "headcount": 80,
+        "quits": null,
+        "expected_quits": 0.7866666666666666,
+        "rolling_12_turnover": 0.118,
+        "is_projection": true
+      },
+      {
+        "month": "2026-08",
+        "scope": "Lorain",
+        "category": "apc",
+        "headcount": 80,
+        "quits": null,
+        "expected_quits": 0.7866666666666666,
+        "rolling_12_turnover": 0.118,
+        "is_projection": true
+      },
+      {
+        "month": "2026-09",
+        "scope": "Lorain",
+        "category": "apc",
+        "headcount": 80,
+        "quits": null,
+        "expected_quits": 0.7866666666666666,
+        "rolling_12_turnover": 0.118,
+        "is_projection": true
+      },
+      {
+        "month": "2026-10",
+        "scope": "Lorain",
+        "category": "apc",
+        "headcount": 80,
+        "quits": null,
+        "expected_quits": 0.7866666666666666,
+        "rolling_12_turnover": 0.118,
+        "is_projection": true
+      },
+      {
+        "month": "2024-11",
+        "scope": "Lorain",
+        "category": "physician",
+        "headcount": 160,
+        "quits": 1,
+        "expected_quits": 1.2186666666666666,
+        "rolling_12_turnover": 0.0914,
+        "is_projection": false
+      },
+      {
+        "month": "2024-12",
+        "scope": "Lorain",
+        "category": "physician",
+        "headcount": 160,
+        "quits": 1,
+        "expected_quits": 1.2186666666666666,
+        "rolling_12_turnover": 0.0914,
+        "is_projection": false
+      },
+      {
+        "month": "2025-01",
+        "scope": "Lorain",
+        "category": "physician",
+        "headcount": 160,
+        "quits": 1,
+        "expected_quits": 1.2186666666666666,
+        "rolling_12_turnover": 0.0914,
+        "is_projection": false
+      },
+      {
+        "month": "2025-02",
+        "scope": "Lorain",
+        "category": "physician",
+        "headcount": 160,
+        "quits": 1,
+        "expected_quits": 1.2186666666666666,
+        "rolling_12_turnover": 0.0914,
+        "is_projection": false
+      },
+      {
+        "month": "2025-03",
+        "scope": "Lorain",
+        "category": "physician",
+        "headcount": 160,
+        "quits": 1,
+        "expected_quits": 1.2186666666666666,
+        "rolling_12_turnover": 0.0914,
+        "is_projection": false
+      },
+      {
+        "month": "2025-04",
+        "scope": "Lorain",
+        "category": "physician",
+        "headcount": 160,
+        "quits": 1,
+        "expected_quits": 1.2186666666666666,
+        "rolling_12_turnover": 0.0914,
+        "is_projection": false
+      },
+      {
+        "month": "2025-05",
+        "scope": "Lorain",
+        "category": "physician",
+        "headcount": 160,
+        "quits": 1,
+        "expected_quits": 1.2186666666666666,
+        "rolling_12_turnover": 0.0914,
+        "is_projection": false
+      },
+      {
+        "month": "2025-06",
+        "scope": "Lorain",
+        "category": "physician",
+        "headcount": 160,
+        "quits": 1,
+        "expected_quits": 1.2186666666666666,
+        "rolling_12_turnover": 0.0914,
+        "is_projection": false
+      },
+      {
+        "month": "2025-07",
+        "scope": "Lorain",
+        "category": "physician",
+        "headcount": 160,
+        "quits": 1,
+        "expected_quits": 1.2186666666666666,
+        "rolling_12_turnover": 0.0914,
+        "is_projection": false
+      },
+      {
+        "month": "2025-08",
+        "scope": "Lorain",
+        "category": "physician",
+        "headcount": 160,
+        "quits": 1,
+        "expected_quits": 1.2186666666666666,
+        "rolling_12_turnover": 0.0914,
+        "is_projection": false
+      },
+      {
+        "month": "2025-09",
+        "scope": "Lorain",
+        "category": "physician",
+        "headcount": 160,
+        "quits": 1,
+        "expected_quits": 1.2186666666666666,
+        "rolling_12_turnover": 0.0914,
+        "is_projection": false
+      },
+      {
+        "month": "2025-10",
+        "scope": "Lorain",
+        "category": "physician",
+        "headcount": 160,
+        "quits": 1,
+        "expected_quits": 1.2186666666666666,
+        "rolling_12_turnover": 0.0914,
+        "is_projection": false
+      },
+      {
+        "month": "2025-11",
+        "scope": "Lorain",
+        "category": "physician",
+        "headcount": 160,
+        "quits": 1,
+        "expected_quits": 1.2186666666666666,
+        "rolling_12_turnover": 0.0914,
+        "is_projection": false
+      },
+      {
+        "month": "2025-12",
+        "scope": "Lorain",
+        "category": "physician",
+        "headcount": 160,
+        "quits": 1,
+        "expected_quits": 1.2186666666666666,
+        "rolling_12_turnover": 0.0914,
+        "is_projection": false
+      },
+      {
+        "month": "2026-01",
+        "scope": "Lorain",
+        "category": "physician",
+        "headcount": 160,
+        "quits": 1,
+        "expected_quits": 1.2186666666666666,
+        "rolling_12_turnover": 0.0914,
+        "is_projection": false
+      },
+      {
+        "month": "2026-02",
+        "scope": "Lorain",
+        "category": "physician",
+        "headcount": 160,
+        "quits": 1,
+        "expected_quits": 1.2186666666666666,
+        "rolling_12_turnover": 0.0914,
+        "is_projection": false
+      },
+      {
+        "month": "2026-03",
+        "scope": "Lorain",
+        "category": "physician",
+        "headcount": 160,
+        "quits": 1,
+        "expected_quits": 1.2186666666666666,
+        "rolling_12_turnover": 0.0914,
+        "is_projection": false
+      },
+      {
+        "month": "2026-04",
+        "scope": "Lorain",
+        "category": "physician",
+        "headcount": 160,
+        "quits": 1,
+        "expected_quits": 1.2186666666666666,
+        "rolling_12_turnover": 0.0914,
+        "is_projection": false
+      },
+      {
+        "month": "2026-05",
+        "scope": "Lorain",
+        "category": "physician",
+        "headcount": 160,
+        "quits": null,
+        "expected_quits": 1.2186666666666666,
+        "rolling_12_turnover": 0.0914,
+        "is_projection": true
+      },
+      {
+        "month": "2026-06",
+        "scope": "Lorain",
+        "category": "physician",
+        "headcount": 160,
+        "quits": null,
+        "expected_quits": 1.2186666666666666,
+        "rolling_12_turnover": 0.0914,
+        "is_projection": true
+      },
+      {
+        "month": "2026-07",
+        "scope": "Lorain",
+        "category": "physician",
+        "headcount": 160,
+        "quits": null,
+        "expected_quits": 1.2186666666666666,
+        "rolling_12_turnover": 0.0914,
+        "is_projection": true
+      },
+      {
+        "month": "2026-08",
+        "scope": "Lorain",
+        "category": "physician",
+        "headcount": 160,
+        "quits": null,
+        "expected_quits": 1.2186666666666666,
+        "rolling_12_turnover": 0.0914,
+        "is_projection": true
+      },
+      {
+        "month": "2026-09",
+        "scope": "Lorain",
+        "category": "physician",
+        "headcount": 160,
+        "quits": null,
+        "expected_quits": 1.2186666666666666,
+        "rolling_12_turnover": 0.0914,
+        "is_projection": true
+      },
+      {
+        "month": "2026-10",
+        "scope": "Lorain",
+        "category": "physician",
+        "headcount": 160,
+        "quits": null,
+        "expected_quits": 1.2186666666666666,
+        "rolling_12_turnover": 0.0914,
+        "is_projection": true
+      },
+      {
+        "month": "2024-11",
+        "scope": "Lima",
+        "category": "all",
+        "headcount": 180,
+        "quits": 1,
+        "expected_quits": 1.305,
+        "rolling_12_turnover": 0.087,
+        "is_projection": false
+      },
+      {
+        "month": "2024-12",
+        "scope": "Lima",
+        "category": "all",
+        "headcount": 180,
+        "quits": 1,
+        "expected_quits": 1.305,
+        "rolling_12_turnover": 0.087,
+        "is_projection": false
+      },
+      {
+        "month": "2025-01",
+        "scope": "Lima",
+        "category": "all",
+        "headcount": 180,
+        "quits": 1,
+        "expected_quits": 1.305,
+        "rolling_12_turnover": 0.087,
+        "is_projection": false
+      },
+      {
+        "month": "2025-02",
+        "scope": "Lima",
+        "category": "all",
+        "headcount": 180,
+        "quits": 1,
+        "expected_quits": 1.305,
+        "rolling_12_turnover": 0.087,
+        "is_projection": false
+      },
+      {
+        "month": "2025-03",
+        "scope": "Lima",
+        "category": "all",
+        "headcount": 180,
+        "quits": 1,
+        "expected_quits": 1.305,
+        "rolling_12_turnover": 0.087,
+        "is_projection": false
+      },
+      {
+        "month": "2025-04",
+        "scope": "Lima",
+        "category": "all",
+        "headcount": 180,
+        "quits": 1,
+        "expected_quits": 1.305,
+        "rolling_12_turnover": 0.087,
+        "is_projection": false
+      },
+      {
+        "month": "2025-05",
+        "scope": "Lima",
+        "category": "all",
+        "headcount": 180,
+        "quits": 1,
+        "expected_quits": 1.305,
+        "rolling_12_turnover": 0.087,
+        "is_projection": false
+      },
+      {
+        "month": "2025-06",
+        "scope": "Lima",
+        "category": "all",
+        "headcount": 180,
+        "quits": 1,
+        "expected_quits": 1.305,
+        "rolling_12_turnover": 0.087,
+        "is_projection": false
+      },
+      {
+        "month": "2025-07",
+        "scope": "Lima",
+        "category": "all",
+        "headcount": 180,
+        "quits": 1,
+        "expected_quits": 1.305,
+        "rolling_12_turnover": 0.087,
+        "is_projection": false
+      },
+      {
+        "month": "2025-08",
+        "scope": "Lima",
+        "category": "all",
+        "headcount": 180,
+        "quits": 1,
+        "expected_quits": 1.305,
+        "rolling_12_turnover": 0.087,
+        "is_projection": false
+      },
+      {
+        "month": "2025-09",
+        "scope": "Lima",
+        "category": "all",
+        "headcount": 180,
+        "quits": 1,
+        "expected_quits": 1.305,
+        "rolling_12_turnover": 0.087,
+        "is_projection": false
+      },
+      {
+        "month": "2025-10",
+        "scope": "Lima",
+        "category": "all",
+        "headcount": 180,
+        "quits": 1,
+        "expected_quits": 1.305,
+        "rolling_12_turnover": 0.087,
+        "is_projection": false
+      },
+      {
+        "month": "2025-11",
+        "scope": "Lima",
+        "category": "all",
+        "headcount": 180,
+        "quits": 1,
+        "expected_quits": 1.305,
+        "rolling_12_turnover": 0.087,
+        "is_projection": false
+      },
+      {
+        "month": "2025-12",
+        "scope": "Lima",
+        "category": "all",
+        "headcount": 180,
+        "quits": 1,
+        "expected_quits": 1.305,
+        "rolling_12_turnover": 0.087,
+        "is_projection": false
+      },
+      {
+        "month": "2026-01",
+        "scope": "Lima",
+        "category": "all",
+        "headcount": 180,
+        "quits": 1,
+        "expected_quits": 1.305,
+        "rolling_12_turnover": 0.087,
+        "is_projection": false
+      },
+      {
+        "month": "2026-02",
+        "scope": "Lima",
+        "category": "all",
+        "headcount": 180,
+        "quits": 1,
+        "expected_quits": 1.305,
+        "rolling_12_turnover": 0.087,
+        "is_projection": false
+      },
+      {
+        "month": "2026-03",
+        "scope": "Lima",
+        "category": "all",
+        "headcount": 180,
+        "quits": 1,
+        "expected_quits": 1.305,
+        "rolling_12_turnover": 0.087,
+        "is_projection": false
+      },
+      {
+        "month": "2026-04",
+        "scope": "Lima",
+        "category": "all",
+        "headcount": 180,
+        "quits": 1,
+        "expected_quits": 1.305,
+        "rolling_12_turnover": 0.087,
+        "is_projection": false
+      },
+      {
+        "month": "2026-05",
+        "scope": "Lima",
+        "category": "all",
+        "headcount": 180,
+        "quits": null,
+        "expected_quits": 1.305,
+        "rolling_12_turnover": 0.087,
+        "is_projection": true
+      },
+      {
+        "month": "2026-06",
+        "scope": "Lima",
+        "category": "all",
+        "headcount": 180,
+        "quits": null,
+        "expected_quits": 1.305,
+        "rolling_12_turnover": 0.087,
+        "is_projection": true
+      },
+      {
+        "month": "2026-07",
+        "scope": "Lima",
+        "category": "all",
+        "headcount": 180,
+        "quits": null,
+        "expected_quits": 1.305,
+        "rolling_12_turnover": 0.087,
+        "is_projection": true
+      },
+      {
+        "month": "2026-08",
+        "scope": "Lima",
+        "category": "all",
+        "headcount": 180,
+        "quits": null,
+        "expected_quits": 1.305,
+        "rolling_12_turnover": 0.087,
+        "is_projection": true
+      },
+      {
+        "month": "2026-09",
+        "scope": "Lima",
+        "category": "all",
+        "headcount": 180,
+        "quits": null,
+        "expected_quits": 1.305,
+        "rolling_12_turnover": 0.087,
+        "is_projection": true
+      },
+      {
+        "month": "2026-10",
+        "scope": "Lima",
+        "category": "all",
+        "headcount": 180,
+        "quits": null,
+        "expected_quits": 1.305,
+        "rolling_12_turnover": 0.087,
+        "is_projection": true
+      },
+      {
+        "month": "2024-11",
+        "scope": "Lima",
+        "category": "apc",
+        "headcount": 60,
+        "quits": 1,
+        "expected_quits": 0.715,
+        "rolling_12_turnover": 0.143,
+        "is_projection": false
+      },
+      {
+        "month": "2024-12",
+        "scope": "Lima",
+        "category": "apc",
+        "headcount": 60,
+        "quits": 1,
+        "expected_quits": 0.715,
+        "rolling_12_turnover": 0.143,
+        "is_projection": false
+      },
+      {
+        "month": "2025-01",
+        "scope": "Lima",
+        "category": "apc",
+        "headcount": 60,
+        "quits": 1,
+        "expected_quits": 0.715,
+        "rolling_12_turnover": 0.143,
+        "is_projection": false
+      },
+      {
+        "month": "2025-02",
+        "scope": "Lima",
+        "category": "apc",
+        "headcount": 60,
+        "quits": 1,
+        "expected_quits": 0.715,
+        "rolling_12_turnover": 0.143,
+        "is_projection": false
+      },
+      {
+        "month": "2025-03",
+        "scope": "Lima",
+        "category": "apc",
+        "headcount": 60,
+        "quits": 1,
+        "expected_quits": 0.715,
+        "rolling_12_turnover": 0.143,
+        "is_projection": false
+      },
+      {
+        "month": "2025-04",
+        "scope": "Lima",
+        "category": "apc",
+        "headcount": 60,
+        "quits": 1,
+        "expected_quits": 0.715,
+        "rolling_12_turnover": 0.143,
+        "is_projection": false
+      },
+      {
+        "month": "2025-05",
+        "scope": "Lima",
+        "category": "apc",
+        "headcount": 60,
+        "quits": 1,
+        "expected_quits": 0.715,
+        "rolling_12_turnover": 0.143,
+        "is_projection": false
+      },
+      {
+        "month": "2025-06",
+        "scope": "Lima",
+        "category": "apc",
+        "headcount": 60,
+        "quits": 1,
+        "expected_quits": 0.715,
+        "rolling_12_turnover": 0.143,
+        "is_projection": false
+      },
+      {
+        "month": "2025-07",
+        "scope": "Lima",
+        "category": "apc",
+        "headcount": 60,
+        "quits": 1,
+        "expected_quits": 0.715,
+        "rolling_12_turnover": 0.143,
+        "is_projection": false
+      },
+      {
+        "month": "2025-08",
+        "scope": "Lima",
+        "category": "apc",
+        "headcount": 60,
+        "quits": 1,
+        "expected_quits": 0.715,
+        "rolling_12_turnover": 0.143,
+        "is_projection": false
+      },
+      {
+        "month": "2025-09",
+        "scope": "Lima",
+        "category": "apc",
+        "headcount": 60,
+        "quits": 1,
+        "expected_quits": 0.715,
+        "rolling_12_turnover": 0.143,
+        "is_projection": false
+      },
+      {
+        "month": "2025-10",
+        "scope": "Lima",
+        "category": "apc",
+        "headcount": 60,
+        "quits": 1,
+        "expected_quits": 0.715,
+        "rolling_12_turnover": 0.143,
+        "is_projection": false
+      },
+      {
+        "month": "2025-11",
+        "scope": "Lima",
+        "category": "apc",
+        "headcount": 60,
+        "quits": 1,
+        "expected_quits": 0.715,
+        "rolling_12_turnover": 0.143,
+        "is_projection": false
+      },
+      {
+        "month": "2025-12",
+        "scope": "Lima",
+        "category": "apc",
+        "headcount": 60,
+        "quits": 1,
+        "expected_quits": 0.715,
+        "rolling_12_turnover": 0.143,
+        "is_projection": false
+      },
+      {
+        "month": "2026-01",
+        "scope": "Lima",
+        "category": "apc",
+        "headcount": 60,
+        "quits": 1,
+        "expected_quits": 0.715,
+        "rolling_12_turnover": 0.143,
+        "is_projection": false
+      },
+      {
+        "month": "2026-02",
+        "scope": "Lima",
+        "category": "apc",
+        "headcount": 60,
+        "quits": 1,
+        "expected_quits": 0.715,
+        "rolling_12_turnover": 0.143,
+        "is_projection": false
+      },
+      {
+        "month": "2026-03",
+        "scope": "Lima",
+        "category": "apc",
+        "headcount": 60,
+        "quits": 1,
+        "expected_quits": 0.715,
+        "rolling_12_turnover": 0.143,
+        "is_projection": false
+      },
+      {
+        "month": "2026-04",
+        "scope": "Lima",
+        "category": "apc",
+        "headcount": 60,
+        "quits": 1,
+        "expected_quits": 0.715,
+        "rolling_12_turnover": 0.143,
+        "is_projection": false
+      },
+      {
+        "month": "2026-05",
+        "scope": "Lima",
+        "category": "apc",
+        "headcount": 60,
+        "quits": null,
+        "expected_quits": 0.715,
+        "rolling_12_turnover": 0.143,
+        "is_projection": true
+      },
+      {
+        "month": "2026-06",
+        "scope": "Lima",
+        "category": "apc",
+        "headcount": 60,
+        "quits": null,
+        "expected_quits": 0.715,
+        "rolling_12_turnover": 0.143,
+        "is_projection": true
+      },
+      {
+        "month": "2026-07",
+        "scope": "Lima",
+        "category": "apc",
+        "headcount": 60,
+        "quits": null,
+        "expected_quits": 0.715,
+        "rolling_12_turnover": 0.143,
+        "is_projection": true
+      },
+      {
+        "month": "2026-08",
+        "scope": "Lima",
+        "category": "apc",
+        "headcount": 60,
+        "quits": null,
+        "expected_quits": 0.715,
+        "rolling_12_turnover": 0.143,
+        "is_projection": true
+      },
+      {
+        "month": "2026-09",
+        "scope": "Lima",
+        "category": "apc",
+        "headcount": 60,
+        "quits": null,
+        "expected_quits": 0.715,
+        "rolling_12_turnover": 0.143,
+        "is_projection": true
+      },
+      {
+        "month": "2026-10",
+        "scope": "Lima",
+        "category": "apc",
+        "headcount": 60,
+        "quits": null,
+        "expected_quits": 0.715,
+        "rolling_12_turnover": 0.143,
+        "is_projection": true
+      },
+      {
+        "month": "2024-11",
+        "scope": "Lima",
+        "category": "physician",
+        "headcount": 120,
+        "quits": 1,
+        "expected_quits": 0.6,
+        "rolling_12_turnover": 0.06,
+        "is_projection": false
+      },
+      {
+        "month": "2024-12",
+        "scope": "Lima",
+        "category": "physician",
+        "headcount": 120,
+        "quits": 1,
+        "expected_quits": 0.6,
+        "rolling_12_turnover": 0.06,
+        "is_projection": false
+      },
+      {
+        "month": "2025-01",
+        "scope": "Lima",
+        "category": "physician",
+        "headcount": 120,
+        "quits": 1,
+        "expected_quits": 0.6,
+        "rolling_12_turnover": 0.06,
+        "is_projection": false
+      },
+      {
+        "month": "2025-02",
+        "scope": "Lima",
+        "category": "physician",
+        "headcount": 120,
+        "quits": 1,
+        "expected_quits": 0.6,
+        "rolling_12_turnover": 0.06,
+        "is_projection": false
+      },
+      {
+        "month": "2025-03",
+        "scope": "Lima",
+        "category": "physician",
+        "headcount": 120,
+        "quits": 1,
+        "expected_quits": 0.6,
+        "rolling_12_turnover": 0.06,
+        "is_projection": false
+      },
+      {
+        "month": "2025-04",
+        "scope": "Lima",
+        "category": "physician",
+        "headcount": 120,
+        "quits": 1,
+        "expected_quits": 0.6,
+        "rolling_12_turnover": 0.06,
+        "is_projection": false
+      },
+      {
+        "month": "2025-05",
+        "scope": "Lima",
+        "category": "physician",
+        "headcount": 120,
+        "quits": 1,
+        "expected_quits": 0.6,
+        "rolling_12_turnover": 0.06,
+        "is_projection": false
+      },
+      {
+        "month": "2025-06",
+        "scope": "Lima",
+        "category": "physician",
+        "headcount": 120,
+        "quits": 1,
+        "expected_quits": 0.6,
+        "rolling_12_turnover": 0.06,
+        "is_projection": false
+      },
+      {
+        "month": "2025-07",
+        "scope": "Lima",
+        "category": "physician",
+        "headcount": 120,
+        "quits": 1,
+        "expected_quits": 0.6,
+        "rolling_12_turnover": 0.06,
+        "is_projection": false
+      },
+      {
+        "month": "2025-08",
+        "scope": "Lima",
+        "category": "physician",
+        "headcount": 120,
+        "quits": 1,
+        "expected_quits": 0.6,
+        "rolling_12_turnover": 0.06,
+        "is_projection": false
+      },
+      {
+        "month": "2025-09",
+        "scope": "Lima",
+        "category": "physician",
+        "headcount": 120,
+        "quits": 1,
+        "expected_quits": 0.6,
+        "rolling_12_turnover": 0.06,
+        "is_projection": false
+      },
+      {
+        "month": "2025-10",
+        "scope": "Lima",
+        "category": "physician",
+        "headcount": 120,
+        "quits": 1,
+        "expected_quits": 0.6,
+        "rolling_12_turnover": 0.06,
+        "is_projection": false
+      },
+      {
+        "month": "2025-11",
+        "scope": "Lima",
+        "category": "physician",
+        "headcount": 120,
+        "quits": 1,
+        "expected_quits": 0.6,
+        "rolling_12_turnover": 0.06,
+        "is_projection": false
+      },
+      {
+        "month": "2025-12",
+        "scope": "Lima",
+        "category": "physician",
+        "headcount": 120,
+        "quits": 1,
+        "expected_quits": 0.6,
+        "rolling_12_turnover": 0.06,
+        "is_projection": false
+      },
+      {
+        "month": "2026-01",
+        "scope": "Lima",
+        "category": "physician",
+        "headcount": 120,
+        "quits": 1,
+        "expected_quits": 0.6,
+        "rolling_12_turnover": 0.06,
+        "is_projection": false
+      },
+      {
+        "month": "2026-02",
+        "scope": "Lima",
+        "category": "physician",
+        "headcount": 120,
+        "quits": 1,
+        "expected_quits": 0.6,
+        "rolling_12_turnover": 0.06,
+        "is_projection": false
+      },
+      {
+        "month": "2026-03",
+        "scope": "Lima",
+        "category": "physician",
+        "headcount": 120,
+        "quits": 1,
+        "expected_quits": 0.6,
+        "rolling_12_turnover": 0.06,
+        "is_projection": false
+      },
+      {
+        "month": "2026-04",
+        "scope": "Lima",
+        "category": "physician",
+        "headcount": 120,
+        "quits": 1,
+        "expected_quits": 0.6,
+        "rolling_12_turnover": 0.06,
+        "is_projection": false
+      },
+      {
+        "month": "2026-05",
+        "scope": "Lima",
+        "category": "physician",
+        "headcount": 120,
+        "quits": null,
+        "expected_quits": 0.6,
+        "rolling_12_turnover": 0.06,
+        "is_projection": true
+      },
+      {
+        "month": "2026-06",
+        "scope": "Lima",
+        "category": "physician",
+        "headcount": 120,
+        "quits": null,
+        "expected_quits": 0.6,
+        "rolling_12_turnover": 0.06,
+        "is_projection": true
+      },
+      {
+        "month": "2026-07",
+        "scope": "Lima",
+        "category": "physician",
+        "headcount": 120,
+        "quits": null,
+        "expected_quits": 0.6,
+        "rolling_12_turnover": 0.06,
+        "is_projection": true
+      },
+      {
+        "month": "2026-08",
+        "scope": "Lima",
+        "category": "physician",
+        "headcount": 120,
+        "quits": null,
+        "expected_quits": 0.6,
+        "rolling_12_turnover": 0.06,
+        "is_projection": true
+      },
+      {
+        "month": "2026-09",
+        "scope": "Lima",
+        "category": "physician",
+        "headcount": 120,
+        "quits": null,
+        "expected_quits": 0.6,
+        "rolling_12_turnover": 0.06,
+        "is_projection": true
+      },
+      {
+        "month": "2026-10",
+        "scope": "Lima",
+        "category": "physician",
+        "headcount": 120,
+        "quits": null,
+        "expected_quits": 0.6,
+        "rolling_12_turnover": 0.06,
+        "is_projection": true
+      },
+      {
+        "month": "2024-11",
+        "scope": "Youngstown",
+        "category": "all",
+        "headcount": 410,
+        "quits": 3,
+        "expected_quits": 2.7675,
+        "rolling_12_turnover": 0.081,
+        "is_projection": false
+      },
+      {
+        "month": "2024-12",
+        "scope": "Youngstown",
+        "category": "all",
+        "headcount": 410,
+        "quits": 3,
+        "expected_quits": 2.7675,
+        "rolling_12_turnover": 0.081,
+        "is_projection": false
+      },
+      {
+        "month": "2025-01",
+        "scope": "Youngstown",
+        "category": "all",
+        "headcount": 410,
+        "quits": 3,
+        "expected_quits": 2.7675,
+        "rolling_12_turnover": 0.081,
+        "is_projection": false
+      },
+      {
+        "month": "2025-02",
+        "scope": "Youngstown",
+        "category": "all",
+        "headcount": 410,
+        "quits": 3,
+        "expected_quits": 2.7675,
+        "rolling_12_turnover": 0.081,
+        "is_projection": false
+      },
+      {
+        "month": "2025-03",
+        "scope": "Youngstown",
+        "category": "all",
+        "headcount": 410,
+        "quits": 3,
+        "expected_quits": 2.7675,
+        "rolling_12_turnover": 0.081,
+        "is_projection": false
+      },
+      {
+        "month": "2025-04",
+        "scope": "Youngstown",
+        "category": "all",
+        "headcount": 410,
+        "quits": 3,
+        "expected_quits": 2.7675,
+        "rolling_12_turnover": 0.081,
+        "is_projection": false
+      },
+      {
+        "month": "2025-05",
+        "scope": "Youngstown",
+        "category": "all",
+        "headcount": 410,
+        "quits": 3,
+        "expected_quits": 2.7675,
+        "rolling_12_turnover": 0.081,
+        "is_projection": false
+      },
+      {
+        "month": "2025-06",
+        "scope": "Youngstown",
+        "category": "all",
+        "headcount": 410,
+        "quits": 3,
+        "expected_quits": 2.7675,
+        "rolling_12_turnover": 0.081,
+        "is_projection": false
+      },
+      {
+        "month": "2025-07",
+        "scope": "Youngstown",
+        "category": "all",
+        "headcount": 410,
+        "quits": 3,
+        "expected_quits": 2.7675,
+        "rolling_12_turnover": 0.081,
+        "is_projection": false
+      },
+      {
+        "month": "2025-08",
+        "scope": "Youngstown",
+        "category": "all",
+        "headcount": 410,
+        "quits": 3,
+        "expected_quits": 2.7675,
+        "rolling_12_turnover": 0.081,
+        "is_projection": false
+      },
+      {
+        "month": "2025-09",
+        "scope": "Youngstown",
+        "category": "all",
+        "headcount": 410,
+        "quits": 3,
+        "expected_quits": 2.7675,
+        "rolling_12_turnover": 0.081,
+        "is_projection": false
+      },
+      {
+        "month": "2025-10",
+        "scope": "Youngstown",
+        "category": "all",
+        "headcount": 410,
+        "quits": 3,
+        "expected_quits": 2.7675,
+        "rolling_12_turnover": 0.081,
+        "is_projection": false
+      },
+      {
+        "month": "2025-11",
+        "scope": "Youngstown",
+        "category": "all",
+        "headcount": 410,
+        "quits": 3,
+        "expected_quits": 2.7675,
+        "rolling_12_turnover": 0.081,
+        "is_projection": false
+      },
+      {
+        "month": "2025-12",
+        "scope": "Youngstown",
+        "category": "all",
+        "headcount": 410,
+        "quits": 3,
+        "expected_quits": 2.7675,
+        "rolling_12_turnover": 0.081,
+        "is_projection": false
+      },
+      {
+        "month": "2026-01",
+        "scope": "Youngstown",
+        "category": "all",
+        "headcount": 410,
+        "quits": 3,
+        "expected_quits": 2.7675,
+        "rolling_12_turnover": 0.081,
+        "is_projection": false
+      },
+      {
+        "month": "2026-02",
+        "scope": "Youngstown",
+        "category": "all",
+        "headcount": 410,
+        "quits": 3,
+        "expected_quits": 2.7675,
+        "rolling_12_turnover": 0.081,
+        "is_projection": false
+      },
+      {
+        "month": "2026-03",
+        "scope": "Youngstown",
+        "category": "all",
+        "headcount": 410,
+        "quits": 3,
+        "expected_quits": 2.7675,
+        "rolling_12_turnover": 0.081,
+        "is_projection": false
+      },
+      {
+        "month": "2026-04",
+        "scope": "Youngstown",
+        "category": "all",
+        "headcount": 410,
+        "quits": 3,
+        "expected_quits": 2.7675,
+        "rolling_12_turnover": 0.081,
+        "is_projection": false
+      },
+      {
+        "month": "2026-05",
+        "scope": "Youngstown",
+        "category": "all",
+        "headcount": 410,
+        "quits": null,
+        "expected_quits": 2.7675,
+        "rolling_12_turnover": 0.081,
+        "is_projection": true
+      },
+      {
+        "month": "2026-06",
+        "scope": "Youngstown",
+        "category": "all",
+        "headcount": 410,
+        "quits": null,
+        "expected_quits": 2.7675,
+        "rolling_12_turnover": 0.081,
+        "is_projection": true
+      },
+      {
+        "month": "2026-07",
+        "scope": "Youngstown",
+        "category": "all",
+        "headcount": 410,
+        "quits": null,
+        "expected_quits": 2.7675,
+        "rolling_12_turnover": 0.081,
+        "is_projection": true
+      },
+      {
+        "month": "2026-08",
+        "scope": "Youngstown",
+        "category": "all",
+        "headcount": 410,
+        "quits": null,
+        "expected_quits": 2.7675,
+        "rolling_12_turnover": 0.081,
+        "is_projection": true
+      },
+      {
+        "month": "2026-09",
+        "scope": "Youngstown",
+        "category": "all",
+        "headcount": 410,
+        "quits": null,
+        "expected_quits": 2.7675,
+        "rolling_12_turnover": 0.081,
+        "is_projection": true
+      },
+      {
+        "month": "2026-10",
+        "scope": "Youngstown",
+        "category": "all",
+        "headcount": 410,
+        "quits": null,
+        "expected_quits": 2.7675,
+        "rolling_12_turnover": 0.081,
+        "is_projection": true
+      },
+      {
+        "month": "2024-11",
+        "scope": "Youngstown",
+        "category": "apc",
+        "headcount": 130,
+        "quits": 2,
+        "expected_quits": 1.538333333333333,
+        "rolling_12_turnover": 0.142,
+        "is_projection": false
+      },
+      {
+        "month": "2024-12",
+        "scope": "Youngstown",
+        "category": "apc",
+        "headcount": 130,
+        "quits": 2,
+        "expected_quits": 1.538333333333333,
+        "rolling_12_turnover": 0.142,
+        "is_projection": false
+      },
+      {
+        "month": "2025-01",
+        "scope": "Youngstown",
+        "category": "apc",
+        "headcount": 130,
+        "quits": 2,
+        "expected_quits": 1.538333333333333,
+        "rolling_12_turnover": 0.142,
+        "is_projection": false
+      },
+      {
+        "month": "2025-02",
+        "scope": "Youngstown",
+        "category": "apc",
+        "headcount": 130,
+        "quits": 2,
+        "expected_quits": 1.538333333333333,
+        "rolling_12_turnover": 0.142,
+        "is_projection": false
+      },
+      {
+        "month": "2025-03",
+        "scope": "Youngstown",
+        "category": "apc",
+        "headcount": 130,
+        "quits": 2,
+        "expected_quits": 1.538333333333333,
+        "rolling_12_turnover": 0.142,
+        "is_projection": false
+      },
+      {
+        "month": "2025-04",
+        "scope": "Youngstown",
+        "category": "apc",
+        "headcount": 130,
+        "quits": 2,
+        "expected_quits": 1.538333333333333,
+        "rolling_12_turnover": 0.142,
+        "is_projection": false
+      },
+      {
+        "month": "2025-05",
+        "scope": "Youngstown",
+        "category": "apc",
+        "headcount": 130,
+        "quits": 2,
+        "expected_quits": 1.538333333333333,
+        "rolling_12_turnover": 0.142,
+        "is_projection": false
+      },
+      {
+        "month": "2025-06",
+        "scope": "Youngstown",
+        "category": "apc",
+        "headcount": 130,
+        "quits": 2,
+        "expected_quits": 1.538333333333333,
+        "rolling_12_turnover": 0.142,
+        "is_projection": false
+      },
+      {
+        "month": "2025-07",
+        "scope": "Youngstown",
+        "category": "apc",
+        "headcount": 130,
+        "quits": 2,
+        "expected_quits": 1.538333333333333,
+        "rolling_12_turnover": 0.142,
+        "is_projection": false
+      },
+      {
+        "month": "2025-08",
+        "scope": "Youngstown",
+        "category": "apc",
+        "headcount": 130,
+        "quits": 2,
+        "expected_quits": 1.538333333333333,
+        "rolling_12_turnover": 0.142,
+        "is_projection": false
+      },
+      {
+        "month": "2025-09",
+        "scope": "Youngstown",
+        "category": "apc",
+        "headcount": 130,
+        "quits": 2,
+        "expected_quits": 1.538333333333333,
+        "rolling_12_turnover": 0.142,
+        "is_projection": false
+      },
+      {
+        "month": "2025-10",
+        "scope": "Youngstown",
+        "category": "apc",
+        "headcount": 130,
+        "quits": 2,
+        "expected_quits": 1.538333333333333,
+        "rolling_12_turnover": 0.142,
+        "is_projection": false
+      },
+      {
+        "month": "2025-11",
+        "scope": "Youngstown",
+        "category": "apc",
+        "headcount": 130,
+        "quits": 2,
+        "expected_quits": 1.538333333333333,
+        "rolling_12_turnover": 0.142,
+        "is_projection": false
+      },
+      {
+        "month": "2025-12",
+        "scope": "Youngstown",
+        "category": "apc",
+        "headcount": 130,
+        "quits": 2,
+        "expected_quits": 1.538333333333333,
+        "rolling_12_turnover": 0.142,
+        "is_projection": false
+      },
+      {
+        "month": "2026-01",
+        "scope": "Youngstown",
+        "category": "apc",
+        "headcount": 130,
+        "quits": 2,
+        "expected_quits": 1.538333333333333,
+        "rolling_12_turnover": 0.142,
+        "is_projection": false
+      },
+      {
+        "month": "2026-02",
+        "scope": "Youngstown",
+        "category": "apc",
+        "headcount": 130,
+        "quits": 2,
+        "expected_quits": 1.538333333333333,
+        "rolling_12_turnover": 0.142,
+        "is_projection": false
+      },
+      {
+        "month": "2026-03",
+        "scope": "Youngstown",
+        "category": "apc",
+        "headcount": 130,
+        "quits": 2,
+        "expected_quits": 1.538333333333333,
+        "rolling_12_turnover": 0.142,
+        "is_projection": false
+      },
+      {
+        "month": "2026-04",
+        "scope": "Youngstown",
+        "category": "apc",
+        "headcount": 130,
+        "quits": 2,
+        "expected_quits": 1.538333333333333,
+        "rolling_12_turnover": 0.142,
+        "is_projection": false
+      },
+      {
+        "month": "2026-05",
+        "scope": "Youngstown",
+        "category": "apc",
+        "headcount": 130,
+        "quits": null,
+        "expected_quits": 1.538333333333333,
+        "rolling_12_turnover": 0.142,
+        "is_projection": true
+      },
+      {
+        "month": "2026-06",
+        "scope": "Youngstown",
+        "category": "apc",
+        "headcount": 130,
+        "quits": null,
+        "expected_quits": 1.538333333333333,
+        "rolling_12_turnover": 0.142,
+        "is_projection": true
+      },
+      {
+        "month": "2026-07",
+        "scope": "Youngstown",
+        "category": "apc",
+        "headcount": 130,
+        "quits": null,
+        "expected_quits": 1.538333333333333,
+        "rolling_12_turnover": 0.142,
+        "is_projection": true
+      },
+      {
+        "month": "2026-08",
+        "scope": "Youngstown",
+        "category": "apc",
+        "headcount": 130,
+        "quits": null,
+        "expected_quits": 1.538333333333333,
+        "rolling_12_turnover": 0.142,
+        "is_projection": true
+      },
+      {
+        "month": "2026-09",
+        "scope": "Youngstown",
+        "category": "apc",
+        "headcount": 130,
+        "quits": null,
+        "expected_quits": 1.538333333333333,
+        "rolling_12_turnover": 0.142,
+        "is_projection": true
+      },
+      {
+        "month": "2026-10",
+        "scope": "Youngstown",
+        "category": "apc",
+        "headcount": 130,
+        "quits": null,
+        "expected_quits": 1.538333333333333,
+        "rolling_12_turnover": 0.142,
+        "is_projection": true
+      },
+      {
+        "month": "2024-11",
+        "scope": "Youngstown",
+        "category": "physician",
+        "headcount": 280,
+        "quits": 1,
+        "expected_quits": 1.2133333333333332,
+        "rolling_12_turnover": 0.052,
+        "is_projection": false
+      },
+      {
+        "month": "2024-12",
+        "scope": "Youngstown",
+        "category": "physician",
+        "headcount": 280,
+        "quits": 1,
+        "expected_quits": 1.2133333333333332,
+        "rolling_12_turnover": 0.052,
+        "is_projection": false
+      },
+      {
+        "month": "2025-01",
+        "scope": "Youngstown",
+        "category": "physician",
+        "headcount": 280,
+        "quits": 1,
+        "expected_quits": 1.2133333333333332,
+        "rolling_12_turnover": 0.052,
+        "is_projection": false
+      },
+      {
+        "month": "2025-02",
+        "scope": "Youngstown",
+        "category": "physician",
+        "headcount": 280,
+        "quits": 1,
+        "expected_quits": 1.2133333333333332,
+        "rolling_12_turnover": 0.052,
+        "is_projection": false
+      },
+      {
+        "month": "2025-03",
+        "scope": "Youngstown",
+        "category": "physician",
+        "headcount": 280,
+        "quits": 1,
+        "expected_quits": 1.2133333333333332,
+        "rolling_12_turnover": 0.052,
+        "is_projection": false
+      },
+      {
+        "month": "2025-04",
+        "scope": "Youngstown",
+        "category": "physician",
+        "headcount": 280,
+        "quits": 1,
+        "expected_quits": 1.2133333333333332,
+        "rolling_12_turnover": 0.052,
+        "is_projection": false
+      },
+      {
+        "month": "2025-05",
+        "scope": "Youngstown",
+        "category": "physician",
+        "headcount": 280,
+        "quits": 1,
+        "expected_quits": 1.2133333333333332,
+        "rolling_12_turnover": 0.052,
+        "is_projection": false
+      },
+      {
+        "month": "2025-06",
+        "scope": "Youngstown",
+        "category": "physician",
+        "headcount": 280,
+        "quits": 1,
+        "expected_quits": 1.2133333333333332,
+        "rolling_12_turnover": 0.052,
+        "is_projection": false
+      },
+      {
+        "month": "2025-07",
+        "scope": "Youngstown",
+        "category": "physician",
+        "headcount": 280,
+        "quits": 1,
+        "expected_quits": 1.2133333333333332,
+        "rolling_12_turnover": 0.052,
+        "is_projection": false
+      },
+      {
+        "month": "2025-08",
+        "scope": "Youngstown",
+        "category": "physician",
+        "headcount": 280,
+        "quits": 1,
+        "expected_quits": 1.2133333333333332,
+        "rolling_12_turnover": 0.052,
+        "is_projection": false
+      },
+      {
+        "month": "2025-09",
+        "scope": "Youngstown",
+        "category": "physician",
+        "headcount": 280,
+        "quits": 1,
+        "expected_quits": 1.2133333333333332,
+        "rolling_12_turnover": 0.052,
+        "is_projection": false
+      },
+      {
+        "month": "2025-10",
+        "scope": "Youngstown",
+        "category": "physician",
+        "headcount": 280,
+        "quits": 1,
+        "expected_quits": 1.2133333333333332,
+        "rolling_12_turnover": 0.052,
+        "is_projection": false
+      },
+      {
+        "month": "2025-11",
+        "scope": "Youngstown",
+        "category": "physician",
+        "headcount": 280,
+        "quits": 1,
+        "expected_quits": 1.2133333333333332,
+        "rolling_12_turnover": 0.052,
+        "is_projection": false
+      },
+      {
+        "month": "2025-12",
+        "scope": "Youngstown",
+        "category": "physician",
+        "headcount": 280,
+        "quits": 1,
+        "expected_quits": 1.2133333333333332,
+        "rolling_12_turnover": 0.052,
+        "is_projection": false
+      },
+      {
+        "month": "2026-01",
+        "scope": "Youngstown",
+        "category": "physician",
+        "headcount": 280,
+        "quits": 1,
+        "expected_quits": 1.2133333333333332,
+        "rolling_12_turnover": 0.052,
+        "is_projection": false
+      },
+      {
+        "month": "2026-02",
+        "scope": "Youngstown",
+        "category": "physician",
+        "headcount": 280,
+        "quits": 1,
+        "expected_quits": 1.2133333333333332,
+        "rolling_12_turnover": 0.052,
+        "is_projection": false
+      },
+      {
+        "month": "2026-03",
+        "scope": "Youngstown",
+        "category": "physician",
+        "headcount": 280,
+        "quits": 1,
+        "expected_quits": 1.2133333333333332,
+        "rolling_12_turnover": 0.052,
+        "is_projection": false
+      },
+      {
+        "month": "2026-04",
+        "scope": "Youngstown",
+        "category": "physician",
+        "headcount": 280,
+        "quits": 1,
+        "expected_quits": 1.2133333333333332,
+        "rolling_12_turnover": 0.052,
+        "is_projection": false
+      },
+      {
+        "month": "2026-05",
+        "scope": "Youngstown",
+        "category": "physician",
+        "headcount": 280,
+        "quits": null,
+        "expected_quits": 1.2133333333333332,
+        "rolling_12_turnover": 0.052,
+        "is_projection": true
+      },
+      {
+        "month": "2026-06",
+        "scope": "Youngstown",
+        "category": "physician",
+        "headcount": 280,
+        "quits": null,
+        "expected_quits": 1.2133333333333332,
+        "rolling_12_turnover": 0.052,
+        "is_projection": true
+      },
+      {
+        "month": "2026-07",
+        "scope": "Youngstown",
+        "category": "physician",
+        "headcount": 280,
+        "quits": null,
+        "expected_quits": 1.2133333333333332,
+        "rolling_12_turnover": 0.052,
+        "is_projection": true
+      },
+      {
+        "month": "2026-08",
+        "scope": "Youngstown",
+        "category": "physician",
+        "headcount": 280,
+        "quits": null,
+        "expected_quits": 1.2133333333333332,
+        "rolling_12_turnover": 0.052,
+        "is_projection": true
+      },
+      {
+        "month": "2026-09",
+        "scope": "Youngstown",
+        "category": "physician",
+        "headcount": 280,
+        "quits": null,
+        "expected_quits": 1.2133333333333332,
+        "rolling_12_turnover": 0.052,
+        "is_projection": true
+      },
+      {
+        "month": "2026-10",
+        "scope": "Youngstown",
+        "category": "physician",
+        "headcount": 280,
+        "quits": null,
+        "expected_quits": 1.2133333333333332,
+        "rolling_12_turnover": 0.052,
+        "is_projection": true
+      },
+      {
+        "month": "2024-11",
+        "scope": "Kentucky",
+        "category": "all",
+        "headcount": 165,
+        "quits": 1,
+        "expected_quits": 1.2925,
+        "rolling_12_turnover": 0.094,
+        "is_projection": false
+      },
+      {
+        "month": "2024-12",
+        "scope": "Kentucky",
+        "category": "all",
+        "headcount": 165,
+        "quits": 1,
+        "expected_quits": 1.2925,
+        "rolling_12_turnover": 0.094,
+        "is_projection": false
+      },
+      {
+        "month": "2025-01",
+        "scope": "Kentucky",
+        "category": "all",
+        "headcount": 165,
+        "quits": 1,
+        "expected_quits": 1.2925,
+        "rolling_12_turnover": 0.094,
+        "is_projection": false
+      },
+      {
+        "month": "2025-02",
+        "scope": "Kentucky",
+        "category": "all",
+        "headcount": 165,
+        "quits": 1,
+        "expected_quits": 1.2925,
+        "rolling_12_turnover": 0.094,
+        "is_projection": false
+      },
+      {
+        "month": "2025-03",
+        "scope": "Kentucky",
+        "category": "all",
+        "headcount": 165,
+        "quits": 1,
+        "expected_quits": 1.2925,
+        "rolling_12_turnover": 0.094,
+        "is_projection": false
+      },
+      {
+        "month": "2025-04",
+        "scope": "Kentucky",
+        "category": "all",
+        "headcount": 165,
+        "quits": 1,
+        "expected_quits": 1.2925,
+        "rolling_12_turnover": 0.094,
+        "is_projection": false
+      },
+      {
+        "month": "2025-05",
+        "scope": "Kentucky",
+        "category": "all",
+        "headcount": 165,
+        "quits": 1,
+        "expected_quits": 1.2925,
+        "rolling_12_turnover": 0.094,
+        "is_projection": false
+      },
+      {
+        "month": "2025-06",
+        "scope": "Kentucky",
+        "category": "all",
+        "headcount": 165,
+        "quits": 1,
+        "expected_quits": 1.2925,
+        "rolling_12_turnover": 0.094,
+        "is_projection": false
+      },
+      {
+        "month": "2025-07",
+        "scope": "Kentucky",
+        "category": "all",
+        "headcount": 165,
+        "quits": 1,
+        "expected_quits": 1.2925,
+        "rolling_12_turnover": 0.094,
+        "is_projection": false
+      },
+      {
+        "month": "2025-08",
+        "scope": "Kentucky",
+        "category": "all",
+        "headcount": 165,
+        "quits": 1,
+        "expected_quits": 1.2925,
+        "rolling_12_turnover": 0.094,
+        "is_projection": false
+      },
+      {
+        "month": "2025-09",
+        "scope": "Kentucky",
+        "category": "all",
+        "headcount": 165,
+        "quits": 1,
+        "expected_quits": 1.2925,
+        "rolling_12_turnover": 0.094,
+        "is_projection": false
+      },
+      {
+        "month": "2025-10",
+        "scope": "Kentucky",
+        "category": "all",
+        "headcount": 165,
+        "quits": 1,
+        "expected_quits": 1.2925,
+        "rolling_12_turnover": 0.094,
+        "is_projection": false
+      },
+      {
+        "month": "2025-11",
+        "scope": "Kentucky",
+        "category": "all",
+        "headcount": 165,
+        "quits": 1,
+        "expected_quits": 1.2925,
+        "rolling_12_turnover": 0.094,
+        "is_projection": false
+      },
+      {
+        "month": "2025-12",
+        "scope": "Kentucky",
+        "category": "all",
+        "headcount": 165,
+        "quits": 1,
+        "expected_quits": 1.2925,
+        "rolling_12_turnover": 0.094,
+        "is_projection": false
+      },
+      {
+        "month": "2026-01",
+        "scope": "Kentucky",
+        "category": "all",
+        "headcount": 165,
+        "quits": 1,
+        "expected_quits": 1.2925,
+        "rolling_12_turnover": 0.094,
+        "is_projection": false
+      },
+      {
+        "month": "2026-02",
+        "scope": "Kentucky",
+        "category": "all",
+        "headcount": 165,
+        "quits": 1,
+        "expected_quits": 1.2925,
+        "rolling_12_turnover": 0.094,
+        "is_projection": false
+      },
+      {
+        "month": "2026-03",
+        "scope": "Kentucky",
+        "category": "all",
+        "headcount": 165,
+        "quits": 1,
+        "expected_quits": 1.2925,
+        "rolling_12_turnover": 0.094,
+        "is_projection": false
+      },
+      {
+        "month": "2026-04",
+        "scope": "Kentucky",
+        "category": "all",
+        "headcount": 165,
+        "quits": 1,
+        "expected_quits": 1.2925,
+        "rolling_12_turnover": 0.094,
+        "is_projection": false
+      },
+      {
+        "month": "2026-05",
+        "scope": "Kentucky",
+        "category": "all",
+        "headcount": 165,
+        "quits": null,
+        "expected_quits": 1.2925,
+        "rolling_12_turnover": 0.094,
+        "is_projection": true
+      },
+      {
+        "month": "2026-06",
+        "scope": "Kentucky",
+        "category": "all",
+        "headcount": 165,
+        "quits": null,
+        "expected_quits": 1.2925,
+        "rolling_12_turnover": 0.094,
+        "is_projection": true
+      },
+      {
+        "month": "2026-07",
+        "scope": "Kentucky",
+        "category": "all",
+        "headcount": 165,
+        "quits": null,
+        "expected_quits": 1.2925,
+        "rolling_12_turnover": 0.094,
+        "is_projection": true
+      },
+      {
+        "month": "2026-08",
+        "scope": "Kentucky",
+        "category": "all",
+        "headcount": 165,
+        "quits": null,
+        "expected_quits": 1.2925,
+        "rolling_12_turnover": 0.094,
+        "is_projection": true
+      },
+      {
+        "month": "2026-09",
+        "scope": "Kentucky",
+        "category": "all",
+        "headcount": 165,
+        "quits": null,
+        "expected_quits": 1.2925,
+        "rolling_12_turnover": 0.094,
+        "is_projection": true
+      },
+      {
+        "month": "2026-10",
+        "scope": "Kentucky",
+        "category": "all",
+        "headcount": 165,
+        "quits": null,
+        "expected_quits": 1.2925,
+        "rolling_12_turnover": 0.094,
+        "is_projection": true
+      },
+      {
+        "month": "2024-11",
+        "scope": "Kentucky",
+        "category": "apc",
+        "headcount": 55,
+        "quits": 1,
+        "expected_quits": 0.7241666666666666,
+        "rolling_12_turnover": 0.158,
+        "is_projection": false
+      },
+      {
+        "month": "2024-12",
+        "scope": "Kentucky",
+        "category": "apc",
+        "headcount": 55,
+        "quits": 1,
+        "expected_quits": 0.7241666666666666,
+        "rolling_12_turnover": 0.158,
+        "is_projection": false
+      },
+      {
+        "month": "2025-01",
+        "scope": "Kentucky",
+        "category": "apc",
+        "headcount": 55,
+        "quits": 1,
+        "expected_quits": 0.7241666666666666,
+        "rolling_12_turnover": 0.158,
+        "is_projection": false
+      },
+      {
+        "month": "2025-02",
+        "scope": "Kentucky",
+        "category": "apc",
+        "headcount": 55,
+        "quits": 1,
+        "expected_quits": 0.7241666666666666,
+        "rolling_12_turnover": 0.158,
+        "is_projection": false
+      },
+      {
+        "month": "2025-03",
+        "scope": "Kentucky",
+        "category": "apc",
+        "headcount": 55,
+        "quits": 1,
+        "expected_quits": 0.7241666666666666,
+        "rolling_12_turnover": 0.158,
+        "is_projection": false
+      },
+      {
+        "month": "2025-04",
+        "scope": "Kentucky",
+        "category": "apc",
+        "headcount": 55,
+        "quits": 1,
+        "expected_quits": 0.7241666666666666,
+        "rolling_12_turnover": 0.158,
+        "is_projection": false
+      },
+      {
+        "month": "2025-05",
+        "scope": "Kentucky",
+        "category": "apc",
+        "headcount": 55,
+        "quits": 1,
+        "expected_quits": 0.7241666666666666,
+        "rolling_12_turnover": 0.158,
+        "is_projection": false
+      },
+      {
+        "month": "2025-06",
+        "scope": "Kentucky",
+        "category": "apc",
+        "headcount": 55,
+        "quits": 1,
+        "expected_quits": 0.7241666666666666,
+        "rolling_12_turnover": 0.158,
+        "is_projection": false
+      },
+      {
+        "month": "2025-07",
+        "scope": "Kentucky",
+        "category": "apc",
+        "headcount": 55,
+        "quits": 1,
+        "expected_quits": 0.7241666666666666,
+        "rolling_12_turnover": 0.158,
+        "is_projection": false
+      },
+      {
+        "month": "2025-08",
+        "scope": "Kentucky",
+        "category": "apc",
+        "headcount": 55,
+        "quits": 1,
+        "expected_quits": 0.7241666666666666,
+        "rolling_12_turnover": 0.158,
+        "is_projection": false
+      },
+      {
+        "month": "2025-09",
+        "scope": "Kentucky",
+        "category": "apc",
+        "headcount": 55,
+        "quits": 1,
+        "expected_quits": 0.7241666666666666,
+        "rolling_12_turnover": 0.158,
+        "is_projection": false
+      },
+      {
+        "month": "2025-10",
+        "scope": "Kentucky",
+        "category": "apc",
+        "headcount": 55,
+        "quits": 1,
+        "expected_quits": 0.7241666666666666,
+        "rolling_12_turnover": 0.158,
+        "is_projection": false
+      },
+      {
+        "month": "2025-11",
+        "scope": "Kentucky",
+        "category": "apc",
+        "headcount": 55,
+        "quits": 1,
+        "expected_quits": 0.7241666666666666,
+        "rolling_12_turnover": 0.158,
+        "is_projection": false
+      },
+      {
+        "month": "2025-12",
+        "scope": "Kentucky",
+        "category": "apc",
+        "headcount": 55,
+        "quits": 1,
+        "expected_quits": 0.7241666666666666,
+        "rolling_12_turnover": 0.158,
+        "is_projection": false
+      },
+      {
+        "month": "2026-01",
+        "scope": "Kentucky",
+        "category": "apc",
+        "headcount": 55,
+        "quits": 1,
+        "expected_quits": 0.7241666666666666,
+        "rolling_12_turnover": 0.158,
+        "is_projection": false
+      },
+      {
+        "month": "2026-02",
+        "scope": "Kentucky",
+        "category": "apc",
+        "headcount": 55,
+        "quits": 1,
+        "expected_quits": 0.7241666666666666,
+        "rolling_12_turnover": 0.158,
+        "is_projection": false
+      },
+      {
+        "month": "2026-03",
+        "scope": "Kentucky",
+        "category": "apc",
+        "headcount": 55,
+        "quits": 1,
+        "expected_quits": 0.7241666666666666,
+        "rolling_12_turnover": 0.158,
+        "is_projection": false
+      },
+      {
+        "month": "2026-04",
+        "scope": "Kentucky",
+        "category": "apc",
+        "headcount": 55,
+        "quits": 1,
+        "expected_quits": 0.7241666666666666,
+        "rolling_12_turnover": 0.158,
+        "is_projection": false
+      },
+      {
+        "month": "2026-05",
+        "scope": "Kentucky",
+        "category": "apc",
+        "headcount": 55,
+        "quits": null,
+        "expected_quits": 0.7241666666666666,
+        "rolling_12_turnover": 0.158,
+        "is_projection": true
+      },
+      {
+        "month": "2026-06",
+        "scope": "Kentucky",
+        "category": "apc",
+        "headcount": 55,
+        "quits": null,
+        "expected_quits": 0.7241666666666666,
+        "rolling_12_turnover": 0.158,
+        "is_projection": true
+      },
+      {
+        "month": "2026-07",
+        "scope": "Kentucky",
+        "category": "apc",
+        "headcount": 55,
+        "quits": null,
+        "expected_quits": 0.7241666666666666,
+        "rolling_12_turnover": 0.158,
+        "is_projection": true
+      },
+      {
+        "month": "2026-08",
+        "scope": "Kentucky",
+        "category": "apc",
+        "headcount": 55,
+        "quits": null,
+        "expected_quits": 0.7241666666666666,
+        "rolling_12_turnover": 0.158,
+        "is_projection": true
+      },
+      {
+        "month": "2026-09",
+        "scope": "Kentucky",
+        "category": "apc",
+        "headcount": 55,
+        "quits": null,
+        "expected_quits": 0.7241666666666666,
+        "rolling_12_turnover": 0.158,
+        "is_projection": true
+      },
+      {
+        "month": "2026-10",
+        "scope": "Kentucky",
+        "category": "apc",
+        "headcount": 55,
+        "quits": null,
+        "expected_quits": 0.7241666666666666,
+        "rolling_12_turnover": 0.158,
+        "is_projection": true
+      },
+      {
+        "month": "2024-11",
+        "scope": "Kentucky",
+        "category": "physician",
+        "headcount": 110,
+        "quits": 1,
+        "expected_quits": 0.5683333333333334,
+        "rolling_12_turnover": 0.062,
+        "is_projection": false
+      },
+      {
+        "month": "2024-12",
+        "scope": "Kentucky",
+        "category": "physician",
+        "headcount": 110,
+        "quits": 1,
+        "expected_quits": 0.5683333333333334,
+        "rolling_12_turnover": 0.062,
+        "is_projection": false
+      },
+      {
+        "month": "2025-01",
+        "scope": "Kentucky",
+        "category": "physician",
+        "headcount": 110,
+        "quits": 1,
+        "expected_quits": 0.5683333333333334,
+        "rolling_12_turnover": 0.062,
+        "is_projection": false
+      },
+      {
+        "month": "2025-02",
+        "scope": "Kentucky",
+        "category": "physician",
+        "headcount": 110,
+        "quits": 1,
+        "expected_quits": 0.5683333333333334,
+        "rolling_12_turnover": 0.062,
+        "is_projection": false
+      },
+      {
+        "month": "2025-03",
+        "scope": "Kentucky",
+        "category": "physician",
+        "headcount": 110,
+        "quits": 1,
+        "expected_quits": 0.5683333333333334,
+        "rolling_12_turnover": 0.062,
+        "is_projection": false
+      },
+      {
+        "month": "2025-04",
+        "scope": "Kentucky",
+        "category": "physician",
+        "headcount": 110,
+        "quits": 1,
+        "expected_quits": 0.5683333333333334,
+        "rolling_12_turnover": 0.062,
+        "is_projection": false
+      },
+      {
+        "month": "2025-05",
+        "scope": "Kentucky",
+        "category": "physician",
+        "headcount": 110,
+        "quits": 1,
+        "expected_quits": 0.5683333333333334,
+        "rolling_12_turnover": 0.062,
+        "is_projection": false
+      },
+      {
+        "month": "2025-06",
+        "scope": "Kentucky",
+        "category": "physician",
+        "headcount": 110,
+        "quits": 1,
+        "expected_quits": 0.5683333333333334,
+        "rolling_12_turnover": 0.062,
+        "is_projection": false
+      },
+      {
+        "month": "2025-07",
+        "scope": "Kentucky",
+        "category": "physician",
+        "headcount": 110,
+        "quits": 1,
+        "expected_quits": 0.5683333333333334,
+        "rolling_12_turnover": 0.062,
+        "is_projection": false
+      },
+      {
+        "month": "2025-08",
+        "scope": "Kentucky",
+        "category": "physician",
+        "headcount": 110,
+        "quits": 1,
+        "expected_quits": 0.5683333333333334,
+        "rolling_12_turnover": 0.062,
+        "is_projection": false
+      },
+      {
+        "month": "2025-09",
+        "scope": "Kentucky",
+        "category": "physician",
+        "headcount": 110,
+        "quits": 1,
+        "expected_quits": 0.5683333333333334,
+        "rolling_12_turnover": 0.062,
+        "is_projection": false
+      },
+      {
+        "month": "2025-10",
+        "scope": "Kentucky",
+        "category": "physician",
+        "headcount": 110,
+        "quits": 1,
+        "expected_quits": 0.5683333333333334,
+        "rolling_12_turnover": 0.062,
+        "is_projection": false
+      },
+      {
+        "month": "2025-11",
+        "scope": "Kentucky",
+        "category": "physician",
+        "headcount": 110,
+        "quits": 1,
+        "expected_quits": 0.5683333333333334,
+        "rolling_12_turnover": 0.062,
+        "is_projection": false
+      },
+      {
+        "month": "2025-12",
+        "scope": "Kentucky",
+        "category": "physician",
+        "headcount": 110,
+        "quits": 1,
+        "expected_quits": 0.5683333333333334,
+        "rolling_12_turnover": 0.062,
+        "is_projection": false
+      },
+      {
+        "month": "2026-01",
+        "scope": "Kentucky",
+        "category": "physician",
+        "headcount": 110,
+        "quits": 1,
+        "expected_quits": 0.5683333333333334,
+        "rolling_12_turnover": 0.062,
+        "is_projection": false
+      },
+      {
+        "month": "2026-02",
+        "scope": "Kentucky",
+        "category": "physician",
+        "headcount": 110,
+        "quits": 1,
+        "expected_quits": 0.5683333333333334,
+        "rolling_12_turnover": 0.062,
+        "is_projection": false
+      },
+      {
+        "month": "2026-03",
+        "scope": "Kentucky",
+        "category": "physician",
+        "headcount": 110,
+        "quits": 1,
+        "expected_quits": 0.5683333333333334,
+        "rolling_12_turnover": 0.062,
+        "is_projection": false
+      },
+      {
+        "month": "2026-04",
+        "scope": "Kentucky",
+        "category": "physician",
+        "headcount": 110,
+        "quits": 1,
+        "expected_quits": 0.5683333333333334,
+        "rolling_12_turnover": 0.062,
+        "is_projection": false
+      },
+      {
+        "month": "2026-05",
+        "scope": "Kentucky",
+        "category": "physician",
+        "headcount": 110,
+        "quits": null,
+        "expected_quits": 0.5683333333333334,
+        "rolling_12_turnover": 0.062,
+        "is_projection": true
+      },
+      {
+        "month": "2026-06",
+        "scope": "Kentucky",
+        "category": "physician",
+        "headcount": 110,
+        "quits": null,
+        "expected_quits": 0.5683333333333334,
+        "rolling_12_turnover": 0.062,
+        "is_projection": true
+      },
+      {
+        "month": "2026-07",
+        "scope": "Kentucky",
+        "category": "physician",
+        "headcount": 110,
+        "quits": null,
+        "expected_quits": 0.5683333333333334,
+        "rolling_12_turnover": 0.062,
+        "is_projection": true
+      },
+      {
+        "month": "2026-08",
+        "scope": "Kentucky",
+        "category": "physician",
+        "headcount": 110,
+        "quits": null,
+        "expected_quits": 0.5683333333333334,
+        "rolling_12_turnover": 0.062,
+        "is_projection": true
+      },
+      {
+        "month": "2026-09",
+        "scope": "Kentucky",
+        "category": "physician",
+        "headcount": 110,
+        "quits": null,
+        "expected_quits": 0.5683333333333334,
+        "rolling_12_turnover": 0.062,
+        "is_projection": true
+      },
+      {
+        "month": "2026-10",
+        "scope": "Kentucky",
+        "category": "physician",
+        "headcount": 110,
+        "quits": null,
+        "expected_quits": 0.5683333333333334,
+        "rolling_12_turnover": 0.062,
+        "is_projection": true
+      },
+      {
+        "month": "2024-11",
+        "scope": "Toledo",
+        "category": "all",
+        "headcount": 230,
+        "quits": 1,
+        "expected_quits": 1.4375,
+        "rolling_12_turnover": 0.075,
+        "is_projection": false
+      },
+      {
+        "month": "2024-12",
+        "scope": "Toledo",
+        "category": "all",
+        "headcount": 230,
+        "quits": 1,
+        "expected_quits": 1.4375,
+        "rolling_12_turnover": 0.075,
+        "is_projection": false
+      },
+      {
+        "month": "2025-01",
+        "scope": "Toledo",
+        "category": "all",
+        "headcount": 230,
+        "quits": 1,
+        "expected_quits": 1.4375,
+        "rolling_12_turnover": 0.075,
+        "is_projection": false
+      },
+      {
+        "month": "2025-02",
+        "scope": "Toledo",
+        "category": "all",
+        "headcount": 230,
+        "quits": 1,
+        "expected_quits": 1.4375,
+        "rolling_12_turnover": 0.075,
+        "is_projection": false
+      },
+      {
+        "month": "2025-03",
+        "scope": "Toledo",
+        "category": "all",
+        "headcount": 230,
+        "quits": 1,
+        "expected_quits": 1.4375,
+        "rolling_12_turnover": 0.075,
+        "is_projection": false
+      },
+      {
+        "month": "2025-04",
+        "scope": "Toledo",
+        "category": "all",
+        "headcount": 230,
+        "quits": 1,
+        "expected_quits": 1.4375,
+        "rolling_12_turnover": 0.075,
+        "is_projection": false
+      },
+      {
+        "month": "2025-05",
+        "scope": "Toledo",
+        "category": "all",
+        "headcount": 230,
+        "quits": 1,
+        "expected_quits": 1.4375,
+        "rolling_12_turnover": 0.075,
+        "is_projection": false
+      },
+      {
+        "month": "2025-06",
+        "scope": "Toledo",
+        "category": "all",
+        "headcount": 230,
+        "quits": 1,
+        "expected_quits": 1.4375,
+        "rolling_12_turnover": 0.075,
+        "is_projection": false
+      },
+      {
+        "month": "2025-07",
+        "scope": "Toledo",
+        "category": "all",
+        "headcount": 230,
+        "quits": 1,
+        "expected_quits": 1.4375,
+        "rolling_12_turnover": 0.075,
+        "is_projection": false
+      },
+      {
+        "month": "2025-08",
+        "scope": "Toledo",
+        "category": "all",
+        "headcount": 230,
+        "quits": 1,
+        "expected_quits": 1.4375,
+        "rolling_12_turnover": 0.075,
+        "is_projection": false
+      },
+      {
+        "month": "2025-09",
+        "scope": "Toledo",
+        "category": "all",
+        "headcount": 230,
+        "quits": 1,
+        "expected_quits": 1.4375,
+        "rolling_12_turnover": 0.075,
+        "is_projection": false
+      },
+      {
+        "month": "2025-10",
+        "scope": "Toledo",
+        "category": "all",
+        "headcount": 230,
+        "quits": 1,
+        "expected_quits": 1.4375,
+        "rolling_12_turnover": 0.075,
+        "is_projection": false
+      },
+      {
+        "month": "2025-11",
+        "scope": "Toledo",
+        "category": "all",
+        "headcount": 230,
+        "quits": 1,
+        "expected_quits": 1.4375,
+        "rolling_12_turnover": 0.075,
+        "is_projection": false
+      },
+      {
+        "month": "2025-12",
+        "scope": "Toledo",
+        "category": "all",
+        "headcount": 230,
+        "quits": 1,
+        "expected_quits": 1.4375,
+        "rolling_12_turnover": 0.075,
+        "is_projection": false
+      },
+      {
+        "month": "2026-01",
+        "scope": "Toledo",
+        "category": "all",
+        "headcount": 230,
+        "quits": 1,
+        "expected_quits": 1.4375,
+        "rolling_12_turnover": 0.075,
+        "is_projection": false
+      },
+      {
+        "month": "2026-02",
+        "scope": "Toledo",
+        "category": "all",
+        "headcount": 230,
+        "quits": 1,
+        "expected_quits": 1.4375,
+        "rolling_12_turnover": 0.075,
+        "is_projection": false
+      },
+      {
+        "month": "2026-03",
+        "scope": "Toledo",
+        "category": "all",
+        "headcount": 230,
+        "quits": 1,
+        "expected_quits": 1.4375,
+        "rolling_12_turnover": 0.075,
+        "is_projection": false
+      },
+      {
+        "month": "2026-04",
+        "scope": "Toledo",
+        "category": "all",
+        "headcount": 230,
+        "quits": 1,
+        "expected_quits": 1.4375,
+        "rolling_12_turnover": 0.075,
+        "is_projection": false
+      },
+      {
+        "month": "2026-05",
+        "scope": "Toledo",
+        "category": "all",
+        "headcount": 230,
+        "quits": null,
+        "expected_quits": 1.4375,
+        "rolling_12_turnover": 0.075,
+        "is_projection": true
+      },
+      {
+        "month": "2026-06",
+        "scope": "Toledo",
+        "category": "all",
+        "headcount": 230,
+        "quits": null,
+        "expected_quits": 1.4375,
+        "rolling_12_turnover": 0.075,
+        "is_projection": true
+      },
+      {
+        "month": "2026-07",
+        "scope": "Toledo",
+        "category": "all",
+        "headcount": 230,
+        "quits": null,
+        "expected_quits": 1.4375,
+        "rolling_12_turnover": 0.075,
+        "is_projection": true
+      },
+      {
+        "month": "2026-08",
+        "scope": "Toledo",
+        "category": "all",
+        "headcount": 230,
+        "quits": null,
+        "expected_quits": 1.4375,
+        "rolling_12_turnover": 0.075,
+        "is_projection": true
+      },
+      {
+        "month": "2026-09",
+        "scope": "Toledo",
+        "category": "all",
+        "headcount": 230,
+        "quits": null,
+        "expected_quits": 1.4375,
+        "rolling_12_turnover": 0.075,
+        "is_projection": true
+      },
+      {
+        "month": "2026-10",
+        "scope": "Toledo",
+        "category": "all",
+        "headcount": 230,
+        "quits": null,
+        "expected_quits": 1.4375,
+        "rolling_12_turnover": 0.075,
+        "is_projection": true
+      },
+      {
+        "month": "2024-11",
+        "scope": "Toledo",
+        "category": "apc",
+        "headcount": 70,
+        "quits": 1,
+        "expected_quits": 0.7058333333333332,
+        "rolling_12_turnover": 0.121,
+        "is_projection": false
+      },
+      {
+        "month": "2024-12",
+        "scope": "Toledo",
+        "category": "apc",
+        "headcount": 70,
+        "quits": 1,
+        "expected_quits": 0.7058333333333332,
+        "rolling_12_turnover": 0.121,
+        "is_projection": false
+      },
+      {
+        "month": "2025-01",
+        "scope": "Toledo",
+        "category": "apc",
+        "headcount": 70,
+        "quits": 1,
+        "expected_quits": 0.7058333333333332,
+        "rolling_12_turnover": 0.121,
+        "is_projection": false
+      },
+      {
+        "month": "2025-02",
+        "scope": "Toledo",
+        "category": "apc",
+        "headcount": 70,
+        "quits": 1,
+        "expected_quits": 0.7058333333333332,
+        "rolling_12_turnover": 0.121,
+        "is_projection": false
+      },
+      {
+        "month": "2025-03",
+        "scope": "Toledo",
+        "category": "apc",
+        "headcount": 70,
+        "quits": 1,
+        "expected_quits": 0.7058333333333332,
+        "rolling_12_turnover": 0.121,
+        "is_projection": false
+      },
+      {
+        "month": "2025-04",
+        "scope": "Toledo",
+        "category": "apc",
+        "headcount": 70,
+        "quits": 1,
+        "expected_quits": 0.7058333333333332,
+        "rolling_12_turnover": 0.121,
+        "is_projection": false
+      },
+      {
+        "month": "2025-05",
+        "scope": "Toledo",
+        "category": "apc",
+        "headcount": 70,
+        "quits": 1,
+        "expected_quits": 0.7058333333333332,
+        "rolling_12_turnover": 0.121,
+        "is_projection": false
+      },
+      {
+        "month": "2025-06",
+        "scope": "Toledo",
+        "category": "apc",
+        "headcount": 70,
+        "quits": 1,
+        "expected_quits": 0.7058333333333332,
+        "rolling_12_turnover": 0.121,
+        "is_projection": false
+      },
+      {
+        "month": "2025-07",
+        "scope": "Toledo",
+        "category": "apc",
+        "headcount": 70,
+        "quits": 1,
+        "expected_quits": 0.7058333333333332,
+        "rolling_12_turnover": 0.121,
+        "is_projection": false
+      },
+      {
+        "month": "2025-08",
+        "scope": "Toledo",
+        "category": "apc",
+        "headcount": 70,
+        "quits": 1,
+        "expected_quits": 0.7058333333333332,
+        "rolling_12_turnover": 0.121,
+        "is_projection": false
+      },
+      {
+        "month": "2025-09",
+        "scope": "Toledo",
+        "category": "apc",
+        "headcount": 70,
+        "quits": 1,
+        "expected_quits": 0.7058333333333332,
+        "rolling_12_turnover": 0.121,
+        "is_projection": false
+      },
+      {
+        "month": "2025-10",
+        "scope": "Toledo",
+        "category": "apc",
+        "headcount": 70,
+        "quits": 1,
+        "expected_quits": 0.7058333333333332,
+        "rolling_12_turnover": 0.121,
+        "is_projection": false
+      },
+      {
+        "month": "2025-11",
+        "scope": "Toledo",
+        "category": "apc",
+        "headcount": 70,
+        "quits": 1,
+        "expected_quits": 0.7058333333333332,
+        "rolling_12_turnover": 0.121,
+        "is_projection": false
+      },
+      {
+        "month": "2025-12",
+        "scope": "Toledo",
+        "category": "apc",
+        "headcount": 70,
+        "quits": 1,
+        "expected_quits": 0.7058333333333332,
+        "rolling_12_turnover": 0.121,
+        "is_projection": false
+      },
+      {
+        "month": "2026-01",
+        "scope": "Toledo",
+        "category": "apc",
+        "headcount": 70,
+        "quits": 1,
+        "expected_quits": 0.7058333333333332,
+        "rolling_12_turnover": 0.121,
+        "is_projection": false
+      },
+      {
+        "month": "2026-02",
+        "scope": "Toledo",
+        "category": "apc",
+        "headcount": 70,
+        "quits": 1,
+        "expected_quits": 0.7058333333333332,
+        "rolling_12_turnover": 0.121,
+        "is_projection": false
+      },
+      {
+        "month": "2026-03",
+        "scope": "Toledo",
+        "category": "apc",
+        "headcount": 70,
+        "quits": 1,
+        "expected_quits": 0.7058333333333332,
+        "rolling_12_turnover": 0.121,
+        "is_projection": false
+      },
+      {
+        "month": "2026-04",
+        "scope": "Toledo",
+        "category": "apc",
+        "headcount": 70,
+        "quits": 1,
+        "expected_quits": 0.7058333333333332,
+        "rolling_12_turnover": 0.121,
+        "is_projection": false
+      },
+      {
+        "month": "2026-05",
+        "scope": "Toledo",
+        "category": "apc",
+        "headcount": 70,
+        "quits": null,
+        "expected_quits": 0.7058333333333332,
+        "rolling_12_turnover": 0.121,
+        "is_projection": true
+      },
+      {
+        "month": "2026-06",
+        "scope": "Toledo",
+        "category": "apc",
+        "headcount": 70,
+        "quits": null,
+        "expected_quits": 0.7058333333333332,
+        "rolling_12_turnover": 0.121,
+        "is_projection": true
+      },
+      {
+        "month": "2026-07",
+        "scope": "Toledo",
+        "category": "apc",
+        "headcount": 70,
+        "quits": null,
+        "expected_quits": 0.7058333333333332,
+        "rolling_12_turnover": 0.121,
+        "is_projection": true
+      },
+      {
+        "month": "2026-08",
+        "scope": "Toledo",
+        "category": "apc",
+        "headcount": 70,
+        "quits": null,
+        "expected_quits": 0.7058333333333332,
+        "rolling_12_turnover": 0.121,
+        "is_projection": true
+      },
+      {
+        "month": "2026-09",
+        "scope": "Toledo",
+        "category": "apc",
+        "headcount": 70,
+        "quits": null,
+        "expected_quits": 0.7058333333333332,
+        "rolling_12_turnover": 0.121,
+        "is_projection": true
+      },
+      {
+        "month": "2026-10",
+        "scope": "Toledo",
+        "category": "apc",
+        "headcount": 70,
+        "quits": null,
+        "expected_quits": 0.7058333333333332,
+        "rolling_12_turnover": 0.121,
+        "is_projection": true
+      },
+      {
+        "month": "2024-11",
+        "scope": "Toledo",
+        "category": "physician",
+        "headcount": 160,
+        "quits": 1,
+        "expected_quits": 0.7333333333333334,
+        "rolling_12_turnover": 0.055,
+        "is_projection": false
+      },
+      {
+        "month": "2024-12",
+        "scope": "Toledo",
+        "category": "physician",
+        "headcount": 160,
+        "quits": 1,
+        "expected_quits": 0.7333333333333334,
+        "rolling_12_turnover": 0.055,
+        "is_projection": false
+      },
+      {
+        "month": "2025-01",
+        "scope": "Toledo",
+        "category": "physician",
+        "headcount": 160,
+        "quits": 1,
+        "expected_quits": 0.7333333333333334,
+        "rolling_12_turnover": 0.055,
+        "is_projection": false
+      },
+      {
+        "month": "2025-02",
+        "scope": "Toledo",
+        "category": "physician",
+        "headcount": 160,
+        "quits": 1,
+        "expected_quits": 0.7333333333333334,
+        "rolling_12_turnover": 0.055,
+        "is_projection": false
+      },
+      {
+        "month": "2025-03",
+        "scope": "Toledo",
+        "category": "physician",
+        "headcount": 160,
+        "quits": 1,
+        "expected_quits": 0.7333333333333334,
+        "rolling_12_turnover": 0.055,
+        "is_projection": false
+      },
+      {
+        "month": "2025-04",
+        "scope": "Toledo",
+        "category": "physician",
+        "headcount": 160,
+        "quits": 1,
+        "expected_quits": 0.7333333333333334,
+        "rolling_12_turnover": 0.055,
+        "is_projection": false
+      },
+      {
+        "month": "2025-05",
+        "scope": "Toledo",
+        "category": "physician",
+        "headcount": 160,
+        "quits": 1,
+        "expected_quits": 0.7333333333333334,
+        "rolling_12_turnover": 0.055,
+        "is_projection": false
+      },
+      {
+        "month": "2025-06",
+        "scope": "Toledo",
+        "category": "physician",
+        "headcount": 160,
+        "quits": 1,
+        "expected_quits": 0.7333333333333334,
+        "rolling_12_turnover": 0.055,
+        "is_projection": false
+      },
+      {
+        "month": "2025-07",
+        "scope": "Toledo",
+        "category": "physician",
+        "headcount": 160,
+        "quits": 1,
+        "expected_quits": 0.7333333333333334,
+        "rolling_12_turnover": 0.055,
+        "is_projection": false
+      },
+      {
+        "month": "2025-08",
+        "scope": "Toledo",
+        "category": "physician",
+        "headcount": 160,
+        "quits": 1,
+        "expected_quits": 0.7333333333333334,
+        "rolling_12_turnover": 0.055,
+        "is_projection": false
+      },
+      {
+        "month": "2025-09",
+        "scope": "Toledo",
+        "category": "physician",
+        "headcount": 160,
+        "quits": 1,
+        "expected_quits": 0.7333333333333334,
+        "rolling_12_turnover": 0.055,
+        "is_projection": false
+      },
+      {
+        "month": "2025-10",
+        "scope": "Toledo",
+        "category": "physician",
+        "headcount": 160,
+        "quits": 1,
+        "expected_quits": 0.7333333333333334,
+        "rolling_12_turnover": 0.055,
+        "is_projection": false
+      },
+      {
+        "month": "2025-11",
+        "scope": "Toledo",
+        "category": "physician",
+        "headcount": 160,
+        "quits": 1,
+        "expected_quits": 0.7333333333333334,
+        "rolling_12_turnover": 0.055,
+        "is_projection": false
+      },
+      {
+        "month": "2025-12",
+        "scope": "Toledo",
+        "category": "physician",
+        "headcount": 160,
+        "quits": 1,
+        "expected_quits": 0.7333333333333334,
+        "rolling_12_turnover": 0.055,
+        "is_projection": false
+      },
+      {
+        "month": "2026-01",
+        "scope": "Toledo",
+        "category": "physician",
+        "headcount": 160,
+        "quits": 1,
+        "expected_quits": 0.7333333333333334,
+        "rolling_12_turnover": 0.055,
+        "is_projection": false
+      },
+      {
+        "month": "2026-02",
+        "scope": "Toledo",
+        "category": "physician",
+        "headcount": 160,
+        "quits": 1,
+        "expected_quits": 0.7333333333333334,
+        "rolling_12_turnover": 0.055,
+        "is_projection": false
+      },
+      {
+        "month": "2026-03",
+        "scope": "Toledo",
+        "category": "physician",
+        "headcount": 160,
+        "quits": 1,
+        "expected_quits": 0.7333333333333334,
+        "rolling_12_turnover": 0.055,
+        "is_projection": false
+      },
+      {
+        "month": "2026-04",
+        "scope": "Toledo",
+        "category": "physician",
+        "headcount": 160,
+        "quits": 1,
+        "expected_quits": 0.7333333333333334,
+        "rolling_12_turnover": 0.055,
+        "is_projection": false
+      },
+      {
+        "month": "2026-05",
+        "scope": "Toledo",
+        "category": "physician",
+        "headcount": 160,
+        "quits": null,
+        "expected_quits": 0.7333333333333334,
+        "rolling_12_turnover": 0.055,
+        "is_projection": true
+      },
+      {
+        "month": "2026-06",
+        "scope": "Toledo",
+        "category": "physician",
+        "headcount": 160,
+        "quits": null,
+        "expected_quits": 0.7333333333333334,
+        "rolling_12_turnover": 0.055,
+        "is_projection": true
+      },
+      {
+        "month": "2026-07",
+        "scope": "Toledo",
+        "category": "physician",
+        "headcount": 160,
+        "quits": null,
+        "expected_quits": 0.7333333333333334,
+        "rolling_12_turnover": 0.055,
+        "is_projection": true
+      },
+      {
+        "month": "2026-08",
+        "scope": "Toledo",
+        "category": "physician",
+        "headcount": 160,
+        "quits": null,
+        "expected_quits": 0.7333333333333334,
+        "rolling_12_turnover": 0.055,
+        "is_projection": true
+      },
+      {
+        "month": "2026-09",
+        "scope": "Toledo",
+        "category": "physician",
+        "headcount": 160,
+        "quits": null,
+        "expected_quits": 0.7333333333333334,
+        "rolling_12_turnover": 0.055,
+        "is_projection": true
+      },
+      {
+        "month": "2026-10",
+        "scope": "Toledo",
+        "category": "physician",
+        "headcount": 160,
+        "quits": null,
+        "expected_quits": 0.7333333333333334,
+        "rolling_12_turnover": 0.055,
+        "is_projection": true
+      }
+    ],
+    "flagging": {
+      "analysis_window": {
+        "start": "2025-05",
+        "end": "2026-04"
+      },
+      "flag_percentile": 80,
+      "system": {
+        "n_quitters": 144,
+        "n_flagged": 124,
+        "flag_rate": 0.861,
+        "mean_lead_months": 10.4,
+        "median_lead_months": 11,
+        "avg_flagged_per_month": 10.3,
+        "most_recent_headcount": 1820
+      },
+      "by_market": [
+        {
+          "market": "Hampton Roads",
+          "n_quitters": 24,
+          "n_flagged": 22,
+          "flag_rate": 0.917,
+          "mean_lead_months": 11.1,
+          "avg_flagged_per_month": 1.83
+        },
+        {
+          "market": "Kentucky",
+          "n_quitters": 16,
+          "n_flagged": 13,
+          "flag_rate": 0.813,
+          "mean_lead_months": 9.7,
+          "avg_flagged_per_month": 1.08
+        },
+        {
+          "market": "Lima",
+          "n_quitters": 16,
+          "n_flagged": 13,
+          "flag_rate": 0.813,
+          "mean_lead_months": 9.4,
+          "avg_flagged_per_month": 1.08
+        },
+        {
+          "market": "Lorain",
+          "n_quitters": 22,
+          "n_flagged": 20,
+          "flag_rate": 0.909,
+          "mean_lead_months": 10.8,
+          "avg_flagged_per_month": 1.67
+        },
+        {
+          "market": "Toledo",
+          "n_quitters": 18,
+          "n_flagged": 14,
+          "flag_rate": 0.778,
+          "mean_lead_months": 9.5,
+          "avg_flagged_per_month": 1.17
+        },
+        {
+          "market": "Youngstown",
+          "n_quitters": 34,
+          "n_flagged": 30,
+          "flag_rate": 0.882,
+          "mean_lead_months": 11,
+          "avg_flagged_per_month": 2.5
+        }
+      ],
+      "active": {
+        "system": {
+          "active": 1820,
+          "flagged": 364,
+          "quit": 102
+        },
+        "by_market": [
+          {
+            "market": "Hampton Roads",
+            "active": 295,
+            "flagged": 59,
+            "quit": 19
+          },
+          {
+            "market": "Kentucky",
+            "active": 165,
+            "flagged": 33,
+            "quit": 11
+          },
+          {
+            "market": "Lima",
+            "active": 180,
+            "flagged": 36,
+            "quit": 11
+          },
+          {
+            "market": "Lorain",
+            "active": 240,
+            "flagged": 48,
+            "quit": 18
+          },
+          {
+            "market": "Toledo",
+            "active": 230,
+            "flagged": 46,
+            "quit": 12
+          },
+          {
+            "market": "Youngstown",
+            "active": 410,
+            "flagged": 82,
+            "quit": 25
+          }
+        ]
+      }
+    },
+    "provider_detail": [
+      {
+        "provider_id": "11111111-0000-0000-0000-000000000001",
+        "name": "Provider 21",
+        "category": "Physician",
+        "specialty": "Hospitalist",
+        "market": "Lorain",
+        "quit_date": "2026-03",
+        "flag_date": "2025-05",
+        "months_prior": 10
+      },
+      {
+        "provider_id": "11111111-0000-0000-0000-000000000002",
+        "name": "Provider 22",
+        "category": "APC",
+        "specialty": "Internal Medicine",
+        "market": "Hampton Roads",
+        "quit_date": "2026-02",
+        "flag_date": "2025-03",
+        "months_prior": 11
+      },
+      {
+        "provider_id": "11111111-0000-0000-0000-000000000003",
+        "name": "Provider 23",
+        "category": "Physician",
+        "specialty": "Family Medicine",
+        "market": "Youngstown",
+        "quit_date": "2026-02",
+        "flag_date": "2025-02",
+        "months_prior": 12
+      },
+      {
+        "provider_id": "11111111-0000-0000-0000-000000000004",
+        "name": "Provider 24",
+        "category": "APC",
+        "specialty": "Behavioral Health",
+        "market": "Kentucky",
+        "quit_date": "2026-01",
+        "flag_date": "2025-03",
+        "months_prior": 10
+      },
+      {
+        "provider_id": "11111111-0000-0000-0000-000000000005",
+        "name": "Provider 25",
+        "category": "Physician",
+        "specialty": "Cardiology",
+        "market": "Lorain",
+        "quit_date": "2025-12",
+        "flag_date": "2025-01",
+        "months_prior": 11
+      },
+      {
+        "provider_id": "11111111-0000-0000-0000-000000000006",
+        "name": "Provider 26",
+        "category": "APC",
+        "specialty": "OB/GYN",
+        "market": "Lima",
+        "quit_date": "2025-12",
+        "flag_date": null,
+        "months_prior": null
+      },
+      {
+        "provider_id": "11111111-0000-0000-0000-000000000007",
+        "name": "Provider 27",
+        "category": "Physician",
+        "specialty": "Pediatrics",
+        "market": "Hampton Roads",
+        "quit_date": "2025-11",
+        "flag_date": "2024-11",
+        "months_prior": 12
+      },
+      {
+        "provider_id": "11111111-0000-0000-0000-000000000008",
+        "name": "Provider 28",
+        "category": "Physician",
+        "specialty": "Orthopedics",
+        "market": "Youngstown",
+        "quit_date": "2025-10",
+        "flag_date": "2024-12",
+        "months_prior": 10
+      },
+      {
+        "provider_id": "11111111-0000-0000-0000-000000000009",
+        "name": "Provider 29",
+        "category": "APC",
+        "specialty": "Emergency Medicine",
+        "market": "Lorain",
+        "quit_date": "2025-09",
+        "flag_date": "2024-10",
+        "months_prior": 11
+      },
+      {
+        "provider_id": "11111111-0000-0000-0000-000000000010",
+        "name": "Provider 30",
+        "category": "Physician",
+        "specialty": "Neurology",
+        "market": "Kentucky",
+        "quit_date": "2025-08",
+        "flag_date": null,
+        "months_prior": null
+      },
+      {
+        "provider_id": "11111111-0000-0000-0000-000000000011",
+        "name": "Provider 31",
+        "category": "Physician",
+        "specialty": "General Surgery",
+        "market": "Hampton Roads",
+        "quit_date": "2025-07",
+        "flag_date": "2024-08",
+        "months_prior": 11
+      },
+      {
+        "provider_id": "11111111-0000-0000-0000-000000000012",
+        "name": "Provider 32",
+        "category": "APC",
+        "specialty": "Family Medicine",
+        "market": "Toledo",
+        "quit_date": "2025-06",
+        "flag_date": "2024-07",
+        "months_prior": 11
+      }
+    ]
+  }
+}

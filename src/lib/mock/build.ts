@@ -7,6 +7,7 @@ import {
   PlatformSnapshot,
   ProvisionedUsersSnapshot,
   SuccessStoriesSnapshot,
+  TurnoverSnapshot,
 } from "../schema/snapshot.js"
 import { roundtrip } from "../../../scripts/snapshot/schema-roundtrip.js"
 import {
@@ -15,6 +16,7 @@ import {
   platform,
   provisionedUsers,
   successStories,
+  turnover,
 } from "./bsmh-2026-04.js"
 
 const ROOT = path.resolve(import.meta.dirname, "..", "..", "..")
@@ -37,4 +39,5 @@ writeOne(MarketSnapshot, "market_metrics.json", market)
 writeOne(ProvisionedUsersSnapshot, "provisioned_users.json", provisionedUsers)
 writeOne(SuccessStoriesSnapshot, "success_stories.json", successStories)
 writeOne(AdoptionEngagementSnapshot, "adoption_engagement.json", adoptionEngagement)
+writeOne(TurnoverSnapshot, "turnover.json", turnover)
 console.log("Done.")

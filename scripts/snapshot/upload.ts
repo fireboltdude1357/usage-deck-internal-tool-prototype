@@ -6,12 +6,9 @@ import { Schema } from "effect"
 import { loadEnv } from "./load-env.ts"
 import {
   Client,
-  MarketSnapshot,
   Month,
-  PlatformSnapshot,
-  ProvisionedUsersSnapshot,
+  SnapshotByFile,
   SnapshotFileSchema,
-  SuccessStoriesSnapshot,
   type SnapshotFile,
 } from "../../src/lib/schema/snapshot.ts"
 
@@ -51,23 +48,16 @@ const secretAccessKey = process.env.SNAPSHOT_AWS_SECRET_ACCESS_KEY
 
 const TMP = path.join(ROOT, "tmp", "snapshot", client, month)
 
-const schemaFor = (file: SnapshotFile): Schema.Schema<unknown, unknown> => {
-  if (file === "metrics.json") return PlatformSnapshot as unknown as Schema.Schema<unknown, unknown>
-  if (file === "market_metrics.json") return MarketSnapshot as unknown as Schema.Schema<unknown, unknown>
-  if (file === "provisioned_users.json") return ProvisionedUsersSnapshot as unknown as Schema.Schema<unknown, unknown>
-  return SuccessStoriesSnapshot as unknown as Schema.Schema<unknown, unknown>
-}
+const schemaFor = (file: SnapshotFile): Schema.Schema<unknown, unknown> =>
+  SnapshotByFile[file] as unknown as Schema.Schema<unknown, unknown>
 
-const ALL_FILES: SnapshotFile[] = [
-  "metrics.json",
-  "market_metrics.json",
-  "provisioned_users.json",
-  "success_stories.json",
-]
-// When uploading all files, skip ones that don't exist locally — success_
-// stories.json is opt-in (the Athena CSVs aren't always present, e.g. older
-// months pre Athena-seam). When the user explicitly names a file via --file,
-// keep it in the list so the existing existence check surfaces a clear error.
+const ALL_FILES = Object.keys(SnapshotByFile) as SnapshotFile[]
+// When uploading all files, skip ones that don't exist locally — Athena-fed
+// files (success_stories.json, turnover.json) are opt-in: the CSVs aren't
+// always present, e.g. older months pre Athena-seam, or clients whose
+// employment partitions don't cover the requested month. When the user
+// explicitly names a file via --file, keep it in the list so the existing
+// existence check surfaces a clear error.
 const targets = onlyFile
   ? [onlyFile]
   : ALL_FILES.filter((file) => fs.existsSync(path.join(TMP, file)))
