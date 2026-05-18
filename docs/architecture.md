@@ -43,14 +43,21 @@ only exemption is `/api/auth/*`, which can't require a session to function.
 
 - `AUTH_BYPASS=1` → returns `{ user: { email: "dev@local" } }`. Local-dev
   shortcut so the dashboard renders without a WorkOS round-trip.
-- Otherwise unseals the `wos-session` cookie via
-  `workos.userManagement.authenticateWithSessionCookie`.
+- Otherwise loads the `wos-session` cookie via
+  `workos.userManagement.loadSealedSession` and calls `session.authenticate()`.
+- On `authenticated:false` with `reason: "invalid_jwt"` (the short-lived
+  access token expired but the refresh token in the sealed cookie is still
+  valid), calls `session.refresh()` and writes the new sealed session back
+  to the cookie before continuing. This is the difference between a stale
+  tab silently re-issuing a session and one bouncing through AuthKit every
+  5–10 minutes.
 - Page request (route id doesn't start with `/api/`) on miss → 302 to
   `/api/auth/login?return_to=…`.
 - API request on miss → `error(401)`.
-- Bad cookie (unseal throws or `authenticated:false`) → cookie gets cleared
-  before redirect/401, so the next request starts a fresh AuthKit handshake
-  instead of looping on a sealed-but-rejected cookie.
+- Hard failures (unseal throws, refresh fails, or any non-`invalid_jwt`
+  reason) clear the cookie before redirect/401, so the next request starts
+  a fresh AuthKit handshake instead of looping on a sealed-but-rejected
+  cookie.
 
 WorkOS construction lives in `src/lib/server/workos.ts`. Module-scope
 caching of the `WorkOS` instance, lazy `env` reads (so `AUTH_BYPASS=1` doesn't

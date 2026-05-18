@@ -5,6 +5,7 @@ import {
   workos,
   workosCookiePassword,
   SESSION_COOKIE_NAME,
+  sessionCookieOptions,
 } from "$lib/server/workos"
 
 export type Session = { user: { email: string } }
@@ -20,6 +21,12 @@ function bounceToLogin(event: RequestEvent): never {
   const returnTo = event.url.pathname + event.url.search
   const target = `/api/auth/login?return_to=${encodeURIComponent(returnTo)}`
   redirect(302, target)
+}
+
+function failAuth(event: RequestEvent): never {
+  event.cookies.delete(SESSION_COOKIE_NAME, { path: "/" })
+  if (isPageRequest(event)) bounceToLogin(event)
+  error(401, "Not signed in")
 }
 
 export async function requireSession(event: RequestEvent): Promise<Session> {
@@ -42,34 +49,53 @@ export async function requireSession(event: RequestEvent): Promise<Session> {
     error(401, "Not signed in")
   }
 
-  let result: Awaited<
-    ReturnType<
-      ReturnType<typeof workos>["userManagement"]["authenticateWithSessionCookie"]
-    >
-  >
+  const cookiePassword = workosCookiePassword()
+  const session = workos().userManagement.loadSealedSession({
+    sessionData,
+    cookiePassword,
+  })
+
+  let auth: Awaited<ReturnType<typeof session.authenticate>>
   try {
-    result = await workos().userManagement.authenticateWithSessionCookie({
-      sessionData,
-      cookiePassword: workosCookiePassword(),
-    })
+    auth = await session.authenticate()
   } catch (e) {
-    console.error("[requireSession] authenticateWithSessionCookie threw", e)
-    // Clear the bad cookie so the user isn't stuck in a re-auth loop where
-    // every unseal fails. Next request has no cookie → bounces to login →
-    // AuthKit re-issues a fresh sealed session.
-    event.cookies.delete(SESSION_COOKIE_NAME, { path: "/" })
-    if (isPageRequest(event)) bounceToLogin(event)
-    error(401, "Not signed in")
+    console.error("[requireSession] authenticate threw", e)
+    failAuth(event)
   }
 
-  if (!result.authenticated) {
-    console.error("[requireSession] cookie unseal returned not-authenticated", {
-      reason: result.reason,
+  if (auth.authenticated) {
+    return { user: { email: auth.user.email } }
+  }
+
+  // The JWT expires on a short cycle (~5–10 min) but the refresh token in the
+  // sealed session lives much longer. Mint a fresh sealed session instead of
+  // forcing a full re-auth round-trip through AuthKit on every page load.
+  if (auth.reason === "invalid_jwt") {
+    let refreshed: Awaited<ReturnType<typeof session.refresh>>
+    try {
+      refreshed = await session.refresh({ cookiePassword })
+    } catch (e) {
+      console.error("[requireSession] refresh threw", e)
+      failAuth(event)
+    }
+
+    if (refreshed.authenticated && refreshed.sealedSession) {
+      event.cookies.set(
+        SESSION_COOKIE_NAME,
+        refreshed.sealedSession,
+        sessionCookieOptions(event.url.protocol === "https:"),
+      )
+      return { user: { email: refreshed.user.email } }
+    }
+
+    console.error("[requireSession] refresh failed", {
+      reason: refreshed.authenticated ? "no-sealed-session" : refreshed.reason,
     })
-    event.cookies.delete(SESSION_COOKIE_NAME, { path: "/" })
-    if (isPageRequest(event)) bounceToLogin(event)
-    error(401, "Not signed in")
+    failAuth(event)
   }
 
-  return { user: { email: result.user.email } }
+  console.error("[requireSession] cookie unseal returned not-authenticated", {
+    reason: auth.reason,
+  })
+  failAuth(event)
 }
