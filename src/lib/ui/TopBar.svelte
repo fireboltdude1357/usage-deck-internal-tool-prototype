@@ -13,6 +13,7 @@
     { href: "/provisioned-users", label: "Provisioned users" },
     { href: "/success-stories", label: "Success stories" },
     { href: "/adoption-engagement", label: "Adoption vs. engagement" },
+    { href: "/behavior-graph", label: "Behavior graph" },
   ]
 
   const sessionEmail = $derived(page.data.session?.user?.email ?? null)

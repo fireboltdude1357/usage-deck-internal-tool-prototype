@@ -140,6 +140,22 @@ hit on `runPlatformPipeline(bsmh, …)` warms the provider/unit data for
 `runMarketPipeline(bsmh, …)`. The Refresh button (top bar) bumps a nonce that
 adds `?refresh=1` and triggers `bypass: true` at both layers.
 
+### Behavior graph — `src/lib/behavior-graph/` + `src/routes/behavior-graph/`
+
+Live PostHog page-load events → state-classified directed graph + synthesized sessions with animated step-through playback. Nothing is snapshotted; the data is cheap enough to compute live on every page load.
+
+| Seam | Role |
+|---|---|
+| `src/lib/behavior-graph/classify-url.ts` | URL → state classifier. **Must match all 4 URL eras** (`/regions/`, `/units/`, `/physicians/units/`, `/nurses/units/`). Vendored from the parent investigation; canonical case table in `classify-url.test.ts`. |
+| `src/lib/server/posthog/behavior-graph-query.ts` | Single HogQL query: page-load events for `(client, from, to)`, ordered by `(distinct_id, timestamp)`. |
+| `src/lib/server/posthog/behavior-graph-builder.ts` | Pure: synthesizes sessions from 30-min inactivity gaps (PostHog's `$session_id` is unpopulated for the custom Page Load event); collapses consecutive duplicate states; counts directional transitions. Caps at 100 most-recent sessions with ≥3 page loads. |
+| `src/lib/server/posthog/behavior-graph-pipeline.ts` | Effect pipeline, cached via the standard `cached()` helper. |
+| `src/routes/api/posthog/behavior-graph/+server.ts` | Single GET endpoint returning `{graph, sessions}`. |
+| `src/routes/behavior-graph/+page.{ts,svelte}` | Three-pane UI: filter rail / `@xyflow/svelte` canvas / sessions list. |
+| `src/lib/behavior-graph/*.svelte` | `GraphCanvas` (dagre layout + drag persistence), `StateNode`, `CurvedEdge`, `SessionsList`, `SessionAnimator` (animejs step-through). |
+
+Not done and not planned: friction shading (deferred), era selector (the time-range picker already covers it), snapshot path (live compute is fast enough).
+
 ## Frontend
 
 `src/routes/+layout.svelte` mounts the top bar; `+layout.server.ts` surfaces

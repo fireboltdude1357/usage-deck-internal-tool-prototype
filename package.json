@@ -21,6 +21,7 @@
     "@sveltejs/adapter-vercel": "^5.10.3",
     "@sveltejs/kit": "^2.59.0",
     "@sveltejs/vite-plugin-svelte": "^6.2.4",
+    "@types/animejs": "^3.1.13",
     "@types/d3-scale": "^4.0.9",
     "@types/d3-shape": "^3.1.8",
     "@types/node": "^22.10.0",
@@ -39,7 +40,10 @@
   },
   "dependencies": {
     "@aws-sdk/client-athena": "^3.1045.0",
+    "@dagrejs/dagre": "^3.0.0",
     "@workos-inc/node": "^9.2.0",
+    "@xyflow/svelte": "^1.5.2",
+    "animejs": "^4.4.1",
     "effect": "^3.21.2",
     "layerchart": "^1.0.13"
   }
