@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { untrack } from "svelte"
   import { SvelteFlow, Background, Controls, MarkerType } from "@xyflow/svelte"
   import type { Node, Edge } from "@xyflow/svelte"
   import "@xyflow/svelte/dist/style.css"
@@ -28,8 +29,10 @@
 
   // Persistent center-coord positions: dagre on first render, drag-to-persist,
   // rebuild on graph change without snapping back.
-  // $state.raw: Svelte won't track deep mutations — intentional, since positions
-  // is read inside the same $effect that writes nodes/edges (those deps drive updates).
+  // $state.raw: Svelte won't track deep mutations — intentional, since
+  // syncPosition() writes via property assignment on drag. The reassignment
+  // below (positions = merged) IS reactive, so the read inside the same
+  // effect must be untracked to avoid a feedback loop.
   let positions: Record<string, { x: number; y: number }> = $state.raw({})
 
   let nodes: Node[] = $state([])
@@ -114,11 +117,15 @@
       centers = {}
     }
 
-    // Preserve existing positions; fall back to dagre for new nodes.
+    // Preserve existing positions; fall back to dagre for new nodes. Untrack
+    // the read — this effect also writes `positions = merged` below, and a
+    // tracked read would make every write re-trigger the effect (feedback
+    // loop: dagre + full RF rebuild on every microtask until depth limit).
+    const cachedPositions = untrack(() => positions)
     const merged: Record<string, { x: number; y: number }> = {}
     let missingPositions = 0
     for (const id of allNodeIds) {
-      const fromCache = positions[id]
+      const fromCache = cachedPositions[id]
       const fromDagre = centers[id]
       if (!fromCache && !fromDagre) missingPositions++
       merged[id] = fromCache ?? fromDagre ?? { x: 0, y: 0 }

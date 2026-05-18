@@ -7,6 +7,18 @@
 
   let { children } = $props()
 
+  // Mirror the TopBar tab list so the browser tab title matches whichever
+  // section the user clicked, even before the loader resolves.
+  const TAB_LABELS: Record<string, string> = {
+    "/platform-engagement": "Platform engagement",
+    "/market-engagement": "Market engagement",
+    "/provisioned-users": "Provisioned users",
+    "/success-stories": "Success stories",
+    "/adoption-engagement": "Adoption vs. engagement",
+    "/behavior-graph": "Behavior graph",
+    "/turnover": "Turnover",
+  }
+
   // Tab→tab navigation: SvelteKit holds the *previous* page on screen until
   // the new loader resolves, which makes long PostHog queries feel frozen.
   // Replace the page body with the loading indicator while navigating to a
@@ -15,7 +27,18 @@
   const switchingPages = $derived(
     navigating.to !== null && navigating.to.url.pathname !== page.url.pathname,
   )
+
+  const activePath = $derived(navigating.to?.url.pathname ?? page.url.pathname)
+  const pageTitle = $derived(
+    TAB_LABELS[activePath]
+      ? `${TAB_LABELS[activePath]} · internal-tool`
+      : "internal-tool",
+  )
 </script>
+
+<svelte:head>
+  <title>{pageTitle}</title>
+</svelte:head>
 
 <TopProgressBar />
 <TopBar />

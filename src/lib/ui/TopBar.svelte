@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { page } from "$app/state"
+  import { page, navigating } from "$app/state"
   import { selection } from "$lib/selection.svelte"
   import { hasMarkets } from "$lib/markets"
   import SystemPicker from "./SystemPicker.svelte"
@@ -16,6 +16,12 @@
     { href: "/behavior-graph", label: "Behavior graph" },
     { href: "/turnover", label: "Turnover" },
   ]
+
+  // Highlight the tab the user is heading toward, not the one whose data
+  // happens to still be on screen. SvelteKit updates the address bar at
+  // click time but holds `page.url` until the load resolves, so without
+  // this fallback the underline lags by however long PostHog takes.
+  const activePath = $derived(navigating.to?.url.pathname ?? page.url.pathname)
 
   const sessionEmail = $derived(page.data.session?.user?.email ?? null)
 </script>
@@ -47,7 +53,7 @@
   </div>
   <nav class="mx-auto flex max-w-7xl items-center gap-1 px-4">
     {#each TABS as tab (tab.href)}
-      {@const active = page.url.pathname === tab.href}
+      {@const active = activePath === tab.href}
       <a
         href={tab.href}
         class="border-b-2 px-3 py-2 text-sm
