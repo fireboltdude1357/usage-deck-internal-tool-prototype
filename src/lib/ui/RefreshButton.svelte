@@ -1,13 +1,11 @@
 <script lang="ts">
-  import { invalidate } from "$app/navigation"
-  import { navigating } from "$app/state"
   import { refresh } from "$lib/refresh.svelte"
 
-  const busy = $derived(navigating.to !== null)
+  const busy = $derived(refresh.pending)
 
   const onClick = async (): Promise<void> => {
     refresh.bump()
-    await invalidate("app:selection")
+    await refresh.invalidate("app:selection")
   }
 </script>
 

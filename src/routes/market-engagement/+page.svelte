@@ -2,6 +2,7 @@
   import CategoryBars from "$lib/ui/viz/CategoryBars.svelte"
   import RetentionCard from "$lib/ui/viz/RetentionCard.svelte"
   import ErrorCard from "$lib/ui/ErrorCard.svelte"
+  import LoadingIndicator from "$lib/ui/LoadingIndicator.svelte"
   import type { MarketBar, MarketCard } from "$lib/schema/snapshot"
   import { selection } from "$lib/selection.svelte"
   import { hasMarkets } from "$lib/markets"
@@ -98,7 +99,7 @@
   {:else if data.loadError}
     <ErrorCard message={data.loadError} />
   {:else if !data.snapshot}
-    <div class="text-sm text-slate-500 italic">Loading…</div>
+    <LoadingIndicator />
   {:else}
     <section class="space-y-8">
       {#each cards as card (card.market)}

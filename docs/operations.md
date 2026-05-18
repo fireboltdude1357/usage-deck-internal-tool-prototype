@@ -35,8 +35,8 @@ the WorkOS auth flow, unset `AUTH_BYPASS` and set every `WORKOS_*` plus
 | `npm run snapshot:query -- --client <c> --month <YYYY-MM> [--source rds\|athena\|all] [--query <basename>]` | RDS bastion + Athena → CSV in `tmp/snapshot/<c>/<m>/`. Default `--source all` runs both sides. Roster/metadata SQL filter `run_date = ({{month}} || '-01')::date`; pick a month that has a model run or the CSV will be empty. |
 | `npm run snapshot:build -- --client <c> --month <YYYY-MM> [--file <name>]` | CSV → snapshot JSON in `tmp/`. Schema round-trip at write. `--file` scopes to one of `metrics.json` / `market_metrics.json` / `provisioned_users.json` / `success_stories.json`. |
 | `npm run snapshot:upload -- --client <c> --month <YYYY-MM> [--file <name>] [--dry-run]` | Re-validate the JSON and `PutObject` to S3. `--file` uploads only one. |
-| `scripts/snapshot/backfill-all.sh` | Wipe and re-populate S3 for every `(client, run_date)` pair. Roster-only; does not touch `success_stories.json`. |
-| `scripts/snapshot/backfill-success.sh` | Build `success_stories.json` once per client (canonical month) and upload to that single month-prefix. The snapshot carries the raw per-provider per-month series; pre/post pairing is derived live in the page loader from the picker range, so there's nothing to propagate. |
+| `scripts/snapshot/backfill-all.sh` | Wipe and re-populate S3 for every `(client, run_date)` pair, then chain into `backfill-success.sh` so the wipe doesn't orphan `success_stories.json`. |
+| `scripts/snapshot/backfill-success.sh` | Build `success_stories.json` once per client (canonical month) and upload to that single month-prefix. The snapshot carries the raw per-provider per-month series; pre/post pairing is derived live in the page loader from the picker range, so there's nothing to propagate. Run standalone to refresh only success-stories; otherwise invoked automatically by `backfill-all.sh`. |
 
 All `snapshot:*` scripts source `.env` via `scripts/snapshot/load-env.ts`.
 
@@ -165,14 +165,12 @@ one-off script).
 
 ## Full backfill
 
-`scripts/snapshot/backfill-all.sh` and `scripts/snapshot/backfill-success.sh`
-re-populate S3 across every client and run-date in one shot. The first
-wipes `s3://${SNAPSHOT_BUCKET}/{bsmh,ssm,duke,ucsf}/` (preserving
-`athena-results/`) and loops query → build → upload over the hard-coded
-`(client, run_date)` list. The second builds `success_stories.json` once per
-client at the client's canonical month and uploads it to that single
-month-prefix — the snapshot carries the raw per-provider per-month series
-and the page derives pre/post live from the picker range. The
+`scripts/snapshot/backfill-all.sh` re-populates S3 across every client and
+run-date in one shot. It wipes `s3://${SNAPSHOT_BUCKET}/{bsmh,ssm,duke,ucsf}/`
+(preserving `athena-results/`), loops query → build → upload over the
+hard-coded `(client, run_date)` list, then chains into `backfill-success.sh`
+which builds `success_stories.json` once per client at the client's canonical
+month and uploads it to that single month-prefix. The
 (client, run_date) list and canonical months are hard-coded in the scripts —
 update both when the upstream model produces a new run.
 
@@ -180,8 +178,10 @@ Run order if rebuilding from scratch:
 
 ```sh
 scripts/snapshot/backfill-all.sh
-scripts/snapshot/backfill-success.sh
 ```
+
+Run `scripts/snapshot/backfill-success.sh` directly if you only need to
+refresh success-stories without re-uploading the roster files.
 
 ## Deploy
 

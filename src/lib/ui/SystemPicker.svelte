@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { invalidate } from "$app/navigation"
   import type { Client } from "$lib/schema/snapshot"
   import { selection } from "$lib/selection.svelte"
+  import { refresh } from "$lib/refresh.svelte"
 
   const SYSTEMS: { id: Client; label: string }[] = [
     { id: "bsmh", label: "BSMH" },
@@ -13,7 +13,7 @@
   const onChange = (e: Event): void => {
     const target = e.currentTarget as HTMLSelectElement
     selection.setSystem(target.value as Client)
-    invalidate("app:selection")
+    refresh.invalidate("app:selection")
   }
 </script>
 

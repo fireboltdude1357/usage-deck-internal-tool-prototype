@@ -4,6 +4,7 @@
   import CategoryBars from "$lib/ui/viz/CategoryBars.svelte"
   import RetentionCard from "$lib/ui/viz/RetentionCard.svelte"
   import ErrorCard from "$lib/ui/ErrorCard.svelte"
+  import LoadingIndicator from "$lib/ui/LoadingIndicator.svelte"
   import { filterSeries } from "$lib/filter"
   import { selection } from "$lib/selection.svelte"
   import type { PageProps } from "./$types"
@@ -137,7 +138,7 @@
   {#if data.loadError}
     <ErrorCard message={data.loadError} />
   {:else if !data.snapshot}
-    <div class="text-sm text-slate-500 italic">Loading…</div>
+    <LoadingIndicator />
   {:else}
     {#if marketFilterShown}
       <div class="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">

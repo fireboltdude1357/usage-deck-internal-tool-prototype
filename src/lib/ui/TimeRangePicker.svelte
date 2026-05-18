@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { invalidate } from "$app/navigation"
   import { selection } from "$lib/selection.svelte"
+  import { refresh } from "$lib/refresh.svelte"
   import type { Month } from "$lib/schema/snapshot"
   import { AVAILABLE_MONTHS } from "$lib/snapshot-months"
 
@@ -12,12 +12,12 @@
   const onStart = (e: Event): void => {
     const target = e.currentTarget as HTMLSelectElement
     selection.set({ start: target.value as Month })
-    invalidate("app:selection")
+    refresh.invalidate("app:selection")
   }
   const onEnd = (e: Event): void => {
     const target = e.currentTarget as HTMLSelectElement
     selection.set({ end: target.value as Month })
-    invalidate("app:selection")
+    refresh.invalidate("app:selection")
   }
 </script>
 

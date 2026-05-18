@@ -3,6 +3,7 @@ import { Schema } from "effect"
 import { SuccessStoriesSnapshot } from "$lib/schema/snapshot"
 import type { Month } from "$lib/schema/snapshot"
 import { selection } from "$lib/selection.svelte"
+import { refresh } from "$lib/refresh.svelte"
 import { LATEST_SNAPSHOT_MONTH } from "$lib/snapshot-months"
 import {
   deriveProviders,
@@ -85,11 +86,12 @@ export const load: PageLoad = async ({ fetch, depends }) => {
   const end = selection.end
   const market = selection.market === "all" ? null : selection.market
   const snapshotMonth = LATEST_SNAPSHOT_MONTH[client]
+  const refreshFlag = refresh.nonce > 0 ? "&refresh=1" : ""
 
   const [snapshotRes, cohortRes] = await Promise.all([
     fetch(`/api/snapshot/${client}/${snapshotMonth}/success_stories.json`),
     fetch(
-      `/api/posthog/${client}/success-stories-cohort?start=${start}&end=${end}`,
+      `/api/posthog/${client}/success-stories-cohort?start=${start}&end=${end}${refreshFlag}`,
     ),
   ])
 

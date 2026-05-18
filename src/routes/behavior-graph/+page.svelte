@@ -2,6 +2,7 @@
   import GraphCanvas from "$lib/behavior-graph/GraphCanvas.svelte"
   import SessionsList from "$lib/behavior-graph/SessionsList.svelte"
   import ErrorCard from "$lib/ui/ErrorCard.svelte"
+  import LoadingIndicator from "$lib/ui/LoadingIndicator.svelte"
   import { selection } from "$lib/selection.svelte"
   import type { Session } from "$lib/behavior-graph/types"
   import type { PageProps } from "./$types"
@@ -55,8 +56,8 @@
         <ErrorCard message={data.loadError} />
       </div>
     {:else if !data.graph}
-      <div class="flex h-full items-center justify-center text-sm text-slate-400 italic">
-        Loading…
+      <div class="flex h-full items-center justify-center p-6">
+        <LoadingIndicator label="Querying PostHog for behavior graph…" />
       </div>
     {:else}
       <!-- Stats badge -->

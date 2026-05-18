@@ -16,11 +16,13 @@
 #      inputs cause that file to be skipped quietly. upload.ts only PUTs
 #      files that exist locally, so a skipped turnover.json is a no-op.
 #
-# Deliberately skipped: provider-metadata + quit-prob-trajectories (RDS)
-# and claims/encounters/ehr-monthly (Athena) — those feed
-# success_stories.json which is iter-12-specific (fixed pre/post windows
-# baked into the queries). Wire them back in when success-stories stops
-# being iter-12-shaped.
+# Skipped from the per-month loop: provider-metadata + quit-prob-trajectories
+# (RDS) and claims/encounters/ehr-monthly (Athena) — those feed
+# success_stories.json which is iter-12-specific (fixed pre/post windows baked
+# into the queries) and only runs at each client's canonical month. Instead,
+# this script chains into backfill-success.sh at the end so the S3 wipe
+# doesn't orphan success_stories.json. Drop the chain when success-stories
+# stops being iter-12-shaped and folds back into the per-month loop.
 set -euo pipefail
 
 cd "$(dirname "$0")/../.."
@@ -64,6 +66,14 @@ for pair in "${PAIRS[@]}"; do
   npx tsx scripts/snapshot/build.ts  --client "$client" --month "$month"
   npx tsx scripts/snapshot/upload.ts --client "$client" --month "$month"
 done
+
+echo
+echo "=== restoring success-stories snapshots ==="
+# The wipe at the top of this script deletes every `*/success_stories.json`
+# along with everything else, but the per-iteration loop above intentionally
+# skips the success-stories queries (iter-12-shaped). Chain into the dedicated
+# success backfill so a run of this script leaves S3 fully populated.
+bash "$(dirname "$0")/backfill-success.sh"
 
 echo
 echo "=== done ==="

@@ -49,6 +49,26 @@
   // Combined data drives axis domain + tooltip bisect. Tag rows so the
   // tooltip can label the projection segment distinctly.
   const data = $derived(sorted.map((p) => ({ ...p })))
+
+  // Card is narrow (3-up on lg); ~14 monthly ticks collide. Thin to ~4
+  // evenly-spaced months, always including the first and last.
+  const xTicks = $derived.by(() => {
+    const months = sorted.map((p) => p.month)
+    if (months.length <= 4) return months
+    const target = 4
+    const step = (months.length - 1) / (target - 1)
+    const picked = new Set<string>()
+    for (let i = 0; i < target; i++) picked.add(months[Math.round(i * step)])
+    return months.filter((m) => picked.has(m))
+  })
+
+  const MONTH_ABBR = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+  const formatMonth = (m: string) => {
+    const [y, mm] = m.split("-")
+    const idx = Number(mm) - 1
+    if (!y || idx < 0 || idx > 11) return m
+    return `${MONTH_ABBR[idx]} ’${y.slice(2)}`
+  }
 </script>
 
 <div class="rounded-lg bg-white border border-slate-200 p-4 shadow-sm">
@@ -80,7 +100,12 @@
             classes={{ tickLabel: "text-xs fill-slate-500" }}
             format={yFormat}
           />
-          <Axis placement="bottom" classes={{ tickLabel: "text-xs fill-slate-500" }} />
+          <Axis
+            placement="bottom"
+            ticks={xTicks}
+            format={formatMonth}
+            classes={{ tickLabel: "text-xs fill-slate-500" }}
+          />
           {#if actuals.length > 0}
             <Spline
               data={actuals.map((p) => ({ ...p }))}

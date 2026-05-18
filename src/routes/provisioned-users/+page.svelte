@@ -2,6 +2,7 @@
   import KpiTile from "$lib/ui/viz/KpiTile.svelte"
   import DataTable from "$lib/ui/viz/DataTable.svelte"
   import ErrorCard from "$lib/ui/ErrorCard.svelte"
+  import LoadingIndicator from "$lib/ui/LoadingIndicator.svelte"
   import { filterByMarket } from "$lib/filter"
   import { selection } from "$lib/selection.svelte"
   import type { PageProps } from "./$types"
@@ -37,7 +38,7 @@
   {#if data.loadError}
     <ErrorCard message={data.loadError} />
   {:else if !data.snapshot}
-    <div class="text-sm text-slate-500 italic">Loading…</div>
+    <LoadingIndicator />
   {:else}
     <section class="grid grid-cols-1 gap-3 md:grid-cols-2">
       <KpiTile kpi={data.snapshot.metrics.total} />

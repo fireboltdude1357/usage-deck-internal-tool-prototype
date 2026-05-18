@@ -121,24 +121,24 @@ doesn't honor `immutable`.
 
 ## Full backfill (one-shot)
 
-The orchestrators in `scripts/snapshot/backfill-all.sh` and
-`scripts/snapshot/backfill-success.sh` re-populate S3 across **every** client
-and run-date. Used on 2026-05-11 to wipe and re-upload all four clients from
-their earliest `provider_quit_risk_v2.run_date` through their latest.
+`scripts/snapshot/backfill-all.sh` re-populates S3 across **every** client and
+run-date. Used on 2026-05-11 to wipe and re-upload all four clients from their
+earliest `provider_quit_risk_v2.run_date` through their latest.
 
 1. `backfill-all.sh` deletes `s3://${SNAPSHOT_BUCKET}/{bsmh,ssm,duke,ucsf}/`
    (preserving `athena-results/`) and runs query/build/upload for the
    hard-coded `(client, run_date)` list. Only `clinician-roster.sql` is
    queried per month — the per-month roster drives `metrics.json`,
    `market_metrics.json`, and `provisioned_users.json`.
-2. `backfill-success.sh` runs the six success-stories input queries
-   (three RDS + three Athena) once per client at the client's latest
-   run-date and uploads `success_stories.json` to that single
-   month-prefix only. The snapshot carries the full per-provider
-   per-month series — pre/post pairing is derived live in the page
-   loader from the picker range — so there's nothing to propagate
-   across months. Clients whose roster yields zero providers are
-   skipped.
+2. At the end, `backfill-all.sh` chains into `backfill-success.sh`, which
+   runs the six success-stories input queries (three RDS + three Athena)
+   once per client at the client's latest run-date and uploads
+   `success_stories.json` to that single month-prefix only. The snapshot
+   carries the full per-provider per-month series — pre/post pairing is
+   derived live in the page loader from the picker range — so there's
+   nothing to propagate across months. Clients whose roster yields zero
+   providers are skipped. `backfill-success.sh` can also be run standalone
+   to refresh only success-stories without re-uploading the roster files.
 
 After the 2026-05-11 backfill:
 
